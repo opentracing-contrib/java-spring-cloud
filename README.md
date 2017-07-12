@@ -6,7 +6,7 @@ Note: this is under an active development!
 This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
 compatible implementation.
 
-It contains auto-configurations which will instrument and trace several Spring Cloud frameworks:
+It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud frameworks:
 * Spring Web
 
 ## Configuration
@@ -17,7 +17,7 @@ Just drop the following dependency on classpath:
   <artifactId>opentracing-spring-cloud</artifactId>
 </dependency>
 ```
-, and provide OpenTracing tracer bean.
+, and provide OpenTracing tracer bean:
 ```java
 @Bean
 public io.opnetracingTracer tracer() {
