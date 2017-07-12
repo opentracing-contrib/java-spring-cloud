@@ -5,6 +5,9 @@
   <groupId>io.opentracing.contrib</groupId>
   <artifactId>opentracing-spring-cloud-parent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <modules>
+    <module>opentracing-spring-cloud</module>
+  </modules>
   <packaging>pom</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -40,6 +43,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <version.io.opentracing>0.30.0</version.io.opentracing>
+    <version.io.opentracing.contrib-opentracing-spring-web>0.0.6</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.org.springframework.boot>1.4.3.RELEASE</version.org.springframework.boot>
 
     <!-- plugins -->
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
