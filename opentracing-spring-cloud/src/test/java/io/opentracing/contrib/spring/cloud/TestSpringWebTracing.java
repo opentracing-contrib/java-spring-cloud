@@ -56,6 +56,7 @@ public class TestSpringWebTracing {
   @Test
   public void testControllerTracing() {
     ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/hello", String.class);
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(200, responseEntity.getStatusCode().value());
     assertEquals(1, mockTracer.finishedSpans().size());
   }
@@ -63,13 +64,13 @@ public class TestSpringWebTracing {
   @Test
   public void testRestTemplateTracing() {
     restTemplate.getForEntity("http://www.example.com", String.class);
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(1, mockTracer.finishedSpans().size());
   }
 
   @Test
   public void testAsyncRestTemplateTracing() throws ExecutionException, InterruptedException {
     asyncRestTemplate.getForEntity("http://www.example.com", String.class).get();
-
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(1, mockTracer.finishedSpans().size());
   }
