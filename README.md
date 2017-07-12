@@ -10,7 +10,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Spring Web
 
 ## Configuration
-Just drop the following dependency on classpath:
+Just add the following dependency in your pom.xml:
 ```xml
 <dependency>
   <groupId>io.opentracing.contrib</groupId>
@@ -20,7 +20,7 @@ Just drop the following dependency on classpath:
 , and provide OpenTracing tracer bean:
 ```java
 @Bean
-public io.opnetracingTracer tracer() {
+public io.opnetracing.Tracer tracer() {
   return new // tracer instance of your choice (Zipkin, Jaeger, LightStep)
 }
 ```

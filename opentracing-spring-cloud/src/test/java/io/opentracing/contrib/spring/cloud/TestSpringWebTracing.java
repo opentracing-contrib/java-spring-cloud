@@ -1,5 +1,6 @@
 package io.opentracing.contrib.spring.cloud;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
@@ -68,6 +69,8 @@ public class TestSpringWebTracing {
   @Test
   public void testAsyncRestTemplateTracing() throws ExecutionException, InterruptedException {
     asyncRestTemplate.getForEntity("http://www.example.com", String.class).get();
+
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(1, mockTracer.finishedSpans().size());
   }
 }
