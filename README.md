@@ -1,7 +1,29 @@
 [![Build Status][ci-img]][ci] [![Released Version][maven-img]][maven]
 
+Note: this is under an active development!
+
 # OpenTracing Spring Cloud
-OpenTracing instrumentation for Spring Cloud.
+This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
+compatible implementation.
+
+It contains auto-configurations which will instrument and trace several Spring Cloud frameworks:
+* Spring Web
+
+## Configuration
+Just drop the following dependency on classpath:
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-spring-cloud</artifactId>
+</dependency>
+```
+, and provide OpenTracing tracer bean.
+```java
+@Bean
+public io.opnetracingTracer tracer() {
+  return new // tracer instance of your choice (Zipkin, Jaeger, LightStep)
+}
+```
 
 ## Development
 ```shell
