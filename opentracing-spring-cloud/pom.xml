@@ -17,6 +17,11 @@
       <artifactId>opentracing-spring-web-autoconfigure</artifactId>
       <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
     </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-rxjava-1</artifactId>
+      <version>${version.io.opentracing.contrib-opentracing-rxjava-1}</version>
+    </dependency>
 
     <dependency>
       <groupId>io.opentracing</groupId>
