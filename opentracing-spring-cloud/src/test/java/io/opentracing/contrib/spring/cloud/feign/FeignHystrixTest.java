@@ -1,5 +1,6 @@
 package io.opentracing.contrib.spring.cloud.feign;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import io.opentracing.ActiveSpan;
@@ -21,6 +22,7 @@ public class FeignHystrixTest extends FeignTest {
     MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
     try (ActiveSpan activeSpan = mockTracer.makeActive(parentSpan)) {
       feignInterface.hello();
+      await().until(() -> mockTracer.finishedSpans().size() == 2);
       List<MockSpan> mockSpans = mockTracer.finishedSpans();
       assertEquals(2, mockSpans.size());
       verify(mockTracer);
