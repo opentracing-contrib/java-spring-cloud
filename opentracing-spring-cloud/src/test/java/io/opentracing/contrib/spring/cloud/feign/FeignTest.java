@@ -3,19 +3,9 @@ package io.opentracing.contrib.spring.cloud.feign;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import com.netflix.loadbalancer.BaseLoadBalancer;
-import com.netflix.loadbalancer.ILoadBalancer;
-import com.netflix.loadbalancer.Server;
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
-import io.opentracing.tag.Tags;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +21,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.netflix.loadbalancer.BaseLoadBalancer;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
+
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
+import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 
 /**
  * @author Pavol Loffay
@@ -62,7 +63,7 @@ public class FeignTest {
 
   @FeignClient(value = "localService")
   interface FeignInterface {
-    @RequestMapping(method = RequestMethod.GET, value = "/hello")
+    @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
     String hello();
   }
 
@@ -84,18 +85,9 @@ public class FeignTest {
   }
 
   static void verify(MockTracer mockTracer) {
-    await().until(() -> mockTracer.finishedSpans().size() == 2);
-
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
-    Map<String, MockSpan> spanMap = toComponentMap(mockSpans);
-
-    assertEquals(2, mockSpans.size());
-    assertEquals(spanMap.get(Tags.SPAN_KIND_SERVER).parentId(), spanMap.get(Tags.SPAN_KIND_CLIENT).context().spanId());
-  }
-
-  static Map<String, MockSpan> toComponentMap(List<MockSpan> mockSpans) {
-    Map<String, MockSpan> spanMap = new HashMap<>();
-    mockSpans.forEach(mockSpan -> spanMap.put(mockSpan.tags().get(Tags.SPAN_KIND.getKey()).toString(), mockSpan));
-    return spanMap;
+    assertEquals(1, mockSpans.size());
+    assertEquals(Tags.SPAN_KIND_CLIENT, mockSpans.get(0).tags().get(Tags.SPAN_KIND.getKey()));
   }
 }

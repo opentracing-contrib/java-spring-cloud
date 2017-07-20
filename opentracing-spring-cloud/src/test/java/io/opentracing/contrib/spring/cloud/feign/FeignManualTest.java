@@ -40,7 +40,7 @@ public class FeignManualTest {
 
   @FeignClient(value = "localService")
   interface FeignInterface {
-    @RequestLine("GET /hello")
+    @RequestLine("GET /notTraced")
     String hello();
   }
 
