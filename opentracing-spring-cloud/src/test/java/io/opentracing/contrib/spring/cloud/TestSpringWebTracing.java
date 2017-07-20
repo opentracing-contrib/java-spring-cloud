@@ -81,6 +81,7 @@ public class TestSpringWebTracing {
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(1, mockSpans.size());
+    //only http client is traced
     assertEquals(Tags.SPAN_KIND_CLIENT, mockSpans.get(0).tags().get(Tags.SPAN_KIND.getKey()));
   }
 
