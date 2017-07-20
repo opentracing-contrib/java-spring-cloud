@@ -3,13 +3,14 @@ package io.opentracing.contrib.spring.cloud;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.mock.MockTracer;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
+
+import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 
 /**
  * @author Pavol Loffay
@@ -34,7 +40,15 @@ public class TestSpringWebTracing {
     public String hello() {
       return "Hello";
     }
+
+    @RequestMapping("/notTraced")
+    public String notTraced() {
+      return "Not traced";
+    }
   }
+
+  @LocalServerPort
+  int port;
 
   @Autowired
   protected MockTracer mockTracer;
@@ -63,15 +77,23 @@ public class TestSpringWebTracing {
 
   @Test
   public void testRestTemplateTracing() {
-    restTemplate.getForEntity("http://www.example.com", String.class);
+    restTemplate.getForEntity(getUrl("/notTraced"), String.class);
     await().until(() -> mockTracer.finishedSpans().size() == 1);
-    assertEquals(1, mockTracer.finishedSpans().size());
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(1, mockSpans.size());
+    assertEquals(Tags.SPAN_KIND_CLIENT, mockSpans.get(0).tags().get(Tags.SPAN_KIND.getKey()));
   }
 
   @Test
   public void testAsyncRestTemplateTracing() throws ExecutionException, InterruptedException {
-    asyncRestTemplate.getForEntity("http://www.example.com", String.class).get();
+    asyncRestTemplate.getForEntity(getUrl("/notTraced"), String.class).get();
     await().until(() -> mockTracer.finishedSpans().size() == 1);
-    assertEquals(1, mockTracer.finishedSpans().size());
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(1, mockSpans.size());
+    assertEquals(Tags.SPAN_KIND_CLIENT, mockSpans.get(0).tags().get(Tags.SPAN_KIND.getKey()));
+  }
+
+  public String getUrl(String path) {
+    return "http://localhost:" + port + path;
   }
 }
