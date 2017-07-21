@@ -27,6 +27,10 @@
           <groupId>io.github.openfeign</groupId>
           <artifactId>feign-hystrix</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-core</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
