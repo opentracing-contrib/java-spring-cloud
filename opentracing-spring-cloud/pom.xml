@@ -13,6 +13,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-web-autoconfigure</artifactId>
       <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
@@ -59,7 +64,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${version.org.springframework.boot}</version>
       <scope>test</scope>
     </dependency>
     <!-- to test feign.okhttp.enabled=true -->
@@ -79,7 +83,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${version.org.springframework.boot}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
