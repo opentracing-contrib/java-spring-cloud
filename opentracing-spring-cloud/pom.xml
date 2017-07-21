@@ -31,6 +31,17 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-feign</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-hystrix</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
       <groupId>io.opentracing</groupId>
       <artifactId>opentracing-mock</artifactId>
       <scope>test</scope>
@@ -47,36 +58,20 @@
       <version>${version.org.springframework.boot}</version>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-feign</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <!-- todo remove if not necessary -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-hystrix</artifactId>
-      <optional>true</optional>
-    </dependency>
-
     <!-- to test feign.okhttp.enabled=true -->
     <dependency>
       <groupId>io.github.openfeign</groupId>
       <artifactId>feign-okhttp</artifactId>
-      <version>9.5.0</version>
+      <version>${version.io.github.openfeign-feign-okhttp}</version>
       <scope>test</scope>
     </dependency>
-
     <!-- pin the newest version, otherwise tests are failing -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.3</version>
+      <version>${version.org.apache.httpcomponents.httpclient}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
