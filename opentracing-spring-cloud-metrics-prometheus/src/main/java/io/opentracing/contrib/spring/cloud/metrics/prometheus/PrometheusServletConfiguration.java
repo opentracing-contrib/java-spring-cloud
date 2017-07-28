@@ -24,7 +24,7 @@ import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.MetricsServlet;
 
 @Configuration
-@ConditionalOnClass(value = {io.prometheus.client.exporter.MetricsServlet.class})
+@ConditionalOnClass(value = {MetricsServlet.class})
 public class PrometheusServletConfiguration {
 
     @Value("${opentracing.metrics.exporter.http.path:false}")

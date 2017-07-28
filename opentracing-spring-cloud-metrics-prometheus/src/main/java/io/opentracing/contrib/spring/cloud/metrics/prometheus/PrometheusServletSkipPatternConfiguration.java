@@ -20,9 +20,11 @@ import java.util.regex.Pattern;
 
 import org.springframework.context.annotation.Configuration;
 
+import io.opentracing.contrib.web.servlet.filter.TracingFilter;
+import io.prometheus.client.exporter.MetricsServlet;
+
 @Configuration
-@ConditionalOnClass(value = {io.prometheus.client.exporter.MetricsServlet.class,
-        io.opentracing.contrib.web.servlet.filter.TracingFilter.class})
+@ConditionalOnClass(value = {MetricsServlet.class, TracingFilter.class})
 @ConditionalOnProperty(name="opentracing.metrics.exporter.http.path")
 public class PrometheusServletSkipPatternConfiguration implements javax.servlet.ServletContextListener {
 
@@ -31,7 +33,7 @@ public class PrometheusServletSkipPatternConfiguration implements javax.servlet.
 
     @Override
     public void contextInitialized(javax.servlet.ServletContextEvent sce) {
-        sce.getServletContext().setAttribute(io.opentracing.contrib.web.servlet.filter.TracingFilter.SKIP_PATTERN, Pattern.compile(metricsPath));
+        sce.getServletContext().setAttribute(TracingFilter.SKIP_PATTERN, Pattern.compile(metricsPath));
     }
 
     @Override

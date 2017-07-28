@@ -17,13 +17,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.opentracing.contrib.tracerresolver.TracerResolver;
+
 @Configuration
-@ConditionalOnClass(value = {io.opentracing.contrib.tracerresolver.TracerResolver.class})
+@ConditionalOnClass(value = {TracerResolver.class})
 public class TracerResolverConfiguration {
 
     @Bean
     public io.opentracing.Tracer tracer() {
-        return io.opentracing.contrib.tracerresolver.TracerResolver.resolveTracer();
+        return TracerResolver.resolveTracer();
     }
 
 }

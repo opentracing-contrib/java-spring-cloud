@@ -14,8 +14,9 @@
 package io.opentracing.contrib.spring.cloud.api.extensions;
 
 import java.util.Set;
-import java.util.logging.Logger;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -28,7 +29,7 @@ import io.opentracing.contrib.api.tracer.APIExtensionsTracer;
 @Configuration
 public class TracerBeanPostProcessor implements BeanPostProcessor {
 
-    private static final Logger log = Logger.getLogger(TracerBeanPostProcessor.class.getName());
+    private static final Log log = LogFactory.getLog(TracerBeanPostProcessor.class);
 
     @Autowired(required=false)
     private Set<TracerObserver> tracerObservers;
