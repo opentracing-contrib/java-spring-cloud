@@ -7,6 +7,9 @@
   <version>0.0.1-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud</module>
+    <module>opentracing-spring-cloud-api-extensions</module>
+    <module>opentracing-spring-cloud-metrics</module>
+    <module>opentracing-spring-cloud-metrics-prometheus</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -42,8 +45,14 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <version.commons-logging>1.2</version.commons-logging>
     <version.io.opentracing>0.30.0</version.io.opentracing>
+    <version.io.opentracing.contrib-opentracing-api-extensions>0.0.2</version.io.opentracing.contrib-opentracing-api-extensions>
+    <version.io.opentracing.contrib-opentracing-metrics>0.1.2</version.io.opentracing.contrib-opentracing-metrics>
     <version.io.opentracing.contrib-opentracing-spring-web>0.0.6</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.io.opentracing.contrib-opentracing-web-servlet-filter>0.0.9</version.io.opentracing.contrib-opentracing-web-servlet-filter>
+    <version.io.prometheus>0.0.23</version.io.prometheus>
+    <version.javax.servlet-api>3.1.0</version.javax.servlet-api>
     <version.org.springframework.boot>1.4.3.RELEASE</version.org.springframework.boot>
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
 

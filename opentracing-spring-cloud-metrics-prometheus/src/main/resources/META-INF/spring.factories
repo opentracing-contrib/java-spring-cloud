@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.opentracing.contrib.spring.cloud.metrics.prometheus.PrometheusConfiguration,\
+io.opentracing.contrib.spring.cloud.metrics.prometheus.PrometheusMetricsReporterConfiguration,\
+io.opentracing.contrib.spring.cloud.metrics.prometheus.PrometheusServletConfiguration,\
+io.opentracing.contrib.spring.cloud.metrics.prometheus.PrometheusServletSkipPatternConfiguration
