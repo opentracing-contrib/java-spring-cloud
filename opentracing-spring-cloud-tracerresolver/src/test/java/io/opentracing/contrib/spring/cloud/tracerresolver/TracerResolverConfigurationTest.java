@@ -30,7 +30,7 @@ import io.opentracing.mock.MockTracer;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TracerResolverConfigurationTest {
 
-    @Autowired(required=false)
+    @Autowired
     protected Tracer tracer;
 
     @Configuration
