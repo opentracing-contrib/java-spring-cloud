@@ -8,6 +8,7 @@ compatible implementation.
 
 It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud frameworks:
 * Spring Web
+* Feign, HystrixFeign
 
 ## Configuration
 Just add the following dependency in your pom.xml:
