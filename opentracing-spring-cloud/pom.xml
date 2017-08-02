@@ -22,6 +22,23 @@
       <artifactId>opentracing-spring-web-autoconfigure</artifactId>
       <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
     </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-rxjava-1</artifactId>
+      <version>${version.io.opentracing.contrib-opentracing-rxjava-1}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.reactivex</groupId>
+          <artifactId>rxjava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>io.reactivex</groupId>
+      <artifactId>rxjava</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>io.github.openfeign.opentracing</groupId>
