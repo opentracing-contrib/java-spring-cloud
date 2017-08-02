@@ -8,20 +8,16 @@ import javax.jms.MessageProducer;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.JmsHeaderMapper;
-import org.springframework.stereotype.Component;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-@Component
 public class TracingJmsTemplate extends JmsTemplate {
   private Tracer tracer;
   private JmsHeaderMapper mapper;
 
-  @Autowired
   public TracingJmsTemplate(ConnectionFactory connectionFactory, Tracer tracer, JmsHeaderMapper mapper) {
     super(connectionFactory);
     this.tracer = tracer;
