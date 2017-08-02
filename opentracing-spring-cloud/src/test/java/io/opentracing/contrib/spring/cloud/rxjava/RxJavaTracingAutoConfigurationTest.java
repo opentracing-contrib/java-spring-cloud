@@ -2,6 +2,7 @@ package io.opentracing.contrib.spring.cloud.rxjava;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.rxjava.RxJavaTracingAutoConfigurationTest.TestController;
@@ -58,6 +59,10 @@ public class RxJavaTracingAutoConfigurationTest {
     await().until(() -> mockTracer.finishedSpans().size() == 2);
     assertEquals(200, responseEntity.getStatusCode().value());
     assertEquals(2, mockTracer.finishedSpans().size());
+
+    List<MockSpan> spans = mockTracer.finishedSpans();
+    assertTrue(spans.get(1).parentId() == spans.get(0).context().spanId()
+        || spans.get(0).parentId() == spans.get(1).context().spanId());
   }
 
   @Test
