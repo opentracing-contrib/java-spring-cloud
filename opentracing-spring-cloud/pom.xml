@@ -60,6 +60,16 @@
       <artifactId>javax.jms-api</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>artemis-server</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>artemis-jms-client</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>io.opentracing</groupId>

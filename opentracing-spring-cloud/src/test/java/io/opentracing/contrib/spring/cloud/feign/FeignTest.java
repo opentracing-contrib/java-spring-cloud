@@ -6,6 +6,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.List;
 
+import com.netflix.loadbalancer.BaseLoadBalancer;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,23 +30,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.netflix.loadbalancer.BaseLoadBalancer;
-import com.netflix.loadbalancer.ILoadBalancer;
-import com.netflix.loadbalancer.Server;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
-import io.opentracing.tag.Tags;
-
 /**
  * @author Pavol Loffay
  */
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {MockTracingConfiguration.class, TestController.class,
+  classes = {MockTracingConfiguration.class, MockTracingConfiguration.TestController.class,
         FeignRibbonLocalConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {

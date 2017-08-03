@@ -4,6 +4,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Message;
 
 import io.opentracing.Tracer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class JmsAutoConfiguration {
 
   @Bean
   @ConditionalOnClass(JmsTemplate.class)
+  @ConditionalOnBean(ConnectionFactory.class)
   public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory, Tracer tracer, JmsHeaderMapper mapper) {
     return new TracingJmsTemplate(connectionFactory, tracer, mapper);
   }

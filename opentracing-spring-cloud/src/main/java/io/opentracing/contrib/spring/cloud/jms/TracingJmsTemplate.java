@@ -30,6 +30,10 @@ public class TracingJmsTemplate extends JmsTemplate {
     ActiveSpan span = tracer.activeSpan();
     tracer.inject(span.context(), Format.Builtin.TEXT_MAP, carrier);
     mapper.fromHeaders(carrier.getMessageHeaders(), message);
+    doSendInternal(producer, message);
+  }
+
+  protected void doSendInternal(MessageProducer producer, Message message) throws JMSException {
     super.doSend(producer, message);
   }
 }
