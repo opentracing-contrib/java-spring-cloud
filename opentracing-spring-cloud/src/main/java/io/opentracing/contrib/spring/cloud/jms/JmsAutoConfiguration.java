@@ -5,6 +5,7 @@ import javax.jms.Message;
 
 import io.opentracing.Tracer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.JmsListener;
@@ -20,7 +21,7 @@ public class JmsAutoConfiguration {
 
   @Bean
   @ConditionalOnClass(JmsListener.class)
-  public JmsListenerAspect createJmsListenerAspect() {
+  public JmsListenerAspect jmsListenerAspect() {
     return new JmsListenerAspect();
   }
 
@@ -28,5 +29,11 @@ public class JmsAutoConfiguration {
   @ConditionalOnClass(JmsTemplate.class)
   public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory, Tracer tracer, JmsHeaderMapper mapper) {
     return new TracingJmsTemplate(connectionFactory, tracer, mapper);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public JmsHeaderMapper fromTracer(Tracer tracer) {
+    return TracingJmsHeaderMapper.fromTracer(tracer);
   }
 }

@@ -2,7 +2,7 @@ package io.opentracing.contrib.spring.cloud.jms;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.springframework.jms.support.JmsHeaderMapper;
+import io.opentracing.Tracer;
 import org.springframework.jms.support.SimpleJmsHeaderMapper;
 
 /**
@@ -23,7 +23,7 @@ public class TracingJmsHeaderMapper extends SimpleJmsHeaderMapper {
 
   private BiMap<String, String> map = HashBiMap.create();
 
-  public static JmsHeaderMapper braveHeaderMapper() {
+  public static TracingJmsHeaderMapper braveHeaderMapper() {
     TracingJmsHeaderMapper mapper = new TracingJmsHeaderMapper();
     mapper.addMapping(SPAN_ID_NAME, "X-B3-SpanId");
     mapper.addMapping(SAMPLED_NAME, "X-B3-Sampled");
@@ -31,6 +31,26 @@ public class TracingJmsHeaderMapper extends SimpleJmsHeaderMapper {
     mapper.addMapping(TRACE_ID_NAME, "X-B3-TraceId");
     mapper.addMapping(SPAN_FLAGS_NAME, "X-B3-Flags");
     return mapper;
+  }
+
+  public static TracingJmsHeaderMapper jaegerHeaderMapper() {
+    TracingJmsHeaderMapper mapper = new TracingJmsHeaderMapper();
+    mapper.addMapping("jaegerDebugId", "jaeger-debug-id");
+    mapper.addMapping(TRACE_ID_NAME, "uber-trace-id");
+    return mapper;
+  }
+
+  public static TracingJmsHeaderMapper fromTracer(Tracer tracer) {
+    Class<?> tracerClass = tracer.getClass();
+    String tracerClassName = tracerClass.getName();
+
+    if (tracerClassName.contains("jaeger.")) {
+      return jaegerHeaderMapper();
+    } else if (tracerClassName.contains("brave.")) {
+      return braveHeaderMapper();
+    } else {
+      return new TracingJmsHeaderMapper();
+    }
   }
 
   public void addMapping(String otKey, String implKey) {
