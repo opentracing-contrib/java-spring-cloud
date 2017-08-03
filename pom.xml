@@ -7,6 +7,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud</module>
+    <module>opentracing-spring-cloud-starter</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -63,6 +64,17 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>io.opentracing</groupId>
         <artifactId>opentracing-api</artifactId>
