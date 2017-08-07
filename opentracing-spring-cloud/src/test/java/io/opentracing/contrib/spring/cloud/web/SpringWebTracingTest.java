@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestController;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,11 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration.TestController;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
-import io.opentracing.tag.Tags;
 
 /**
  * @author Pavol Loffay
