@@ -4,9 +4,9 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import org.junit.Assert;
@@ -62,6 +62,7 @@ public class JmsTracingTest {
     assertEquals(200, responseEntity.getStatusCode().value());
     List<MockSpan> spans = tracer.finishedSpans();
     assertEquals(4, spans.size());  // it propagated over to @JmsListener
+    TestUtils.assertSameTraceId(spans);
   }
 
   @RestController
