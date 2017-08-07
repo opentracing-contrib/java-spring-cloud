@@ -16,12 +16,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -41,7 +41,7 @@ public class JmsTracingTest {
   JmsTestConfiguration.MsgListener msgListener;
 
   @Autowired
-  private RestTemplate restTemplate;
+  private TestRestTemplate restTemplate;
 
   @Before
   public void before() {
@@ -50,18 +50,18 @@ public class JmsTracingTest {
 
   @Test
   public void testListenerSpans() {
-    ResponseEntity<String> responseEntity = restTemplate.getForEntity(MockTracingConfiguration.getUrl(port, "/hello"), String.class);
+    ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
 
     await().until(() -> {
       List<MockSpan> mockSpans = tracer.finishedSpans();
-      return (mockSpans.size() == 4);
+      return (mockSpans.size() == 3);
     });
 
     Assert.assertNotNull(msgListener.getMessage());
 
     assertEquals(200, responseEntity.getStatusCode().value());
     List<MockSpan> spans = tracer.finishedSpans();
-    assertEquals(4, spans.size());  // it propagated over to @JmsListener
+    assertEquals(3, spans.size());  // it propagated over to @JmsListener
     TestUtils.assertSameTraceId(spans);
   }
 

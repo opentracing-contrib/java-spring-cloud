@@ -39,8 +39,6 @@ public class JmsTestConfiguration {
     return new ActiveMQJMSConnectionFactory("vm://0");
   }
 
-  // ----
-
   public static class Server {
     private ActiveMQServer server;
 

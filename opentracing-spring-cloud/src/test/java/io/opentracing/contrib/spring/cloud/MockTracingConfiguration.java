@@ -20,10 +20,6 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 public class MockTracingConfiguration {
 
-  public static String getUrl(int port, String path) {
-    return "http://localhost:" + port + path;
-  }
-
   @Bean
   public MockTracer mockTracer() {
     return new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
