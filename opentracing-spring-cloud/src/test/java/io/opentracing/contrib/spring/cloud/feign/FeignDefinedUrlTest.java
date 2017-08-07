@@ -2,6 +2,10 @@ package io.opentracing.contrib.spring.cloud.feign;
 
 import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestController;
+import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
+import io.opentracing.mock.MockTracer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
-import io.opentracing.mock.MockTracer;
 
 /**
  * @author Pavol Loffay

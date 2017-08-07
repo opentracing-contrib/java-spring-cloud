@@ -1,4 +1,4 @@
-package io.opentracing.contrib.spring.cloud;
+package io.opentracing.contrib.spring.cloud.web;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -6,6 +6,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestController;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,15 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
-
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
-import io.opentracing.tag.Tags;
 
 /**
  * @author Pavol Loffay
@@ -32,20 +30,7 @@ import io.opentracing.tag.Tags;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
   classes = {MockTracingConfiguration.class, TestController.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestSpringWebTracing {
-
-  @RestController
-  public static class TestController {
-    @RequestMapping("/hello")
-    public String hello() {
-      return "Hello";
-    }
-
-    @RequestMapping("/notTraced")
-    public String notTraced() {
-      return "Not traced";
-    }
-  }
+public class SpringWebTracingTest {
 
   @LocalServerPort
   int port;
