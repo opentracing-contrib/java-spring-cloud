@@ -6,9 +6,8 @@ import feign.Client;
 import feign.Feign;
 import feign.RequestLine;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
-import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.contrib.spring.cloud.feign.FeignManualTest.ManualFeignConfiguration;
+import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.mock.MockTracer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
-    classes = {MockTracingConfiguration.class, TestController.class,
+  classes = {MockTracingConfiguration.class, MockTracingConfiguration.TestController.class,
         ManualFeignConfiguration.class, FeignRibbonLocalConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignManualTest {
