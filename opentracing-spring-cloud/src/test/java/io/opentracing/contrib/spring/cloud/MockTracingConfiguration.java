@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,5 +43,18 @@ public class MockTracingConfiguration {
   @Bean
   public AsyncRestTemplate asyncRestTemplate() {
     return new AsyncRestTemplate();
+  }
+
+  @RestController
+  public static class TestController {
+    @RequestMapping("/hello")
+    public String hello() {
+      return "Hello";
+    }
+
+    @RequestMapping("/notTraced")
+    public String notTraced() {
+      return "Not traced";
+    }
   }
 }

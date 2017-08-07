@@ -6,7 +6,7 @@ import feign.Client;
 import feign.Feign;
 import feign.RequestLine;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestSpringWebTracing.TestController;
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration.TestController;
 import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.contrib.spring.cloud.feign.FeignManualTest.ManualFeignConfiguration;
 import io.opentracing.mock.MockTracer;
