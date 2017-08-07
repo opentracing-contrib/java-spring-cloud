@@ -45,6 +45,7 @@
 
     <version.io.opentracing>0.30.0</version.io.opentracing>
     <version.io.opentracing.contrib-opentracing-spring-web>0.0.8</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.io.opentracing.contrib-opentracing-spring-jms>0.0.3</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.0.5</version.io.github.openfeign.opentracing>
     <version.org.springframework.boot>1.4.1.RELEASE</version.org.springframework.boot>
@@ -94,6 +95,12 @@
         <groupId>io.opentracing</groupId>
         <artifactId>opentracing-util</artifactId>
         <version>${version.io.opentracing}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-spring</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
       </dependency>
 
       <dependency>
