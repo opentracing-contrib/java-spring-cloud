@@ -46,7 +46,7 @@
     <version.io.opentracing.contrib-opentracing-spring-web>0.0.7</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.0.5</version.io.github.openfeign.opentracing>
-    <version.org.springframework.boot>1.4.3.RELEASE</version.org.springframework.boot>
+    <version.org.springframework.boot>1.4.1.RELEASE</version.org.springframework.boot>
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
     <version.org.apache.httpcomponents.httpclient>4.5.3</version.org.apache.httpcomponents.httpclient>
 
