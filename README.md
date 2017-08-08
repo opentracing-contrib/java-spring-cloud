@@ -15,7 +15,7 @@ Just add the following dependency in your pom.xml:
 ```xml
 <dependency>
   <groupId>io.opentracing.contrib</groupId>
-  <artifactId>opentracing-spring-cloud</artifactId>
+  <artifactId>opentracing-spring-cloud-starter</artifactId>
 </dependency>
 ```
 , and provide OpenTracing tracer bean:
