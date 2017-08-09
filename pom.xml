@@ -101,12 +101,13 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-jms-spring</artifactId>
         <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
-        <exclusions>
+        <scope>compile</scope>
+        <!-- exclusions>
           <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
           </exclusion>
-        </exclusions>
+        </exclusions -->
       </dependency>
 
       <dependency>
