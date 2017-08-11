@@ -54,6 +54,8 @@
     <version.org.apache.httpcomponents.httpclient>4.5.3</version.org.apache.httpcomponents.httpclient>
 
 
+    <version.javax.jms>1.1-rev-1</version.javax.jms>
+
     <!-- plugins -->
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
@@ -101,6 +103,21 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-jms-spring</artifactId>
         <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-common</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-1</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.jms</groupId>
+        <artifactId>jms-api</artifactId>
+        <version>${version.javax.jms}</version>
       </dependency>
 
       <dependency>
