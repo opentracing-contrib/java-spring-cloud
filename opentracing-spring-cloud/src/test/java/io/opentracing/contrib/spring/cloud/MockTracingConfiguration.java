@@ -28,8 +28,8 @@ public class MockTracingConfiguration {
   @Bean
   public WebTracingConfiguration webTracingConfiguration() {
     return WebTracingConfiguration.builder()
-            .withSkipPattern(Pattern.compile("/notTraced"))
-            .build();
+      .withSkipPattern(Pattern.compile("/notTraced"))
+      .build();
   }
 
   @Bean
