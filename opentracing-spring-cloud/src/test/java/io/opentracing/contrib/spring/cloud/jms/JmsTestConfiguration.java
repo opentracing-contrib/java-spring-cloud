@@ -1,5 +1,6 @@
 package io.opentracing.contrib.spring.cloud.jms;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
@@ -51,6 +52,9 @@ public class JmsTestConfiguration {
       configuration.setAcceptorConfigurations(transports);
 
       configuration.setSecurityEnabled(false);
+
+      File targetDir = new File(System.getProperty("user.dir") + "/target");
+      configuration.setBrokerInstance(targetDir);
 
       ActiveMQServer temp = new ActiveMQServerImpl(configuration);
       temp.start();

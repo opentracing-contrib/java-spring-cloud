@@ -53,12 +53,14 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jms-spring</artifactId>
       <optional>true</optional>
     </dependency>
+
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>artemis-server</artifactId>
