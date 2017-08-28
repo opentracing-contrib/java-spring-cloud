@@ -22,6 +22,7 @@ install:
   - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 script:
+  - make -C opentracing-spring-cloud-starter
   - ./travis/publish.sh
 
 branches:

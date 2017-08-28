@@ -57,9 +57,11 @@
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
     <!-- plugins -->
+    <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
     <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
+    <version.maven-surefire-plugin>2.20</version.maven-surefire-plugin>
     <version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
