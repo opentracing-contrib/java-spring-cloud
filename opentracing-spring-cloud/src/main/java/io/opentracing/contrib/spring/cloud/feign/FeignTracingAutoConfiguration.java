@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
@@ -19,9 +20,11 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Pavol Loffay
+ * @author Eddú Meléndez
  */
 @Configuration
 @ConditionalOnClass(Client.class)
+@ConditionalOnBean(Tracer.class)
 @AutoConfigureBefore(FeignAutoConfiguration.class)
 public class FeignTracingAutoConfiguration {
 
