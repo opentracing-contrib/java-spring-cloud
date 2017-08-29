@@ -7,8 +7,9 @@ This repository provides OpenTracing instrumentation for Spring Cloud. It can be
 compatible implementation.
 
 It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud frameworks:
-* Spring Web
+* Spring Web (RestControllers, RestTemplates)
 * Feign, HystrixFeign
+* JMS
 
 ## Configuration
 Just add the following dependency in your pom.xml:
