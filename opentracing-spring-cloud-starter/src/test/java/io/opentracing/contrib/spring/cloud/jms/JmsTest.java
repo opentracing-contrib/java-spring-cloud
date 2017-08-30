@@ -26,7 +26,7 @@ import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {JmsTest.JmsEmbeddedArtemisConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JmsTest {

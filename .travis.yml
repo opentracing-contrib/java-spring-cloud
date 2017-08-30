@@ -21,9 +21,12 @@ install:
   # Override default travis to use the maven wrapper
   - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
-script:
-  - make -C opentracing-spring-cloud-starter
-  - ./travis/publish.sh
+jobs:
+  include:
+    - script: ./mvnw -f opentracing-spring-cloud-starter -Pnodeps test
+    - script: ./mvnw -f opentracing-spring-cloud-starter -Palldeps test
+    - stage: deploy
+      script: ./travis/publish.sh
 
 branches:
   except:

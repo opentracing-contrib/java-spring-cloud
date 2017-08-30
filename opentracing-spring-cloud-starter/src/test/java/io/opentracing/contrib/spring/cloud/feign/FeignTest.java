@@ -20,7 +20,7 @@ import io.opentracing.Tracer;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {FeignTest.FeignWithoutRibbonConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {
