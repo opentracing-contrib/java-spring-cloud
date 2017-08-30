@@ -6,10 +6,15 @@ Note: this is under an active development!
 This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
 compatible implementation.
 
-It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud frameworks:
+It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud and other integrations:
 * Spring Web (RestControllers, RestTemplates)
 * Feign, HystrixFeign
 * JMS
+
+## Comparison to `spring-cloud-sleuth`
+[spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) also instruments 
+a number of different frameworks. However, it is not currently possible to use it with the OpenTracing API, or
+wire different instrumentations that are not supported by sleuth.
 
 ## Configuration
 Just add the following dependency in your pom.xml:
