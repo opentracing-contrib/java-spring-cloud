@@ -10,6 +10,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Spring Web (RestControllers, RestTemplates)
 * Feign, HystrixFeign
 * JMS
+* JDBC
 
 ## Comparison to `spring-cloud-sleuth`
 [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) also instruments 
@@ -27,7 +28,7 @@ Just add the following dependency in your pom.xml:
 , and provide OpenTracing tracer bean:
 ```java
 @Bean
-public io.opnetracing.Tracer tracer() {
+public io.opentracing.Tracer tracer() {
   return new // tracer instance of your choice (Zipkin, Jaeger, LightStep)
 }
 ```

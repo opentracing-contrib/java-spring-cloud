@@ -46,6 +46,7 @@
     <version.io.opentracing>0.30.0</version.io.opentracing>
     <version.io.opentracing.contrib-opentracing-spring-web>0.0.8</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.3</version.io.opentracing.contrib-opentracing-spring-jms>
+    <version.io.opentracing.contrib-java-jdbc>0.0.3</version.io.opentracing.contrib-java-jdbc>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.0.5</version.io.github.openfeign.opentracing>
     <version.org.springframework.boot>1.4.1.RELEASE</version.org.springframework.boot>

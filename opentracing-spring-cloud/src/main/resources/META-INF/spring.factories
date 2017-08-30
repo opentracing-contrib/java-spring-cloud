@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.opentracing.contrib.spring.cloud.feign.FeignTracingAutoConfiguration,\
-io.opentracing.contrib.spring.cloud.jms.JmsAutoConfiguration
+io.opentracing.contrib.spring.cloud.jms.JmsAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.jdbc.JdbcAutoConfiguration

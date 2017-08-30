@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "opentracing.spring.cloud.jdbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable JDBC tracing.",
+      "defaultValue": true
+    },
+    {
       "name": "opentracing.spring.cloud.feign.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable Feign tracing.",
