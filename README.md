@@ -30,7 +30,7 @@ public io.opnetracing.Tracer tracer() {
 ## Development
 ```shell
 ./mvnw clean install
-make -C opentracing-spring-cloud-starter // to run dependency tests, a specific profile can be specified by PROFILES=nodeps
+make // to run tests including dependency tests, a specific profile can be specified by make PROFILES=nodeps
 ```
 
 ## Release

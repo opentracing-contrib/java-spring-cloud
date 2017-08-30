@@ -137,7 +137,8 @@ public class JmsArtemisManualServerTest {
 
     assertEquals(200, responseEntity.getStatusCode().value());
     List<MockSpan> spans = tracer.finishedSpans();
-    assertEquals(3, spans.size());  // it propagated over to @JmsListener
+    // HTTP server span, jms send, jms receive
+    assertEquals(3, spans.size());
     TestUtils.assertSameTraceId(spans);
   }
 }

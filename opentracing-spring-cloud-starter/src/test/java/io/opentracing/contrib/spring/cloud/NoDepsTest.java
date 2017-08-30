@@ -12,6 +12,14 @@ public class NoDepsTest {
     public void testNoFeign() {
         try {
             this.getClass().getClassLoader().loadClass("feign.Client");
+            Assert.fail();
+        } catch (ClassNotFoundException e) {
+        }
+    }
+
+    @Test
+    public void testNoHystrixFeign() {
+        try {
             this.getClass().getClassLoader().loadClass("feign.hystrix.HystrixFeign");
             Assert.fail();
         } catch (ClassNotFoundException e) {
@@ -22,6 +30,14 @@ public class NoDepsTest {
     public void testNoJMS() {
         try {
             this.getClass().getClassLoader().loadClass("javax.jms.Message");
+            Assert.fail();
+        } catch (ClassNotFoundException e) {
+        }
+    }
+
+    @Test
+    public void testNoJMSTemplate() {
+        try {
             this.getClass().getClassLoader().loadClass("org.springframework.jms.core.JmsTemplate");
             Assert.fail();
         } catch (ClassNotFoundException e) {
