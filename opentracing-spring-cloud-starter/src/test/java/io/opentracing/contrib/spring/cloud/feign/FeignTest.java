@@ -1,5 +1,6 @@
 package io.opentracing.contrib.spring.cloud.feign;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,7 +47,7 @@ public class FeignTest {
     static class FeignWithoutRibbonConfiguration {
         @Bean
         public Tracer tracer() {
-            return Mockito.spy(new MockTracer(new ThreadLocalActiveSpanSource(), MockTracer.Propagator.TEXT_MAP));
+            return new MockTracer(new ThreadLocalActiveSpanSource(), MockTracer.Propagator.TEXT_MAP);
         }
 
         @RequestMapping("/health")
@@ -59,11 +60,11 @@ public class FeignTest {
     private FeignInterface feignInterface;
 
     @Autowired
-    private Tracer tracer;
+    private MockTracer tracer;
 
     @Test
     public void testTraced() {
         feignInterface.hello();
-        verify(tracer, times(1)).buildSpan(Mockito.anyString());
+        assertEquals(1, tracer.finishedSpans().size());
     }
 }
