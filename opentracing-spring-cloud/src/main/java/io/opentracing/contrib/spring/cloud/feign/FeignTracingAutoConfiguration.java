@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(Client.class)
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureBefore(FeignAutoConfiguration.class)
+@ConditionalOnProperty(name = "opentracing.spring.cloud.feign.enabled", havingValue = "true", matchIfMissing = true)
 public class FeignTracingAutoConfiguration {
 
   @Autowired

@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.feign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Feign tracing.",
+      "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.jms.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable JMS tracing.",
+      "defaultValue": true
+    }
+  ]
+}
