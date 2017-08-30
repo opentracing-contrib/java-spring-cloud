@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * @author Pavol Loffay
  */
-public class TestNoDeps {
+public class NoDepsTest {
 
     @Test
     public void testNoFeign() {

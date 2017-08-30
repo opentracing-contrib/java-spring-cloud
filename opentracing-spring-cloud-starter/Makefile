@@ -1,5 +1,5 @@
 
-PROFILES = nodeps feign
+PROFILES = nodeps alldeps
 
 ALL:
 	@for profile in $(PROFILES) ; do \
