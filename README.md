@@ -13,7 +13,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 
 ## Comparison to `spring-cloud-sleuth`
 [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) also instruments 
-a number of different frameworks, however it is not currently possible to use it with the OpenTracing API, or
+a number of different frameworks. However, it is not currently possible to use it with the OpenTracing API, or
 wire different instrumentations that are not supported by sleuth.
 
 ## Configuration
