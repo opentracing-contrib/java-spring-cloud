@@ -35,6 +35,7 @@ public io.opnetracing.Tracer tracer() {
 ## Development
 ```shell
 ./mvnw clean install
+make // to run tests including dependency tests, a specific profile can be specified by make PROFILES=nodeps
 ```
 
 ## Release
