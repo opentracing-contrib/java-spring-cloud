@@ -1,6 +1,5 @@
 package io.opentracing.contrib.spring.cloud;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -8,39 +7,23 @@ import org.junit.Test;
  */
 public class NoDepsTest {
 
-    @Test
-    public void testNoFeign() {
-        try {
-            this.getClass().getClassLoader().loadClass("feign.Client");
-            Assert.fail();
-        } catch (ClassNotFoundException e) {
-        }
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoFeign() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("feign.Client");
     }
 
-    @Test
-    public void testNoHystrixFeign() {
-        try {
-            this.getClass().getClassLoader().loadClass("feign.hystrix.HystrixFeign");
-            Assert.fail();
-        } catch (ClassNotFoundException e) {
-        }
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoHystrixFeign() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("feign.hystrix.HystrixFeign");
     }
 
-    @Test
-    public void testNoJMS() {
-        try {
-            this.getClass().getClassLoader().loadClass("javax.jms.Message");
-            Assert.fail();
-        } catch (ClassNotFoundException e) {
-        }
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoJMS() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("javax.jms.Message");
     }
 
-    @Test
-    public void testNoJMSTemplate() {
-        try {
-            this.getClass().getClassLoader().loadClass("org.springframework.jms.core.JmsTemplate");
-            Assert.fail();
-        } catch (ClassNotFoundException e) {
-        }
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoJMSTemplate() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("org.springframework.jms.core.JmsTemplate");
     }
 }
