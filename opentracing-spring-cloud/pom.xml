@@ -52,6 +52,15 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-feign</artifactId>
       <optional>true</optional>
+      <exclusions>
+        <!-- TODO "explicit" artemis server fails with:
+          java.lang.NoSuchMethodError: io.netty.util.internal.PlatformDependent.setMemory(JJB)V
+        -->
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-common</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -153,13 +162,6 @@
       <groupId>io.github.openfeign</groupId>
       <artifactId>feign-okhttp</artifactId>
       <version>${version.io.github.openfeign-feign-okhttp}</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- pin the newest version, otherwise tests are failing -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${version.org.apache.httpcomponents.httpclient}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
