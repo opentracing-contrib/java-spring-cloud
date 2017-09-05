@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 public class TraceAsyncAspect {
 
     private static final String ASYNC_COMPONENT = "async";
-    public static final String TAG_LC = "localcomponent";
-    public static final String TAG_CLASS = "class";
-    public static final String TAG_METHOD = "method";
+    private static final String TAG_LC = "localcomponent";
+    private static final String TAG_CLASS = "class";
+    private static final String TAG_METHOD = "method";
 
     Tracer tracer;
     protected final ActiveSpan.Continuation continuation;
@@ -41,18 +41,18 @@ public class TraceAsyncAspect {
     @Around("execution (@org.springframework.scheduling.annotation.Async  * *.*(..))")
     public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
         this.continuation.activate();
-
-        Span span = this.tracer.buildSpan(operationName(pjp))
-            .asChildOf(this.activeSpan.context())
-            .startManual();
-
-        this.activeSpan.setTag(TAG_LC, ASYNC_COMPONENT);
-        this.activeSpan.setTag(TAG_CLASS, pjp.getTarget().getClass().getSimpleName());
-        this.activeSpan.setTag(TAG_METHOD, pjp.getSignature().getName());
+        Span span = null;
         try {
+            span = this.tracer.buildSpan(operationName(pjp))
+                .withTag(TAG_LC, ASYNC_COMPONENT)
+                .withTag(TAG_CLASS, pjp.getTarget().getClass().getSimpleName())
+                .withTag(TAG_METHOD, pjp.getSignature().getName())
+                .startManual();
             return pjp.proceed();
         } finally {
-            span.finish();
+            if (span != null) {
+                span.finish();
+            }
             activeSpan.close();
         }
     }
