@@ -14,7 +14,6 @@ import javax.jms.Message;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory;
-import org.apache.activemq.artemis.core.remoting.impl.netty.NettyAcceptorFactory;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.apache.activemq.artemis.core.server.impl.ActiveMQServerImpl;
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
@@ -73,10 +72,9 @@ public class JmsArtemisManualServerTest {
         org.apache.activemq.artemis.core.config.Configuration configuration = new ConfigurationImpl();
 
         HashSet<TransportConfiguration> transports = new HashSet<>();
-        transports.add(new TransportConfiguration(NettyAcceptorFactory.class.getName()));
+//        transports.add(new TransportConfiguration(NettyAcceptorFactory.class.getName()));
         transports.add(new TransportConfiguration(InVMAcceptorFactory.class.getName()));
         configuration.setAcceptorConfigurations(transports);
-
         configuration.setSecurityEnabled(false);
 
         File targetDir = new File(System.getProperty("user.dir") + "/target");
