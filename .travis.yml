@@ -23,11 +23,11 @@ install:
 
 jobs:
   include:
-    - stage: test: camden , dalston, classpath-nodeps, classpath-alldeps
+    - stage: test camden, dalston, classpath-nodeps, classpath-alldeps
       script: make default
     - script: make dalston
-    - script: ./mvnw -f opentracing-spring-cloud-starter -Pnodeps clean test
-    - script: ./mvnw -f opentracing-spring-cloud-starter -Palldeps clean test
+    - script: PROFILES=nodeps make classpath
+    - script: PROFILES=alldeps make classpath
     - stage: deploy
       script: ./travis/publish.sh
 
