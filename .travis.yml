@@ -23,7 +23,9 @@ install:
 
 jobs:
   include:
-    - script: ./mvnw clean test
+    - stage: test: camden , dalston, classpath-nodeps, classpath-alldeps
+      script: make default
+    - script: make dalston
     - script: ./mvnw -f opentracing-spring-cloud-starter -Pnodeps clean test
     - script: ./mvnw -f opentracing-spring-cloud-starter -Palldeps clean test
     - stage: deploy
