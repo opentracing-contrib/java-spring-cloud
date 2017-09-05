@@ -72,7 +72,6 @@ public class JmsArtemisManualServerTest {
         org.apache.activemq.artemis.core.config.Configuration configuration = new ConfigurationImpl();
 
         HashSet<TransportConfiguration> transports = new HashSet<>();
-//        transports.add(new TransportConfiguration(NettyAcceptorFactory.class.getName()));
         transports.add(new TransportConfiguration(InVMAcceptorFactory.class.getName()));
         configuration.setAcceptorConfigurations(transports);
         configuration.setSecurityEnabled(false);
