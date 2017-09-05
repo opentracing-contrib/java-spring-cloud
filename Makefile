@@ -1,7 +1,7 @@
 
 PROFILES = nodeps alldeps
 
-ALL: default dalston finchley classpath
+ALL: default dalston classpath
 
 default:
 	@./mvnw clean install
