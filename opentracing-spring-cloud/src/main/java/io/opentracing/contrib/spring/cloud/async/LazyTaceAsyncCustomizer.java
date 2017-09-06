@@ -7,6 +7,9 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 
 import java.util.concurrent.Executor;
 
+/**
+ * @author kameshs
+ */
 public class LazyTaceAsyncCustomizer extends AsyncConfigurerSupport {
 
     private final BeanFactory beanFactory;
