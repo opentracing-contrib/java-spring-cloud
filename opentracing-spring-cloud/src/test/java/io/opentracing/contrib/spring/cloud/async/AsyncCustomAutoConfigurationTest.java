@@ -16,7 +16,7 @@ public class AsyncCustomAutoConfigurationTest {
         AsyncCustomAutoConfiguration configuration = new AsyncCustomAutoConfiguration();
         Object bean = configuration.postProcessAfterInitialization(new Object(), "someBean");
 
-        then(bean).isNotInstanceOf(LazyTaceAsyncCustomizer.class);
+        then(bean).isNotInstanceOf(TraceableAsyncCustomizer.class);
     }
 
     @Test
@@ -24,6 +24,6 @@ public class AsyncCustomAutoConfigurationTest {
         AsyncCustomAutoConfiguration configuration = new AsyncCustomAutoConfiguration();
         Object bean = configuration.postProcessAfterInitialization(mock(AsyncConfigurer.class), "myAsync");
 
-        then(bean).isInstanceOf(LazyTaceAsyncCustomizer.class);
+        then(bean).isInstanceOf(TraceableAsyncCustomizer.class);
     }
 }

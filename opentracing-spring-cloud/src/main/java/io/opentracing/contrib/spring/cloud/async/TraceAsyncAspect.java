@@ -16,7 +16,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Method;
 
 /**
- * @author kamesh
+ * @author kameshsampath
  */
 @Aspect
 public class TraceAsyncAspect {
@@ -25,7 +25,7 @@ public class TraceAsyncAspect {
     private static final String TAG_CLASS = "class";
     private static final String TAG_METHOD = "method";
 
-    Tracer tracer;
+    protected final Tracer tracer;
 
     protected final Continuation continuation;
 
