@@ -1,8 +1,13 @@
-package io.opentracing.contrib.spring.cloud.async;
+package io.opentracing.contrib.spring.cloud.async.autoconfig;
 
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.cloud.async.ProxiedExecutor;
+import io.opentracing.contrib.spring.cloud.async.TraceAsyncAspect;
+import io.opentracing.contrib.spring.cloud.async.TraceableExecutor;
+import io.opentracing.contrib.spring.cloud.async.web.TracedAsyncWebAspect;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +25,11 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 @ConditionalOnBean(Tracer.class)
+@AutoConfigureAfter(AsyncCustomAutoConfiguration.class)
 public class AsyncDefaultAutoConfiguration {
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     @Configuration
     @ConditionalOnMissingBean(AsyncConfigurer.class)
@@ -39,12 +48,17 @@ public class AsyncDefaultAutoConfiguration {
     }
 
     @Bean
-    public TraceAsyncAspect traceAsyncAspect(Tracer tracer) {
-        return new TraceAsyncAspect(tracer);
+    public TraceAsyncAspect traceAsyncAspect() {
+        return new TraceAsyncAspect();
     }
 
     @Bean
-    public ProxiedExecutor proxiedExecutor(BeanFactory beanFactory){
+    public TracedAsyncWebAspect tracedAsyncWebAspect(){
+        return new TracedAsyncWebAspect();
+    }
+
+    @Bean
+    public ProxiedExecutor proxiedExecutor() {
         return new ProxiedExecutor(beanFactory);
     }
 }
