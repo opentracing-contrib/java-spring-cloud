@@ -10,6 +10,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 /**
@@ -74,8 +75,14 @@ public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
         this.delegate.shutdown();
     }
 
+    @Override
+    public ThreadPoolExecutor getThreadPoolExecutor() throws IllegalStateException {
+        return this.delegate.getThreadPoolExecutor();
+    }
+
     private ActiveSpan activeSpan() {
         return tracer.activeSpan();
     }
+
 
 }

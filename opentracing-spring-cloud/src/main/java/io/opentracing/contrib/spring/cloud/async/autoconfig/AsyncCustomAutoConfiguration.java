@@ -1,6 +1,6 @@
-package io.opentracing.contrib.spring.cloud.async;
+package io.opentracing.contrib.spring.cloud.async.autoconfig;
 
-import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.cloud.async.TraceableAsyncCustomizer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +34,5 @@ public class AsyncCustomAutoConfiguration implements BeanPostProcessor {
             return new TraceableAsyncCustomizer(this.beanFactory, configurer);
         }
         return bean;
-    }
-
-
-    protected Tracer getTracer(){
-        return  this.beanFactory.getBean(Tracer.class);
     }
 }
