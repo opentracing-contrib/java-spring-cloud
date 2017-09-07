@@ -58,6 +58,7 @@ public class ProxiedExecutor implements BeanPostProcessor {
                 throw e;
             }
         } else if (bean instanceof ThreadPoolTaskExecutor) {
+            LOGGER.info("Bean {} is an instance of ThreadPoolTaskExecutor ", bean);
             boolean clazzFinal = Modifier.isFinal(bean.getClass().getModifiers());
             boolean cglibProxy = !clazzFinal;
             ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;

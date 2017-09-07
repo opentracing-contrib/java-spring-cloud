@@ -1,5 +1,6 @@
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.contrib.spring.cloud.async.autoconfig.AsyncCustomAutoConfiguration;
 import org.junit.Test;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
