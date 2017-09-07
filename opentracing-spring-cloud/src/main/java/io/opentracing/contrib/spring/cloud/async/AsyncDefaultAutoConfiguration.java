@@ -3,10 +3,8 @@ package io.opentracing.contrib.spring.cloud.async;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -17,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.util.concurrent.Executor;
 
 /**
- * @author kamesh
+ * @author kameshsampath
  */
 @Configuration
 @EnableAsync
@@ -31,14 +29,22 @@ public class AsyncDefaultAutoConfiguration {
         @Autowired
         private BeanFactory beanFactory;
 
+        @Autowired
+        private Tracer tracer;
+
         @Override
         public Executor getAsyncExecutor() {
-            return new LazyTraceExecutor(this.beanFactory, new SimpleAsyncTaskExecutor());
+            return new TraceableExecutor(this.beanFactory, new SimpleAsyncTaskExecutor());
         }
     }
 
     @Bean
     public TraceAsyncAspect traceAsyncAspect(Tracer tracer) {
         return new TraceAsyncAspect(tracer);
+    }
+
+    @Bean
+    public ProxiedExecutor proxiedExecutor(BeanFactory beanFactory){
+        return new ProxiedExecutor(beanFactory);
     }
 }

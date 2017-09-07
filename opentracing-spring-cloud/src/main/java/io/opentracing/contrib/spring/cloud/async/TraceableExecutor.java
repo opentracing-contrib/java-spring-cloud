@@ -11,30 +11,28 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import java.util.concurrent.Executor;
 
 /**
- * @author kameshs
+ * @author kameshsampath
  */
-public class LazyTraceExecutor implements Executor {
+public class TraceableExecutor implements Executor {
 
     private final BeanFactory beanFactory;
     private final Executor delegate;
     private Tracer tracer;
 
-    public LazyTraceExecutor(BeanFactory beanFactory, Executor delegate) {
+    public TraceableExecutor(BeanFactory beanFactory, Executor delegate) {
         this.beanFactory = beanFactory;
         this.delegate = delegate;
+        this.tracer = beanFactory.getBean(Tracer.class);
     }
 
     @Override
     public void execute(Runnable command) {
-
-        if (this.tracer == null) {
-            try {
-                this.tracer = this.beanFactory.getBean(Tracer.class);
-            } catch (NoSuchBeanDefinitionException e) {
-                this.delegate.execute(command);
-                return;
-            }
-            this.delegate.execute(new TracedRunnable(command, this.tracer.activeSpan()));
+        try {
+            this.tracer = this.beanFactory.getBean(Tracer.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            this.delegate.execute(command);
+            return;
         }
+        this.delegate.execute(new TracedRunnable(command, this.tracer.activeSpan()));
     }
 }
