@@ -8,21 +8,21 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import java.util.concurrent.Executor;
 
 /**
- * @author kameshs
+ * @author kameshsampath
  */
-public class LazyTaceAsyncCustomizer extends AsyncConfigurerSupport {
+public class TraceableAsyncCustomizer extends AsyncConfigurerSupport {
 
     private final BeanFactory beanFactory;
     private final AsyncConfigurer delegate;
 
-    public LazyTaceAsyncCustomizer(BeanFactory beanFactory, AsyncConfigurer delegate) {
+    public TraceableAsyncCustomizer(BeanFactory beanFactory, AsyncConfigurer delegate) {
         this.beanFactory = beanFactory;
         this.delegate = delegate;
     }
 
     @Override
     public Executor getAsyncExecutor() {
-        return new LazyTraceExecutor(this.beanFactory, this.delegate.getAsyncExecutor());
+       return new TraceableExecutor(this.beanFactory, this.delegate.getAsyncExecutor());
     }
 
     @Override

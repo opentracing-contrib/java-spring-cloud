@@ -16,7 +16,7 @@ import static org.assertj.core.api.BDDAssertions.then;
  * @author kameshs
  */
 @RunWith(MockitoJUnitRunner.class)
-public class LazyTraceExecutorTest {
+public class TraceableExecutorTest {
 
     @Mock
     BeanFactory beanFactory;
@@ -25,12 +25,12 @@ public class LazyTraceExecutorTest {
     AsyncConfigurer asyncConfigurer;
 
     @InjectMocks
-    LazyTaceAsyncCustomizer lazyTaceAsyncCustomizer;
+    TraceableAsyncCustomizer traceableAsyncCustomizer;
 
     @Test
     public void should_wrap_async_executor_in_trace_version() throws Exception {
-        Executor executor = this.lazyTaceAsyncCustomizer.getAsyncExecutor();
+        Executor executor = this.traceableAsyncCustomizer.getAsyncExecutor();
 
-        then(executor).isExactlyInstanceOf(LazyTraceExecutor.class);
+        then(executor).isExactlyInstanceOf(TraceableExecutor.class);
     }
 }
