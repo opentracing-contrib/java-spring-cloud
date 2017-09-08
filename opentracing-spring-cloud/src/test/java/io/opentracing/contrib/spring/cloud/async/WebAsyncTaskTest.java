@@ -40,7 +40,7 @@ public class WebAsyncTaskTest {
         public WebAsyncTask<String> webAsyncTask() {
             return new WebAsyncTask<>(() -> {
                 mockTracer.buildSpan("foo").startManual().finish();
-                return "Hello!";
+                return "webAsyncTask";
             });
         }
 
@@ -48,7 +48,7 @@ public class WebAsyncTaskTest {
         public Callable<String> callable() {
             return () -> {
                 mockTracer.buildSpan("foo").startManual().finish();
-                return "hola!";
+                return "callable";
             };
         }
     }
