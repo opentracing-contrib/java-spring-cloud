@@ -68,6 +68,7 @@ public class TracedAsyncWebAspect {
         final WebAsyncTask<?> webAsyncTask = (WebAsyncTask<?>) proceedingJoinPoint.proceed();
         Field callableField = WebAsyncTask.class.getDeclaredField("callable");
         callableField.setAccessible(true);
+        // do not create span (there is always server span) just pass it to new thread.
         callableField.set(webAsyncTask, new TracedCallable<>(webAsyncTask.getCallable(), tracer.activeSpan()));
         return webAsyncTask;
     }
