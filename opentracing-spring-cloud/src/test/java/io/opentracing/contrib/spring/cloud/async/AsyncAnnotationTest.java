@@ -1,7 +1,5 @@
 package io.opentracing.contrib.spring.cloud.async;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -69,7 +67,7 @@ public class AsyncAnnotationTest {
             await().until(() -> fut.isDone());
             assertThat(fut.get()).isNotNull();
         }
-        await().atMost(10, SECONDS).until(() -> mockTracer.finishedSpans().size() == 3);
+        await().until(() -> mockTracer.finishedSpans().size() == 3);
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
         assertEquals(3, mockSpans.size());
