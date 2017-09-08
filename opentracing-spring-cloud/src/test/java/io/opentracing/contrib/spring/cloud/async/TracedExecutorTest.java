@@ -68,7 +68,7 @@ public class TracedExecutorTest {
                 mockTracer.buildSpan("child").start().finish();
                 return "ok";
             }, threadPoolExecutor);
-            completableFuture.get();
+            completableFuture.join();
         }
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
@@ -83,7 +83,7 @@ public class TracedExecutorTest {
                 mockTracer.buildSpan("child").start().finish();
                 return "ok";
             }, simpleAsyncExecutor);
-            completableFuture.get();
+            completableFuture.join();
         }
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
