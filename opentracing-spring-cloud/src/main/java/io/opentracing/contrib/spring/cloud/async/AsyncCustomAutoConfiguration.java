@@ -1,8 +1,6 @@
-package io.opentracing.contrib.spring.cloud.async.autoconfig;
+package io.opentracing.contrib.spring.cloud.async;
 
-import io.opentracing.contrib.spring.cloud.async.TraceableAsyncCustomizer;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -10,17 +8,23 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
+
 /**
- * @author kameshsampath
+ * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration Auto-configuration}
+ * that wraps an existing custom {@link AsyncConfigurer} in a {@link TracedAsyncConfigurer}
+ *
+ * @author Dave Syer
  */
 @Configuration
 @ConditionalOnBean(AsyncConfigurer.class)
 @AutoConfigureBefore(AsyncDefaultAutoConfiguration.class)
-//TODO when Scheduling is added we need to do @AutoConfigurationAfter here
+//TODO when Scheduling is added we need to do @AutoConfigurationAfter on it
 public class AsyncCustomAutoConfiguration implements BeanPostProcessor {
 
     @Autowired
-    private BeanFactory beanFactory;
+    private Tracer tracer;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -31,7 +35,7 @@ public class AsyncCustomAutoConfiguration implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof AsyncConfigurer) {
             AsyncConfigurer configurer = (AsyncConfigurer) bean;
-            return new TraceableAsyncCustomizer(this.beanFactory, configurer);
+            return new TracedAsyncConfigurer(tracer, configurer);
         }
         return bean;
     }

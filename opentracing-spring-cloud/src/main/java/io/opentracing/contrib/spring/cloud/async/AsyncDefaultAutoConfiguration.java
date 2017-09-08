@@ -1,11 +1,8 @@
-package io.opentracing.contrib.spring.cloud.async.autoconfig;
+package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.async.ProxiedExecutor;
-import io.opentracing.contrib.spring.cloud.async.TraceAsyncAspect;
-import io.opentracing.contrib.spring.cloud.async.TraceableExecutor;
-import io.opentracing.contrib.spring.cloud.async.web.TracedAsyncWebAspect;
-import org.springframework.beans.factory.BeanFactory;
+import io.opentracing.contrib.spring.cloud.async.instrument.TracedExecutor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -20,45 +17,49 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.util.concurrent.Executor;
 
 /**
- * @author kameshsampath
+ * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration Auto-configuration}
+ * enabling async related processing.
+ *
+ * @author Dave Syer
+ * @author Marcin Grzejszczak
+ *
+ * @see TracedExecutor
+ * @see TraceAsyncAspect
  */
-@Configuration
 @EnableAsync
+@Configuration
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureAfter(AsyncCustomAutoConfiguration.class)
 public class AsyncDefaultAutoConfiguration {
 
     @Autowired
-    private BeanFactory beanFactory;
+    private Tracer tracer;
 
     @Configuration
     @ConditionalOnMissingBean(AsyncConfigurer.class)
-    static class DefaultAsyncConfigurerSupport extends AsyncConfigurerSupport {
-
-        @Autowired
-        private BeanFactory beanFactory;
+    static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
 
         @Autowired
         private Tracer tracer;
 
         @Override
         public Executor getAsyncExecutor() {
-            return new TraceableExecutor(this.beanFactory, new SimpleAsyncTaskExecutor());
+            return new TracedExecutor(tracer, new SimpleAsyncTaskExecutor());
         }
     }
 
     @Bean
+    public ExecutorBeanPostProcessor executorBeanPostProcessor() {
+        return new ExecutorBeanPostProcessor(tracer);
+    }
+
+    @Bean
     public TraceAsyncAspect traceAsyncAspect() {
-        return new TraceAsyncAspect();
+        return new TraceAsyncAspect(tracer);
     }
 
     @Bean
-    public TracedAsyncWebAspect tracedAsyncWebAspect(){
-        return new TracedAsyncWebAspect();
-    }
-
-    @Bean
-    public ProxiedExecutor proxiedExecutor() {
-        return new ProxiedExecutor(beanFactory);
+    public TracedAsyncWebAspect tracedAsyncWebAspect() {
+        return new TracedAsyncWebAspect(tracer);
     }
 }
