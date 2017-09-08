@@ -1,6 +1,7 @@
 package io.opentracing.contrib.spring.cloud.async;
 
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -70,6 +71,7 @@ public class TracedExecutorTest {
             }, threadPoolExecutor);
             completableFuture.join();
         }
+        await().until(() -> mockTracer.finishedSpans().size() == 2);
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
         assertEquals(2, mockSpans.size());
@@ -85,6 +87,7 @@ public class TracedExecutorTest {
             }, simpleAsyncExecutor);
             completableFuture.join();
         }
+        await().until(() -> mockTracer.finishedSpans().size() == 2);
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
         assertEquals(2, mockSpans.size());
