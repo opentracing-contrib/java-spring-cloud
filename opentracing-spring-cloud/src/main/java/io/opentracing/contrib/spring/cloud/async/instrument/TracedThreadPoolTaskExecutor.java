@@ -1,16 +1,16 @@
-package io.opentracing.contrib.spring.cloud.async;
+package io.opentracing.contrib.spring.cloud.async.instrument;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedCallable;
 import io.opentracing.contrib.concurrent.TracedRunnable;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.util.concurrent.ListenableFuture;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 /**
@@ -18,14 +18,12 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
 
-    private BeanFactory beanFactory;
-    private Tracer tracer;
-    private ThreadPoolTaskExecutor delegate;
+    private final Tracer tracer;
+    private final ThreadPoolTaskExecutor delegate;
 
-    public TracedThreadPoolTaskExecutor(BeanFactory beanFactory, ThreadPoolTaskExecutor delegate) {
-        this.beanFactory = beanFactory;
+    public TracedThreadPoolTaskExecutor(Tracer tracer, ThreadPoolTaskExecutor delegate) {
+        this.tracer = tracer;
         this.delegate = delegate;
-        this.tracer = this.beanFactory.getBean(Tracer.class);
     }
 
     @Override
@@ -83,6 +81,4 @@ public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
     private ActiveSpan activeSpan() {
         return tracer.activeSpan();
     }
-
-
 }
