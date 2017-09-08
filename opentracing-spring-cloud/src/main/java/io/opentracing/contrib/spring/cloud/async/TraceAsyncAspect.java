@@ -9,9 +9,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.ActiveSpan.Continuation;
-import io.opentracing.NoopActiveSpanSource.NoopContinuation;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
@@ -28,17 +25,17 @@ public class TraceAsyncAspect {
     @Autowired
     private Tracer tracer;
 
-    private Continuation continuation;
-
     public TraceAsyncAspect(Tracer tracer) {
         this.tracer = tracer;
-        this.continuation = tracer.activeSpan() != null ? tracer.activeSpan().capture() : NoopContinuation.INSTANCE;
     }
 
     @Around("execution (@org.springframework.scheduling.annotation.Async * *.*(..))")
     public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
+        /**
+         * We create a span because parent span might be missing. E.g. method is invoked
+         */
         Span span = null;
-        try (ActiveSpan activeSpan = this.continuation.activate()) {
+        try {
             span = this.tracer.buildSpan(operationName(pjp))
                     .withTag(Tags.COMPONENT.getKey(), ASYNC_COMPONENT)
                     .withTag(TAG_CLASS, pjp.getTarget().getClass().getSimpleName())
@@ -46,9 +43,7 @@ public class TraceAsyncAspect {
                     .startManual();
             return pjp.proceed();
         } finally {
-            if (span != null) {
-                span.finish();
-            }
+            span.finish();
         }
     }
 
