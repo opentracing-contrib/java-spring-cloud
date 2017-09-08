@@ -17,13 +17,14 @@ import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigure
  * that wraps an existing custom {@link AsyncConfigurer} in a {@link TracedAsyncConfigurer}
  *
  * @author Dave Syer
+ * @author Pavol Loffay
  */
 @Configuration
 @ConditionalOnBean(AsyncConfigurer.class)
 //TODO when Scheduling is added we need to do @AutoConfigurationAfter on it
-@AutoConfigureBefore(AsyncDefaultAutoConfiguration.class)
+@AutoConfigureBefore(DefaultAsyncAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
-public class AsyncCustomAutoConfiguration implements BeanPostProcessor {
+public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor {
 
     @Autowired
     private Tracer tracer;

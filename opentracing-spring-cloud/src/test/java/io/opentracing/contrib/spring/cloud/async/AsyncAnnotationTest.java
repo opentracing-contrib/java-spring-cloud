@@ -33,17 +33,17 @@ public class AsyncAnnotationTest {
     @org.springframework.context.annotation.Configuration
     static class Configuration {
         @Bean
-        public DelayAsyncService delayAsyncService() {
-            return new DelayAsyncService();
+        public AsyncService delayAsyncService() {
+            return new AsyncService();
         }
     }
 
-    static class DelayAsyncService {
+    static class AsyncService {
         @Autowired
         private MockTracer tracer;
 
         @Async
-        public Future<String> fooFuture() {
+        public Future<String> fooAsync() {
             tracer.buildSpan("foo").start().finish();
             return new AsyncResult<>("whatever");
         }
@@ -52,7 +52,7 @@ public class AsyncAnnotationTest {
     @Autowired
     private MockTracer mockTracer;
     @Autowired
-    private DelayAsyncService delayAsyncService;
+    private AsyncService asyncService;
 
     @Before
     public void before() {
@@ -63,13 +63,14 @@ public class AsyncAnnotationTest {
     public void testAsyncTraceAndSpans() throws Exception {
         try (ActiveSpan span = mockTracer.buildSpan("bar")
                 .startActive()) {
-            Future<String> fut = delayAsyncService.fooFuture();
+            Future<String> fut = asyncService.fooAsync();
             await().until(() -> fut.isDone());
             assertThat(fut.get()).isNotNull();
         }
         await().until(() -> mockTracer.finishedSpans().size() == 3);
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
+        // parent span from test, span modelling @Async, span inside @Async
         assertEquals(3, mockSpans.size());
         TestUtils.assertSameTraceId(mockSpans);
     }

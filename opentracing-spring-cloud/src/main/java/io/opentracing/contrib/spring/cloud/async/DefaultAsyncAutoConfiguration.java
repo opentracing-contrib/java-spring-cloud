@@ -30,9 +30,9 @@ import io.opentracing.contrib.spring.cloud.async.instrument.TracedExecutor;
 @EnableAsync
 @Configuration
 @ConditionalOnBean(Tracer.class)
-@AutoConfigureAfter(AsyncCustomAutoConfiguration.class)
+@AutoConfigureAfter(CustomAsyncConfigurerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
-public class AsyncDefaultAutoConfiguration {
+public class DefaultAsyncAutoConfiguration {
 
     @Autowired
     private Tracer tracer;
