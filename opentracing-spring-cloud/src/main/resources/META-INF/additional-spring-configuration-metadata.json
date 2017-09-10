@@ -17,6 +17,13 @@
       "type": "java.lang.Boolean",
       "description": "Enable JMS tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.async.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable tracing for @Async, Executor and WebAsyncTask/Callable.",
+      "defaultValue": true
     }
+
   ]
 }
