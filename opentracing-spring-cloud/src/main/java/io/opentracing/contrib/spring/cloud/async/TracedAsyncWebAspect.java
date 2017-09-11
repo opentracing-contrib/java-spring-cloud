@@ -63,7 +63,7 @@ public class TracedAsyncWebAspect {
         return new TracedCallable<>(delegate, tracer.activeSpan());
     }
 
-       @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
+    @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
     public Object tracePublicWebAsyncTaskMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         final WebAsyncTask<?> webAsyncTask = (WebAsyncTask<?>) proceedingJoinPoint.proceed();
         Field callableField = WebAsyncTask.class.getDeclaredField("callable");

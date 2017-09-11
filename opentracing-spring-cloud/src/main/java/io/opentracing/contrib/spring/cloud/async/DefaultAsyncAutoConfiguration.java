@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.async.instrument.TracedExecutor;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 
 /**
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration Auto-configuration}
@@ -46,7 +46,7 @@ public class DefaultAsyncAutoConfiguration {
 
         @Override
         public Executor getAsyncExecutor() {
-            return new TracedExecutor(tracer, new SimpleAsyncTaskExecutor());
+            return new TracedExecutor(new SimpleAsyncTaskExecutor(), tracer);
         }
     }
 
