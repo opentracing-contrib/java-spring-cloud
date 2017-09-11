@@ -64,27 +64,20 @@ public class TracedExecutorTest {
 
     @Test
     public void testThreadPoolTracedExecutor() throws ExecutionException, InterruptedException {
-        try(ActiveSpan activeSpan = mockTracer.buildSpan("foo").startActive()) {
-            CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
-                mockTracer.buildSpan("child").start().finish();
-                return "ok";
-            }, threadPoolExecutor);
-            completableFuture.join();
-        }
-        await().until(() -> mockTracer.finishedSpans().size() == 2);
-
-        List<MockSpan> mockSpans = mockTracer.finishedSpans();
-        assertEquals(2, mockSpans.size());
-        TestUtils.assertSameTraceId(mockSpans);
+        testTracedExecutor(threadPoolExecutor);
     }
 
     @Test
     public void testSimpleTracedExecutor() throws ExecutionException, InterruptedException {
+        testTracedExecutor(simpleAsyncExecutor);
+    }
+
+    private void testTracedExecutor(Executor executor) {
         try(ActiveSpan activeSpan = mockTracer.buildSpan("foo").startActive()) {
             CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
                 mockTracer.buildSpan("child").start().finish();
                 return "ok";
-            }, simpleAsyncExecutor);
+            }, executor);
             completableFuture.join();
         }
         await().until(() -> mockTracer.finishedSpans().size() == 2);
