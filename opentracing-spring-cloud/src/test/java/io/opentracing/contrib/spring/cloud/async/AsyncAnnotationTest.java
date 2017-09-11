@@ -23,6 +23,7 @@ import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 
 /**
  * @author kameshs
@@ -80,18 +81,24 @@ public class AsyncAnnotationTest {
         // parent span from test, span modelling @Async, span inside @Async
         assertEquals(3, mockSpans.size());
         TestUtils.assertSameTraceId(mockSpans);
+        MockSpan asyncSpan = mockSpans.get(1);
+        assertEquals(3, asyncSpan.tags().size());
+        assertEquals(TraceAsyncAspect.TAG_COMPONENT, asyncSpan.tags().get(Tags.COMPONENT.getKey()));
+        assertEquals("fooAsync", asyncSpan.tags().get(TraceAsyncAspect.TAG_METHOD));
+        assertEquals(AsyncService.class.getSimpleName(), asyncSpan.tags().get(TraceAsyncAspect.TAG_CLASS));
     }
 
     @Test
     public void testExceptionThrown() {
         try {
             asyncService.fooException();
-        } catch (Exception ex) {
-        }
+        } catch (Exception ex) {}
         await().until(() -> mockTracer.finishedSpans().size() == 1);
 
         List<MockSpan> mockSpans = mockTracer.finishedSpans();
         assertEquals(1, mockSpans.size());
+        assertEquals(4, mockSpans.get(0).tags().size());
+        assertEquals(Boolean.TRUE, mockSpans.get(0).tags().get(Tags.ERROR.getKey()));
         assertEquals(1, mockSpans.get(0).logEntries().size());
         assertEquals("error", mockSpans.get(0).logEntries().get(0).fields().get("event"));
         assertTrue(mockSpans.get(0).logEntries().get(0).fields().get("error.object") instanceof RuntimeException);
