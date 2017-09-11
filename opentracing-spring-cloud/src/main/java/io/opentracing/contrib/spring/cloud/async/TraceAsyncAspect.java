@@ -1,6 +1,8 @@
 package io.opentracing.contrib.spring.cloud.async;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -42,6 +44,10 @@ public class TraceAsyncAspect {
                     .withTag(TAG_METHOD, pjp.getSignature().getName())
                     .startManual();
             return pjp.proceed();
+        } catch (Exception ex) {
+            Tags.ERROR.set(span, Boolean.TRUE);
+            span.log(exceptionLogs(ex));
+            throw ex;
         } finally {
             span.finish();
         }
@@ -56,5 +62,12 @@ public class TraceAsyncAspect {
         Method method = signature.getMethod();
         return ReflectionUtils
                 .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
+    }
+
+    private static Map<String, Object> exceptionLogs(Exception ex) {
+        Map<String, Object> exceptionLogs = new LinkedHashMap<>(2);
+        exceptionLogs.put("event", Tags.ERROR.getKey());
+        exceptionLogs.put("error.object", ex);
+        return exceptionLogs;
     }
 }

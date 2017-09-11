@@ -3,6 +3,7 @@ package io.opentracing.contrib.spring.cloud.async;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -47,6 +48,12 @@ public class AsyncAnnotationTest {
             tracer.buildSpan("foo").start().finish();
             return new AsyncResult<>("whatever");
         }
+
+        @Async
+        public Future<String> fooException() {
+            throw new RuntimeException();
+        }
+
     }
 
     @Autowired
@@ -73,5 +80,20 @@ public class AsyncAnnotationTest {
         // parent span from test, span modelling @Async, span inside @Async
         assertEquals(3, mockSpans.size());
         TestUtils.assertSameTraceId(mockSpans);
+    }
+
+    @Test
+    public void testExceptionThrown() {
+        try {
+            asyncService.fooException();
+        } catch (Exception ex) {
+        }
+        await().until(() -> mockTracer.finishedSpans().size() == 1);
+
+        List<MockSpan> mockSpans = mockTracer.finishedSpans();
+        assertEquals(1, mockSpans.size());
+        assertEquals(1, mockSpans.get(0).logEntries().size());
+        assertEquals("error", mockSpans.get(0).logEntries().get(0).fields().get("event"));
+        assertTrue(mockSpans.get(0).logEntries().get(0).fields().get("error.object") instanceof RuntimeException);
     }
 }
