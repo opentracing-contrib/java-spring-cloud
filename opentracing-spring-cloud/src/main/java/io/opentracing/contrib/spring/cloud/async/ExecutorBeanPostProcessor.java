@@ -32,7 +32,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.ReflectionUtils;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.async.instrument.TracedExecutor;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
 
 /**
@@ -114,7 +114,7 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     }
 
     Executor tracedExecutor(Tracer tracer, T executor) {
-        return new TracedExecutor(tracer, executor);
+        return new TracedExecutor(executor, tracer);
     }
 }
 

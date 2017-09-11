@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 
 import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 
 /**
  * @author kameshsampath
@@ -23,7 +24,7 @@ public class TracedAsyncConfigurer extends AsyncConfigurerSupport {
 
     @Override
     public Executor getAsyncExecutor() {
-       return new TracedExecutor(this.tracer, this.delegate.getAsyncExecutor());
+       return new TracedExecutor(this.delegate.getAsyncExecutor(), this.tracer);
     }
 
     @Override
