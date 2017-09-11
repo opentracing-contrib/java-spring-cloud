@@ -20,9 +20,9 @@ import io.opentracing.tag.Tags;
  */
 @Aspect
 public class TraceAsyncAspect {
-    private static final String ASYNC_COMPONENT = "async";
-    private static final String TAG_CLASS = "class";
-    private static final String TAG_METHOD = "method";
+    static final String TAG_COMPONENT = "async";
+    static final String TAG_CLASS = "class";
+    static final String TAG_METHOD = "method";
 
     @Autowired
     private Tracer tracer;
@@ -39,7 +39,7 @@ public class TraceAsyncAspect {
         Span span = null;
         try {
             span = this.tracer.buildSpan(operationName(pjp))
-                    .withTag(Tags.COMPONENT.getKey(), ASYNC_COMPONENT)
+                    .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
                     .withTag(TAG_CLASS, pjp.getTarget().getClass().getSimpleName())
                     .withTag(TAG_METHOD, pjp.getSignature().getName())
                     .startManual();
