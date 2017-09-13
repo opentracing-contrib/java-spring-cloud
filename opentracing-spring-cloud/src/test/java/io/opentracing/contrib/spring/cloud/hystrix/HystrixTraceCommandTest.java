@@ -24,9 +24,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfigurati
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -39,10 +37,8 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(classes = {HystrixTraceCommandTest.TestConfig.class})
 @RunWith(SpringRunner.class)
-@DirtiesContext
 public class HystrixTraceCommandTest {
 
-    @EnableAspectJAutoProxy(proxyTargetClass = true)
     @EnableHystrix
     @Configuration
     //This is required for circuit breaker tests to work correctly
@@ -69,31 +65,25 @@ public class HystrixTraceCommandTest {
         public String sayHello() {
             Span span = mockTracer.buildSpan("sayHello")
                     .startManual();
-
             span.finish();
             return "Hello!!!";
         }
 
         @HystrixCommand(fallbackMethod = "defaultGreeting")
-        public String sayHelloToUser(String user) {
+        public String alwaysFail(String user) {
             Span span = mockTracer.buildSpan("sayHelloToUser")
                     .startManual();
-            try {
-                throw new IllegalStateException("Thrown Purposefully");
-            } finally {
-                span.finish();
-            }
+            span.finish();
+            throw new IllegalStateException("Thrown Purposefully");
+
         }
 
         public String defaultGreeting(String user) {
             Span span = mockTracer.buildSpan("sayHelloToUser")
                     .withTag("myTag", "fallback")
                     .startManual();
-            try {
-                return "Hi(fallback)";
-            } finally {
-                span.finish();
-            }
+            span.finish();
+            return "Hi(fallback)";
         }
     }
 
@@ -133,7 +123,8 @@ public class HystrixTraceCommandTest {
     public void test_with_circuit_breaker() {
         try (ActiveSpan activeSpan = mockTracer.buildSpan("test_with_circuit_breaker")
                 .startActive()) {
-            String response = greetingService.sayHelloToUser("tomandjerry");
+
+            String response = greetingService.alwaysFail("tomandjerry");
             assertThat(response).isNotNull();
             await().until(() -> mockTracer.finishedSpans().size() == 2);
 
