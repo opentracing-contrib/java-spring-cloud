@@ -17,55 +17,50 @@
 package io.opentracing.contrib.spring.cloud.hystrix;
 
 import com.netflix.hystrix.HystrixCommand;
-import io.opentracing.Span;
+import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
 /**
  * Abstraction over {@code HystrixCommand} that wraps command execution with Trace setting
  *
- * @see HystrixCommand
- * @see Tracer
- *
  * @author Tomasz Nurkiewicz, 4financeIT
  * @author Marcin Grzejszczak, 4financeIT
  * @author Spencer Gibb
+ * @author kameshsampath - Modifications from original to suit OpenTracing
+ * @see HystrixCommand
+ * @see Tracer
  * @since 1.0.0
- *
- * NOTE: Modified original by @author kameshsampath to suit OpenTracing
+ * <p>
  */
 public abstract class TraceCommand<R> extends HystrixCommand<R> {
 
-	private static final String HYSTRIX_COMPONENT = "hystrix";
-	private  static final String COMMAND_KEY = "commandKey";
-	private static final String COMMAND_GROUP = "commandGroup";
-	private static final String THREAD_POOL_KEY = "threadPoolKey";
+    private static final String HYSTRIX_COMPONENT = "hystrix";
+    private static final String COMMAND_KEY = "commandKey";
+    private static final String COMMAND_GROUP = "commandGroup";
+    private static final String THREAD_POOL_KEY = "threadPoolKey";
 
-	private Span span;
-	private final Tracer tracer;
+    private final Tracer tracer;
 
-	public TraceCommand(Tracer tracer, Setter setter) {
-		super(setter);
-		this.tracer = tracer;
-	}
+    public TraceCommand(Tracer tracer, Setter setter) {
+        super(setter);
+        this.tracer = tracer;
+    }
 
-	@Override
-	protected R run() throws Exception {
-		String commandKeyName = getCommandKey().name();
+    @Override
+    protected R run() throws Exception {
 
-		this.span = this.tracer.buildSpan(commandKeyName)
-				.withTag(Tags.COMPONENT.getKey(),HYSTRIX_COMPONENT)
-				.withTag(COMMAND_KEY, commandKeyName)
-				.withTag(COMMAND_GROUP, commandGroup.name())
-				.withTag(THREAD_POOL_KEY, threadPoolKey.name())
-				.startManual();
+        String commandKeyName = getCommandKey().name();
 
-		try {
-			return doRun();
-		} finally {
-			this.span.finish();
-		}
-	}
+        try (ActiveSpan span = this.tracer.buildSpan(commandKeyName)
+                .withTag(Tags.COMPONENT.getKey(), HYSTRIX_COMPONENT)
+                .withTag(COMMAND_KEY, commandKeyName)
+                .withTag(COMMAND_GROUP, commandGroup.name())
+                .withTag(THREAD_POOL_KEY, threadPoolKey.name())
+                .startActive()) {
+            return doRun();
+        }
+    }
 
-	public abstract R doRun() throws Exception;
+    public abstract R doRun() throws Exception;
 }

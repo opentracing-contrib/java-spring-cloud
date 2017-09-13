@@ -42,154 +42,83 @@ import java.util.concurrent.TimeUnit;
  * already running before the command was executed.
  *
  * @author Marcin Grzejszczak
- * NOTE: Modified original by @author kameshsampath to suit OpenTracing
+ * @author kameshsampath - Modifications from original to suit OpenTracing
  */
 public class SleuthHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
-	private static final String HYSTRIX_COMPONENT = "hystrix";
-	private static final Log log = LogFactory
-			.getLog(SleuthHystrixConcurrencyStrategy.class);
+    private static final Log log = LogFactory
+            .getLog(SleuthHystrixConcurrencyStrategy.class);
 
-	private final Tracer tracer;
-	private HystrixConcurrencyStrategy delegate;
+    private final Tracer tracer;
+    private HystrixConcurrencyStrategy delegate;
 
-	public SleuthHystrixConcurrencyStrategy(Tracer tracer) {
-		this.tracer = tracer;
-		try {
-			this.delegate = HystrixPlugins.getInstance().getConcurrencyStrategy();
-			if (this.delegate instanceof SleuthHystrixConcurrencyStrategy) {
-				// Welcome to singleton hell...
-				return;
-			}
-			HystrixCommandExecutionHook commandExecutionHook = HystrixPlugins
-					.getInstance().getCommandExecutionHook();
-			HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance()
-					.getEventNotifier();
-			HystrixMetricsPublisher metricsPublisher = HystrixPlugins.getInstance()
-					.getMetricsPublisher();
-			HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance()
-					.getPropertiesStrategy();
-			logCurrentStateOfHysrixPlugins(eventNotifier, metricsPublisher,
-					propertiesStrategy);
-			HystrixPlugins.reset();
-			HystrixPlugins.getInstance().registerConcurrencyStrategy(this);
-			HystrixPlugins.getInstance()
-					.registerCommandExecutionHook(commandExecutionHook);
-			HystrixPlugins.getInstance().registerEventNotifier(eventNotifier);
-			HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
-			HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
-		}
-		catch (Exception e) {
-			log.error("Failed to register Sleuth Hystrix Concurrency Strategy", e);
-		}
-	}
+    public SleuthHystrixConcurrencyStrategy(Tracer tracer) {
+        this.tracer = tracer;
+        try {
+            this.delegate = HystrixPlugins.getInstance().getConcurrencyStrategy();
+            if (this.delegate instanceof SleuthHystrixConcurrencyStrategy) {
+                // Welcome to singleton hell...
+                return;
+            }
+            HystrixCommandExecutionHook commandExecutionHook = HystrixPlugins
+                    .getInstance().getCommandExecutionHook();
+            HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance()
+                    .getEventNotifier();
+            HystrixMetricsPublisher metricsPublisher = HystrixPlugins.getInstance()
+                    .getMetricsPublisher();
+            HystrixPropertiesStrategy propertiesStrategy = HystrixPlugins.getInstance()
+                    .getPropertiesStrategy();
+            logCurrentStateOfHysrixPlugins(eventNotifier, metricsPublisher,
+                    propertiesStrategy);
+            HystrixPlugins.reset();
+            HystrixPlugins.getInstance().registerConcurrencyStrategy(this);
+            HystrixPlugins.getInstance()
+                    .registerCommandExecutionHook(commandExecutionHook);
+            HystrixPlugins.getInstance().registerEventNotifier(eventNotifier);
+            HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
+            HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
+        } catch (Exception e) {
+            log.error("Failed to register Sleuth Hystrix Concurrency Strategy", e);
+        }
+    }
 
-	private void logCurrentStateOfHysrixPlugins(HystrixEventNotifier eventNotifier,
-			HystrixMetricsPublisher metricsPublisher,
-			HystrixPropertiesStrategy propertiesStrategy) {
-		if (log.isDebugEnabled()) {
-			log.debug("Current Hystrix plugins configuration is [" + "concurrencyStrategy ["
-					+ this.delegate + "]," + "eventNotifier [" + eventNotifier + "],"
-					+ "metricPublisher [" + metricsPublisher + "]," + "propertiesStrategy ["
-					+ propertiesStrategy + "]," + "]");
-			log.debug("Registering Sleuth Hystrix Concurrency Strategy.");
-		}
-	}
+    private void logCurrentStateOfHysrixPlugins(HystrixEventNotifier eventNotifier,
+                                                HystrixMetricsPublisher metricsPublisher,
+                                                HystrixPropertiesStrategy propertiesStrategy) {
+        if (log.isDebugEnabled()) {
+            log.debug("Current Hystrix plugins configuration is [" + "concurrencyStrategy ["
+                    + this.delegate + "]," + "eventNotifier [" + eventNotifier + "],"
+                    + "metricPublisher [" + metricsPublisher + "]," + "propertiesStrategy ["
+                    + propertiesStrategy + "]," + "]");
+            log.debug("Registering Sleuth Hystrix Concurrency Strategy.");
+        }
+    }
 
-	@Override
-	public <T> Callable<T> wrapCallable(Callable<T> callable) {
-		//TODO: Cleanup Since TracedCallable does everything needed its not needed to wrap it in another callable
-//		if (callable instanceof HystrixTraceCallable) {
-//			return callable;
-//		}
-//		Callable<T> wrappedCallable = this.delegate != null
-//				? this.delegate.wrapCallable(callable) : callable;
-//		if (wrappedCallable instanceof HystrixTraceCallable) {
-//			return wrappedCallable;
-//		}
+    @Override
+    public <T> Callable<T> wrapCallable(Callable<T> callable) {
+        return new TracedCallable<>(callable, tracer.activeSpan());
+    }
 
-		return new TracedCallable<>(callable,tracer.activeSpan());
-	}
-
-	@Override
-	public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey,
-			HystrixProperty<Integer> corePoolSize,
-			HystrixProperty<Integer> maximumPoolSize,
-			HystrixProperty<Integer> keepAliveTime, TimeUnit unit,
-			BlockingQueue<Runnable> workQueue) {
-		return this.delegate.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize,
-				keepAliveTime, unit, workQueue);
-	}
+    @Override
+    public ThreadPoolExecutor getThreadPool(HystrixThreadPoolKey threadPoolKey,
+                                            HystrixProperty<Integer> corePoolSize,
+                                            HystrixProperty<Integer> maximumPoolSize,
+                                            HystrixProperty<Integer> keepAliveTime, TimeUnit unit,
+                                            BlockingQueue<Runnable> workQueue) {
+        return this.delegate.getThreadPool(threadPoolKey, corePoolSize, maximumPoolSize,
+                keepAliveTime, unit, workQueue);
+    }
 
 
-	@Override
-	public BlockingQueue<Runnable> getBlockingQueue(int maxQueueSize) {
-		return this.delegate.getBlockingQueue(maxQueueSize);
-	}
+    @Override
+    public BlockingQueue<Runnable> getBlockingQueue(int maxQueueSize) {
+        return this.delegate.getBlockingQueue(maxQueueSize);
+    }
 
-	@Override
-	public <T> HystrixRequestVariable<T> getRequestVariable(
-			HystrixRequestVariableLifecycle<T> rv) {
-		return this.delegate.getRequestVariable(rv);
-	}
+    @Override
+    public <T> HystrixRequestVariable<T> getRequestVariable(
+            HystrixRequestVariableLifecycle<T> rv) {
+        return this.delegate.getRequestVariable(rv);
+    }
 
-	/* //TODO: Cleanup revisit - guess this is not needed will remove it off once @Pavol feels its good to use TraceableCallable
-	static class HystrixTraceCallable<S> implements Callable<S> {
-
-		private static final Log log = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-
-		private final Tracer tracer;
-		private final Callable<S> callable;
-
-		public HystrixTraceCallable(Tracer tracer,Callable<S> callable) {
-			this.tracer = tracer;
-			this.callable = callable;
-		}
-
-		@Override
-		public S call() throws Exception {
-			Span span = null;
-			boolean created = false;
-			if (span != null) {
-				span = this.tracer.continueSpan(span);
-				if (log.isDebugEnabled()) {
-					log.debug("Continuing span " + span);
-				}
-			}
-			else {
-				span = this.tracer.createSpan(HYSTRIX_COMPONENT);
-				created = true;
-				if (log.isDebugEnabled()) {
-					log.debug("Creating new span " + span);
-				}
-			}
-			if (!span.tags().containsKey(Span.SPAN_LOCAL_COMPONENT_TAG_NAME)) {
-				this.tracer.addTag(Span.SPAN_LOCAL_COMPONENT_TAG_NAME, HYSTRIX_COMPONENT);
-			}
-			String asyncKey = this.traceKeys.getAsync().getPrefix()
-					+ this.traceKeys.getAsync().getThreadNameKey();
-			if (!span.tags().containsKey(asyncKey)) {
-				this.tracer.addTag(asyncKey, Thread.currentThread().getName());
-			}
-			try {
-				return this.callable.call();
-			}
-			finally {
-				if (created) {
-					if (log.isDebugEnabled()) {
-						log.debug("Closing span since it was created" + span);
-					}
-					this.tracer.close(span);
-				}
-				else if(this.tracer.isTracing()) {
-					if (log.isDebugEnabled()) {
-						log.debug("Detaching span since it was continued " + span);
-					}
-					this.tracer.detach(span);
-				}
-			}
-		}
-
-	}
-	*/
 }

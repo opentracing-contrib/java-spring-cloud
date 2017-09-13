@@ -17,16 +17,16 @@ import com.netflix.hystrix.HystrixCommand;
  * that registers a custom Sleuth {@link com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy}.
  *
  * @author Marcin Grzejszczak
+ * @author kameshsampath - Modifications from original to suit OpenTracing
  * @see SleuthHystrixConcurrencyStrategy
  *
  *
- * NOTE: Modified original by @author kameshsampath to suit OpenTracing
  */
 @Configuration
 @AutoConfigureAfter({ServerTracingAutoConfiguration.class, TracerAutoConfiguration.class})
 @ConditionalOnClass(HystrixCommand.class)
 @ConditionalOnBean(Tracer.class)
-@ConditionalOnProperty(value = "spring.sleuth.hystrix.strategy.enabled", matchIfMissing = true)
+@ConditionalOnProperty(value = "opentracing.spring.cloud.hystrix.strategy.enabled", matchIfMissing = true)
 public class SleuthHystrixAutoConfiguration {
 
     @Bean
