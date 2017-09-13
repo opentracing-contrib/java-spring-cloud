@@ -33,16 +33,16 @@ import io.opentracing.tag.Tags;
  * @since 1.0.0
  * <p>
  */
-public abstract class TraceCommand<R> extends HystrixCommand<R> {
+public abstract class HystrixTraceCommand<R> extends HystrixCommand<R> {
 
-    private static final String HYSTRIX_COMPONENT = "hystrix";
-    private static final String COMMAND_KEY = "commandKey";
-    private static final String COMMAND_GROUP = "commandGroup";
-    private static final String THREAD_POOL_KEY = "threadPoolKey";
+    private static final String TAG_HYSTRIX_COMPONENT = "hystrix";
+    private static final String TAG_COMMAND_KEY = "commandKey";
+    private static final String TAG_COMMAND_GROUP = "commandGroup";
+    private static final String TAG_THREAD_POOL_KEY = "threadPoolKey";
 
     private final Tracer tracer;
 
-    public TraceCommand(Tracer tracer, Setter setter) {
+    public HystrixTraceCommand(Tracer tracer, Setter setter) {
         super(setter);
         this.tracer = tracer;
     }
@@ -53,10 +53,10 @@ public abstract class TraceCommand<R> extends HystrixCommand<R> {
         String commandKeyName = getCommandKey().name();
 
         try (ActiveSpan span = this.tracer.buildSpan(commandKeyName)
-                .withTag(Tags.COMPONENT.getKey(), HYSTRIX_COMPONENT)
-                .withTag(COMMAND_KEY, commandKeyName)
-                .withTag(COMMAND_GROUP, commandGroup.name())
-                .withTag(THREAD_POOL_KEY, threadPoolKey.name())
+                .withTag(Tags.COMPONENT.getKey(), TAG_HYSTRIX_COMPONENT)
+                .withTag(TAG_COMMAND_KEY, commandKeyName)
+                .withTag(TAG_COMMAND_GROUP, commandGroup.name())
+                .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
                 .startActive()) {
             return doRun();
         }

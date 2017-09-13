@@ -26,6 +26,7 @@ import com.netflix.hystrix.strategy.executionhook.HystrixCommandExecutionHook;
 import com.netflix.hystrix.strategy.metrics.HystrixMetricsPublisher;
 import com.netflix.hystrix.strategy.properties.HystrixPropertiesStrategy;
 import com.netflix.hystrix.strategy.properties.HystrixProperty;
+import feign.opentracing.hystrix.TracingConcurrencyStrategy;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedCallable;
 import org.apache.commons.logging.Log;
@@ -44,19 +45,20 @@ import java.util.concurrent.TimeUnit;
  * @author Marcin Grzejszczak
  * @author kameshsampath - Modifications from original to suit OpenTracing
  */
-public class SleuthHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
+public class HystrixTracingConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
     private static final Log log = LogFactory
-            .getLog(SleuthHystrixConcurrencyStrategy.class);
+            .getLog(HystrixTracingConcurrencyStrategy.class);
 
     private final Tracer tracer;
     private HystrixConcurrencyStrategy delegate;
 
-    public SleuthHystrixConcurrencyStrategy(Tracer tracer) {
+    public HystrixTracingConcurrencyStrategy(Tracer tracer) {
         this.tracer = tracer;
+        TracingConcurrencyStrategy.register(tracer);
         try {
             this.delegate = HystrixPlugins.getInstance().getConcurrencyStrategy();
-            if (this.delegate instanceof SleuthHystrixConcurrencyStrategy) {
+            if (this.delegate instanceof HystrixTracingConcurrencyStrategy) {
                 // Welcome to singleton hell...
                 return;
             }
@@ -78,7 +80,7 @@ public class SleuthHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy
             HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
             HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);
         } catch (Exception e) {
-            log.error("Failed to register Sleuth Hystrix Concurrency Strategy", e);
+            log.error("Failed to register OpenTracing Hystrix Concurrency Strategy", e);
         }
     }
 
@@ -90,7 +92,7 @@ public class SleuthHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy
                     + this.delegate + "]," + "eventNotifier [" + eventNotifier + "],"
                     + "metricPublisher [" + metricsPublisher + "]," + "propertiesStrategy ["
                     + propertiesStrategy + "]," + "]");
-            log.debug("Registering Sleuth Hystrix Concurrency Strategy.");
+            log.debug("Registering OpenTracing Hystrix Concurrency Strategy.");
         }
     }
 
