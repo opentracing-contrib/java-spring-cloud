@@ -3,17 +3,13 @@ package io.opentracing.contrib.spring.cloud.hystrix;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.strategy.HystrixPlugins;
 import io.opentracing.ActiveSpan;
-import io.opentracing.Span;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.ThreadLocalActiveSpanSource;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +64,13 @@ public class HystrixTraceCommandTest {
         }
 
         @HystrixCommand(fallbackMethod = "defaultGreeting")
-        public String alwaysFail(String user) {
+        public String alwaysFail() {
             tracer.buildSpan("alwaysFail").start().finish();
             throw new IllegalStateException("Thrown Purposefully");
 
         }
 
-        public String defaultGreeting(String user) {
+        public String defaultGreeting() {
             tracer.buildSpan("defaultGreeting").withTag("fallback", "yes").start().finish();
             return "Hi(fallback)";
         }
@@ -85,12 +81,6 @@ public class HystrixTraceCommandTest {
 
     @Autowired
     private GreetingService greetingService;
-
-    @BeforeClass
-    @AfterClass
-    public static void reset() {
-        HystrixPlugins.reset();
-    }
 
     @Before
     public void before() {
@@ -105,7 +95,6 @@ public class HystrixTraceCommandTest {
             String response = greetingService.sayHello();
             assertThat(response).isNotNull();
         }
-
 
         /**
          * 2 spans totally
@@ -128,7 +117,7 @@ public class HystrixTraceCommandTest {
     public void test_with_circuit_breaker() {
         try (ActiveSpan span = mockTracer.buildSpan("test_with_circuit_breaker")
                 .startActive()) {
-            String response = greetingService.alwaysFail("foo");
+            String response = greetingService.alwaysFail();
             assertThat(response).isNotNull();
         }
 
@@ -148,7 +137,7 @@ public class HystrixTraceCommandTest {
         MockSpan hystrixSpan = mockSpans.get(1);
         assertThat(hystrixSpan.tags()).isNotEmpty();
         //one thats added in the defaultGreeting method which is a fallback should have the custom tag added
-        assertThat(hystrixSpan.tags()).containsValues("yes");
+        assertThat(hystrixSpan.tags().get("fallback")).isEqualTo("yes");
     }
 
     @Test
@@ -165,7 +154,6 @@ public class HystrixTraceCommandTest {
                 @Override
                 public Void doRun() throws Exception {
                     mockTracer.buildSpan("doRun").start().finish();
-                    System.out.println("Hello World!");
                     return null;
                 }
             }.execute();
