@@ -27,4 +27,6 @@ hs_err_pid*
 .project
 .classpath
 .settings
-
+# others general
+.gitkeep
+.editorconfig

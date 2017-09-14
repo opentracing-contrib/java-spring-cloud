@@ -8,6 +8,7 @@ compatible implementation.
 
 It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud and other integrations:
 * Spring Web (RestControllers, RestTemplates)
+* Async annotation, AsyncWebTask, Executors
 * Feign, HystrixFeign
 * JMS
 * JDBC
