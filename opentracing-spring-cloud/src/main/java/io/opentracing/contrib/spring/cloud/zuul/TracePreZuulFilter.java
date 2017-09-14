@@ -10,6 +10,7 @@ import io.opentracing.tag.Tags;
 
 class TracePreZuulFilter extends ZuulFilter {
     static final String COMPONENT_NAME = "zuul";
+    static final String CONTEXT_SPAN_KEY = "span";
 
     private final Tracer tracer;
 
@@ -19,6 +20,7 @@ class TracePreZuulFilter extends ZuulFilter {
 
     @Override
     public String filterType() {
+        // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE
         return "pre";
     }
 
@@ -46,7 +48,7 @@ class TracePreZuulFilter extends ZuulFilter {
         tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS,
                 new TextMapInjectAdapter(ctx.getZuulRequestHeaders()));
 
-        ctx.set("span", span);
+        ctx.set(CONTEXT_SPAN_KEY, span);
 
         return null;
     }

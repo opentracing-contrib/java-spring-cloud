@@ -25,8 +25,8 @@ public class ZuulAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TracePostZuulFilter tracePostZuulFilter(Tracer tracer) {
-        return new TracePostZuulFilter(tracer);
+    public TracePostZuulFilter tracePostZuulFilter() {
+        return new TracePostZuulFilter();
     }
 
 }
