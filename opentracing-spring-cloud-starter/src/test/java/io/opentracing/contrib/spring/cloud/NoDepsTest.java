@@ -26,4 +26,9 @@ public class NoDepsTest {
     public void testNoJMSTemplate() throws ClassNotFoundException {
         this.getClass().getClassLoader().loadClass("org.springframework.jms.core.JmsTemplate");
     }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoZuulFilter() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("com.netflix.zuul.ZuulFilter");
+    }
 }
