@@ -16,19 +16,25 @@ package io.opentracing.contrib.spring.cloud.feign;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
-import org.junit.Test;
-import org.springframework.test.context.TestPropertySource;
-
+import com.netflix.hystrix.strategy.HystrixPlugins;
 import io.opentracing.ActiveSpan;
 import io.opentracing.mock.MockSpan;
+import java.util.List;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * @author Pavol Loffay
  */
 @TestPropertySource(properties = {"feign.hystrix.enabled=true"})
 public class FeignHystrixTest extends FeignTest {
+
+  @BeforeClass
+  public static void beforeClass() {
+    //reset because concurrent strategy is registered with different tracer
+    HystrixPlugins.reset();
+  }
 
   @Test
   public void testParentSpanRequest() throws InterruptedException {
