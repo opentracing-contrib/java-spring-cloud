@@ -179,9 +179,9 @@ public class HystrixTraceCommandTest {
 
         //The instrumented trace should have the tags
         assertThat(String.valueOf(tags.get((Tags.COMPONENT.getKey())))).isEqualTo("hystrix");
-        assertThat(String.valueOf(tags.get("commandGroup"))).isEqualTo(groupKey);
-        assertThat(String.valueOf(tags.get("commandKey"))).isEqualTo(commandKey);
-        assertThat(String.valueOf(tags.get("threadPoolKey"))).isEqualTo(groupKey);
+        assertThat(String.valueOf(tags.get(HystrixTraceCommand.TAG_COMMAND_GROUP))).isEqualTo(groupKey);
+        assertThat(String.valueOf(tags.get((HystrixTraceCommand.TAG_COMMAND_KEY)))).isEqualTo(commandKey);
+        assertThat(String.valueOf(tags.get(HystrixTraceCommand.TAG_THREAD_POOL_KEY))).isEqualTo(groupKey);
     }
 
 }

@@ -36,10 +36,10 @@ import io.opentracing.tag.Tags;
  */
 public abstract class HystrixTraceCommand<R> extends HystrixCommand<R> {
 
-    private static final String TAG_HYSTRIX_COMPONENT = "hystrix";
-    private static final String TAG_COMMAND_KEY = "commandKey";
-    private static final String TAG_COMMAND_GROUP = "commandGroup";
-    private static final String TAG_THREAD_POOL_KEY = "threadPoolKey";
+    static final String TAG_HYSTRIX_COMPONENT = "hystrix";
+    static final String TAG_COMMAND_KEY = "commandKey";
+    static final String TAG_COMMAND_GROUP = "commandGroup";
+    static final String TAG_THREAD_POOL_KEY = "threadPoolKey";
 
     private final Tracer tracer;
 
