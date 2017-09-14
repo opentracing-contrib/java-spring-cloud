@@ -59,30 +59,23 @@ public class HystrixTraceCommandTest {
     static class GreetingService {
 
         @Autowired
-        MockTracer mockTracer;
+        MockTracer tracer;
 
         @HystrixCommand
         public String sayHello() {
-            Span span = mockTracer.buildSpan("sayHello")
-                    .startManual();
-            span.finish();
+            tracer.buildSpan("sayHello").start().finish();
             return "Hello!!!";
         }
 
         @HystrixCommand(fallbackMethod = "defaultGreeting")
         public String alwaysFail(String user) {
-            Span span = mockTracer.buildSpan("sayHelloToUser")
-                    .startManual();
-            span.finish();
+            tracer.buildSpan("alwaysFail").start().finish();
             throw new IllegalStateException("Thrown Purposefully");
 
         }
 
         public String defaultGreeting(String user) {
-            Span span = mockTracer.buildSpan("sayHelloToUser")
-                    .withTag("myTag", "fallback")
-                    .startManual();
-            span.finish();
+            tracer.buildSpan("defaultGreeting").withTag("fallback", "yes").start().finish();
             return "Hi(fallback)";
         }
     }
@@ -107,67 +100,100 @@ public class HystrixTraceCommandTest {
     @Test
     public void test_without_circuit_breaker() throws Exception {
 
-        try (ActiveSpan activeSpan = mockTracer.buildSpan("test_without_circuit_breaker")
+        try (ActiveSpan span = mockTracer.buildSpan("test_without_circuit_breaker")
                 .startActive()) {
             String response = greetingService.sayHello();
             assertThat(response).isNotNull();
-            await().atMost(5, TimeUnit.SECONDS).until(() -> mockTracer.finishedSpans().size() == 1);
-
-            List<MockSpan> mockSpans = mockTracer.finishedSpans();
-            assertEquals(1, mockSpans.size());
-            TestUtils.assertSameTraceId(mockSpans);
         }
+
+
+        /**
+         * 2 spans totally
+         * <ul>
+         *     <li>one that's started in test</li>
+         *     <li>one that's added in sayHello method of Greeting Service</li>
+         * </ul>
+         */
+
+        await().atMost(3, TimeUnit.SECONDS).until(() -> mockTracer.finishedSpans().size() == 2);
+
+        List<MockSpan> mockSpans = mockTracer.finishedSpans();
+        assertEquals(2, mockSpans.size());
+        TestUtils.assertSameTraceId(mockSpans);
+        MockSpan hystrixSpan = mockSpans.get(1);
+        assertThat(hystrixSpan.tags()).isEmpty();
     }
 
     @Test
     public void test_with_circuit_breaker() {
-        try (ActiveSpan activeSpan = mockTracer.buildSpan("test_with_circuit_breaker")
+        try (ActiveSpan span = mockTracer.buildSpan("test_with_circuit_breaker")
                 .startActive()) {
-
-            String response = greetingService.alwaysFail("tomandjerry");
+            String response = greetingService.alwaysFail("foo");
             assertThat(response).isNotNull();
-            await().until(() -> mockTracer.finishedSpans().size() == 2);
-
-            List<MockSpan> mockSpans = mockTracer.finishedSpans();
-            assertEquals(2, mockSpans.size());
-            TestUtils.assertSameTraceId(mockSpans);
-
-            assertThat(mockSpans.get(1).tags()).containsValues("fallback");
         }
+
+        /**
+         * 3 spans totally
+         * <ul>
+         *     <li>one thats started in test</li>
+         *     <li>one thats added in alwaysFail method of Greeting Service</li>
+         *     <li>one thats added in the defaultGreeting method which is a fallback</li>
+         * </ul>
+         */
+        await().atMost(3, TimeUnit.SECONDS).until(() -> mockTracer.finishedSpans().size() == 3);
+
+        List<MockSpan> mockSpans = mockTracer.finishedSpans();
+        assertEquals(3, mockSpans.size());
+        TestUtils.assertSameTraceId(mockSpans);
+        MockSpan hystrixSpan = mockSpans.get(1);
+        assertThat(hystrixSpan.tags()).isNotEmpty();
+        //one thats added in the defaultGreeting method which is a fallback should have the custom tag added
+        assertThat(hystrixSpan.tags()).containsValues("yes");
     }
 
     @Test
     public void test_hystrix_trace_command() throws Exception {
+        String groupKey = "test_hystrix";
+        String commandKey = "hystrix_trace_command";
+
         try (ActiveSpan activeSpan = mockTracer.buildSpan("test_with_circuit_breaker")
                 .startActive()) {
-            String groupKey = "test_hystrix";
-            String commandKey = "hystrix_trace_command";
             com.netflix.hystrix.HystrixCommand.Setter setter = com.netflix.hystrix.HystrixCommand.Setter
                     .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
                     .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
             new HystrixTraceCommand<Void>(mockTracer, setter) {
                 @Override
                 public Void doRun() throws Exception {
+                    mockTracer.buildSpan("doRun").start().finish();
                     System.out.println("Hello World!");
                     return null;
                 }
             }.execute();
-
-            await().until(() -> mockTracer.finishedSpans().size() == 1);
-
-            List<MockSpan> mockSpans = mockTracer.finishedSpans();
-            assertEquals(1, mockSpans.size());
-            TestUtils.assertSameTraceId(mockSpans);
-
-            Map tags = mockSpans.get(0).tags();
-            assertThat(tags).isNotEmpty();
-
-            assertThat(String.valueOf(tags.get((Tags.COMPONENT.getKey())))).isEqualTo("hystrix");
-            assertThat(String.valueOf(tags.get("commandGroup"))).isEqualTo(groupKey);
-            assertThat(String.valueOf(tags.get("commandKey"))).isEqualTo(commandKey);
-            assertThat(String.valueOf(tags.get("threadPoolKey"))).isEqualTo(groupKey);
-
         }
+
+
+        /**
+         * 3 spans totally
+         * <ul>
+         *     <li>one that's started in test</li>
+         *     <li>one that's added in doRun method of HystrixTraceCommand</li>
+         *     <li>one that's is instrumented by HystrixTraceCommand</li>
+         * </ul>
+         */
+        await().atMost(3, TimeUnit.SECONDS).until(() -> mockTracer.finishedSpans().size() == 3);
+
+        List<MockSpan> mockSpans = mockTracer.finishedSpans();
+        assertEquals(3, mockSpans.size());
+        TestUtils.assertSameTraceId(mockSpans);
+
+        Map tags = mockSpans.get(1).tags();
+        assertThat(tags).isNotEmpty();
+
+        //The instrumented trace should have the tags
+        assertThat(String.valueOf(tags.get((Tags.COMPONENT.getKey())))).isEqualTo("hystrix");
+        assertThat(String.valueOf(tags.get("commandGroup"))).isEqualTo(groupKey);
+        assertThat(String.valueOf(tags.get("commandKey"))).isEqualTo(commandKey);
+        assertThat(String.valueOf(tags.get("threadPoolKey"))).isEqualTo(groupKey);
     }
 
 }

@@ -1,6 +1,7 @@
 package io.opentracing.contrib.spring.cloud.hystrix;
 
 import com.netflix.hystrix.HystrixCommand;
+import feign.opentracing.hystrix.TracingConcurrencyStrategy;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -12,11 +13,9 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration Auto-configuration}
- * that registers a custom OpenTracing {@link com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy}.
+ * that registers a tracer with OpenTracing {@link TracingConcurrencyStrategy}.
  *
- * @author Marcin Grzejszczak
- * @author kameshsampath - Modifications from original to suit OpenTracing
- * @see HystrixTracingConcurrencyStrategy
+ * @author kameshsampath
  */
 @Configuration
 @AutoConfigureAfter({TracerAutoConfiguration.class})
@@ -26,8 +25,8 @@ import org.springframework.context.annotation.Configuration;
 public class HystrixTracingAutoConfiguration {
 
     @Bean
-    HystrixTracingConcurrencyStrategy hystrixTracingConcurrencyStrategy(Tracer tracer) {
-        return new HystrixTracingConcurrencyStrategy(tracer);
+    TracingConcurrencyStrategy hystrixTracingConcurrencyStrategy(Tracer tracer) {
+        return TracingConcurrencyStrategy.register(tracer);
     }
 
 
