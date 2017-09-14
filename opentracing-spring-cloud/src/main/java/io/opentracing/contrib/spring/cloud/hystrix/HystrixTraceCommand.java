@@ -22,7 +22,8 @@ import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
 /**
- * Abstraction over {@code HystrixCommand} that wraps command execution with Trace setting
+ * Abstraction over {@code HystrixCommand} that wraps command execution with Trace setting, to use this command user has
+ * to explicitly wrap the {@link HystrixCommand} in this {@link HystrixTraceCommand}
  *
  * @author Tomasz Nurkiewicz, 4financeIT
  * @author Marcin Grzejszczak, 4financeIT

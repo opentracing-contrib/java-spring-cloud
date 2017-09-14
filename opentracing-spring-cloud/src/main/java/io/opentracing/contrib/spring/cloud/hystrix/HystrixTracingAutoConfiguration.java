@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * {@link org.springframework.boot.autoconfigure.EnableAutoConfiguration Auto-configuration}
- * that registers a tracer with OpenTracing {@link TracingConcurrencyStrategy}.
+ * that registers a tracer with OpenTracing {@link TracingConcurrencyStrategy}, which just propagates the spans between
+ * threads and will never create new spans
  *
  * @author kameshsampath
  */
