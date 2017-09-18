@@ -121,6 +121,16 @@
           <artifactId>artemis-jms-server</artifactId>
           <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-messaging</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-websocket</artifactId>
+          <scope>test</scope>
+        </dependency>
       </dependencies>
     </profile>
   </profiles>

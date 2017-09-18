@@ -44,4 +44,9 @@ public class NoDepsTest {
     public void testNoZuulFilter() throws ClassNotFoundException {
         this.getClass().getClassLoader().loadClass("com.netflix.zuul.ZuulFilter");
     }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void testNoWebsocketMessageBroker() throws ClassNotFoundException {
+        this.getClass().getClassLoader().loadClass("org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer");
+    }
 }
