@@ -33,8 +33,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "opentracing.spring.cloud.hystrix.strategy.enabled", matchIfMissing = true)
 public class HystrixTracingAutoConfiguration {
 
-    @Bean
-    TracingConcurrencyStrategy hystrixTracingConcurrencyStrategy(Tracer tracer) {
-        return TracingConcurrencyStrategy.register(tracer);
-    }
+  @Bean
+  TracingConcurrencyStrategy hystrixTracingConcurrencyStrategy(Tracer tracer) {
+    return TracingConcurrencyStrategy.register(tracer);
+  }
 }
