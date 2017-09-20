@@ -17,6 +17,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable JMS tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.hystrix.strategy.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Propagation of spans across threads using in Hystrix command tracing.",
+      "defaultValue": true
     }
   ]
 }
