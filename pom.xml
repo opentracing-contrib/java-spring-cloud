@@ -224,12 +224,13 @@
           <excludes>
             <exclude>LICENSE</exclude>
             <exclude>Makefile</exclude>
-            <exclude>**/*.txt</exclude>
             <exclude>mvnw</exclude>
             <exclude>mvnw.cmd</exclude>
             <exclude>travis/publish.sh</exclude>
             <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
             <exclude>**/*.factories</exclude>
+            <exclude>**/ExecutorBeanPostProcessor.java</exclude>
+            <exclude>**/TraceEnvironmentPostProcessor.java</exclude>
           </excludes>
         </configuration>
         <executions>
