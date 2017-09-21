@@ -19,6 +19,12 @@
       "defaultValue": true
     },
     {
+      "name": "opentracing.spring.cloud.zuul.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Zuul tracing.",
+      "defaultValue": true
+    },
+    {
       "name": "opentracing.spring.cloud.async.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable tracing for @Async, Executor and WebAsyncTask/Callable."

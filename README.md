@@ -13,6 +13,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Hystrix
 * JMS
 * JDBC
+* Zuul
 
 This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7` and `Dalston.SR3`.
 
