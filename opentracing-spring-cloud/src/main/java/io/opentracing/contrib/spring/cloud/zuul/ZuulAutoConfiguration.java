@@ -17,16 +17,16 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "opentracing.spring.cloud.zuul.enabled", havingValue = "true", matchIfMissing = true)
 public class ZuulAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public TracePreZuulFilter tracePreZuulFilter(Tracer tracer) {
-        return new TracePreZuulFilter(tracer);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public TracePreZuulFilter tracePreZuulFilter(Tracer tracer) {
+    return new TracePreZuulFilter(tracer);
+  }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public TracePostZuulFilter tracePostZuulFilter() {
-        return new TracePostZuulFilter();
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public TracePostZuulFilter tracePostZuulFilter() {
+    return new TracePostZuulFilter();
+  }
 
 }

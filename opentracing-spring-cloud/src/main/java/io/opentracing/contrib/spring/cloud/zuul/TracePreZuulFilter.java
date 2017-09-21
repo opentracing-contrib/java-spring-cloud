@@ -9,49 +9,48 @@ import io.opentracing.propagation.TextMapInjectAdapter;
 import io.opentracing.tag.Tags;
 
 class TracePreZuulFilter extends ZuulFilter {
-    static final String COMPONENT_NAME = "zuul";
-    static final String CONTEXT_SPAN_KEY = "span";
 
-    private final Tracer tracer;
+  static final String COMPONENT_NAME = "zuul";
+  static final String CONTEXT_SPAN_KEY = TracePreZuulFilter.class.getName();
 
-    TracePreZuulFilter(Tracer tracer) {
-        this.tracer = tracer;
-    }
+  private final Tracer tracer;
 
-    @Override
-    public String filterType() {
-        // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE
-        return "pre";
-    }
+  TracePreZuulFilter(Tracer tracer) {
+    this.tracer = tracer;
+  }
 
-    @Override
-    public int filterOrder() {
-        return 0;
-    }
+  @Override
+  public String filterType() {
+    // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE
+    return "pre";
+  }
 
-    @Override
-    public boolean shouldFilter() {
-        return true;
-    }
+  @Override
+  public int filterOrder() {
+    return 0;
+  }
 
-    @Override
-    public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
+  @Override
+  public boolean shouldFilter() {
+    return true;
+  }
 
-        Span span = tracer.buildSpan(ctx.getRequest().getMethod())
-                .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
-                .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_SERVER)
-                .withTag(Tags.HTTP_METHOD.getKey(), ctx.getRequest().getMethod())
-                .withTag(Tags.HTTP_URL.getKey(), ctx.getRequest().getRequestURL().toString())
-                .startManual();
+  @Override
+  public Object run() {
+    RequestContext ctx = RequestContext.getCurrentContext();
 
-        tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS,
-                new TextMapInjectAdapter(ctx.getZuulRequestHeaders()));
+    // span is a child of one created in servlet-filter
+    Span span = tracer.buildSpan(ctx.getRequest().getMethod())
+        .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
+        .startManual();
 
-        ctx.set(CONTEXT_SPAN_KEY, span);
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS,
+        new TextMapInjectAdapter(ctx.getZuulRequestHeaders()));
 
-        return null;
-    }
+    ctx.set(CONTEXT_SPAN_KEY, span);
+
+    return null;
+  }
 
 
 }

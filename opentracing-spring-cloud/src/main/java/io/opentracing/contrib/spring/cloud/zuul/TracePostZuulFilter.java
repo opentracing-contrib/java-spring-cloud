@@ -4,69 +4,69 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import io.opentracing.Span;
 import io.opentracing.tag.Tags;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class TracePostZuulFilter extends ZuulFilter {
-    static final String ROUTE_HOST_TAG = "route.host";
 
-    @Override
-    public String filterType() {
-        // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE
-        return "post";
-    }
+  static final String ROUTE_HOST_TAG = "route.host";
 
-    @Override
-    public int filterOrder() {
-        return 0;
-    }
+  @Override
+  public String filterType() {
+    // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE
+    return "post";
+  }
 
-    @Override
-    public boolean shouldFilter() {
-        return true;
-    }
+  @Override
+  public int filterOrder() {
+    return 0;
+  }
 
-    @Override
-    public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
+  @Override
+  public boolean shouldFilter() {
+    return true;
+  }
 
-        Object spanObject = ctx.get(TracePreZuulFilter.CONTEXT_SPAN_KEY);
-        if (spanObject instanceof Span) {
-            Span span = (Span) spanObject;
-            span.setTag(Tags.HTTP_STATUS.getKey(), ctx.getResponseStatusCode());
+  @Override
+  public Object run() {
+    RequestContext ctx = RequestContext.getCurrentContext();
 
-            if (ctx.getThrowable() != null) {
-                onError(ctx.getThrowable(), span);
-            } else {
-                Object error = ctx.get("error.exception");
-                if (error instanceof Exception) {
-                    onError((Exception) error, span);
-                }
-            }
+    Object spanObject = ctx.get(TracePreZuulFilter.CONTEXT_SPAN_KEY);
+    if (spanObject instanceof Span) {
+      Span span = (Span) spanObject;
+      span.setTag(Tags.HTTP_STATUS.getKey(), ctx.getResponseStatusCode());
 
-            if (ctx.getRouteHost() != null) {
-                span.setTag(ROUTE_HOST_TAG, ctx.getRouteHost().toString());
-            }
-
-            span.finish();
+      if (ctx.getThrowable() != null) {
+        onError(ctx.getThrowable(), span);
+      } else {
+        Object error = ctx.get("error.exception");
+        if (error instanceof Exception) {
+          onError((Exception) error, span);
         }
+      }
 
-        return null;
+      if (ctx.getRouteHost() != null) {
+        span.setTag(ROUTE_HOST_TAG, ctx.getRouteHost().toString());
+      }
+
+      span.finish();
     }
 
-    private static void onError(Throwable throwable, Span span) {
-        Tags.ERROR.set(span, Boolean.TRUE);
+    return null;
+  }
 
-        if (throwable != null) {
-            span.log(errorLogs(throwable));
-        }
-    }
+  private static void onError(Throwable throwable, Span span) {
+    Tags.ERROR.set(span, Boolean.TRUE);
 
-    private static Map<String, Object> errorLogs(Throwable throwable) {
-        Map<String, Object> errorLogs = new HashMap<>(2);
-        errorLogs.put("event", Tags.ERROR.getKey());
-        errorLogs.put("error.object", throwable);
-        return errorLogs;
+    if (throwable != null) {
+      span.log(errorLogs(throwable));
     }
+  }
+
+  private static Map<String, Object> errorLogs(Throwable throwable) {
+    Map<String, Object> errorLogs = new HashMap<>(2);
+    errorLogs.put("event", Tags.ERROR.getKey());
+    errorLogs.put("error.object", throwable);
+    return errorLogs;
+  }
 }
