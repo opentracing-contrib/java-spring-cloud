@@ -23,11 +23,19 @@ install:
 
 jobs:
   include:
-    - stage: test camden, dalston, classpath-nodeps, classpath-alldeps
+    - stage: test
+      env: [ NAME=camden ]
       script: make default
-    - script: make dalston
-    - script: PROFILES=nodeps make classpath
-    - script: PROFILES=alldeps make classpath
+
+    - env: [ NAME=dalston ]
+      script: make dalston
+
+    - env: [ NAME=classpath-no-dependencies ]
+      script: PROFILES=nodeps make classpath
+
+    - env: [ NAME=classpath-all-dependencies ]
+      script: PROFILES=alldeps make classpath
+
     - stage: deploy
       script: ./travis/publish.sh
 

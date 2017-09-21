@@ -11,24 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.jdbc;
+package io.opentracing.contrib.spring.cloud.hystrix;
 
-
+import com.netflix.hystrix.HystrixCommand;
+import feign.opentracing.hystrix.TracingConcurrencyStrategy;
+import io.opentracing.Tracer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Loads the integration with OpenTracing JDBC if it's included in the classpath.
+ * Auto-configuration that {@link TracingConcurrencyStrategy} to Hystrix plugins.
  *
- * @author Juraci Paixão Kröhling
+ * @author kameshsampath
  */
 @Configuration
-@ConditionalOnProperty(name = "opentracing.spring.cloud.jdbc.enabled", havingValue = "true", matchIfMissing = true)
-public class JdbcAutoConfiguration {
+@ConditionalOnClass(HystrixCommand.class)
+@ConditionalOnBean(Tracer.class)
+@ConditionalOnProperty(name = "opentracing.spring.cloud.hystrix.strategy.enabled", matchIfMissing = true)
+public class HystrixTracingAutoConfiguration {
 
   @Bean
-  public JdbcAspect jdbcAspect() {
-    return new JdbcAspect();
+  TracingConcurrencyStrategy hystrixTracingConcurrencyStrategy(Tracer tracer) {
+    return TracingConcurrencyStrategy.register(tracer);
   }
 }

@@ -23,6 +23,17 @@
       "type": "java.lang.Boolean",
       "description": "Enable Zuul tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.async.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable tracing for @Async, Executor and WebAsyncTask/Callable."
+    },
+    {
+      "name": "opentracing.spring.cloud.hystrix.strategy.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Propagation of spans across threads using in Hystrix command tracing.",
+      "defaultValue": true
     }
   ]
 }
