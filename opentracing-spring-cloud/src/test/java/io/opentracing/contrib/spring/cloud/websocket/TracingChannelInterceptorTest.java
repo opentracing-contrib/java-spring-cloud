@@ -34,7 +34,7 @@ public class TracingChannelInterceptorTest {
 
     @Test
     public void testPreSendServerSpan() {
-        MessageBuilder<String> messageBuilder = MessageBuilder.<String>withPayload("Hi")
+        MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
             .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
             .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, "/app/test");
       
@@ -54,7 +54,7 @@ public class TracingChannelInterceptorTest {
 
     @Test
     public void testPreSendClientSpan() {
-        MessageBuilder<String> messageBuilder = MessageBuilder.<String>withPayload("Hi")
+        MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
                 .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
                 .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, "/app/test");
 
