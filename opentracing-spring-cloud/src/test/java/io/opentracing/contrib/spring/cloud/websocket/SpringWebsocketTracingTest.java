@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,21 +42,22 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.mock.MockTracer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes= {WebSocketConfig.class,GreetingController.class},
+@SpringBootTest(classes= {WebSocketConfig.class,GreetingController.class,MockTracingConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpringWebsocketTracingTest {
+    private static final String SEND_HELLO_MESSAGE_ENDPOINT = "/app/hello";
+    private static final String SUBSCRIBE_GREETINGS_ENDPOINT = "/topic/greetings";
+
     @Value("${local.server.port}")
     private int port;
     private String url;
 
-    private static final String SEND_HELLO_MESSAGE_ENDPOINT = "/app/hello";
-    private static final String SUBSCRIBE_GREETINGS_ENDPOINT = "/topic/greetings";
-
     @Autowired
-    protected MockTracer mockTracer;
+    private MockTracer mockTracer;
 
     @Before
     public void setup() {
@@ -86,9 +87,7 @@ public class SpringWebsocketTracingTest {
     }
 
     private List<Transport> createTransportClient() {
-        List<Transport> transports = new ArrayList<>(1);
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-        return transports;
+        return Collections.singletonList(new WebSocketTransport(new StandardWebSocketClient()));
     }
 
     private class GreetingStompFrameHandler implements StompFrameHandler {

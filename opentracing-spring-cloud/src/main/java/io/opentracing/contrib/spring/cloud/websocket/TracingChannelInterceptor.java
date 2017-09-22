@@ -24,9 +24,7 @@ import org.springframework.web.socket.messaging.SubProtocolWebSocketHandler;
 import org.springframework.web.socket.messaging.WebSocketAnnotationMethodMessageHandler;
 
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.Tracer.SpanBuilder;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 
@@ -69,27 +67,35 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         if (SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-            SpanContext context = null;
-            // Check if server kind
-            if (spanKind == Tags.SPAN_KIND_SERVER) {
-                // Extract parent context
-                context = tracer.extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders()));
+            if (Tags.SPAN_KIND_SERVER.equals(spanKind)) {
+                return preSendServerSpan(message);
+            } else if (Tags.SPAN_KIND_CLIENT.equals(spanKind)) {
+                return preSendClientSpan(message);
             }
-            SpanBuilder spanBuilder = tracer.buildSpan((String)message.getHeaders()
-                    .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
-                    .withTag(Tags.SPAN_KIND.getKey(), spanKind);
-            if (context != null) {
-                spanBuilder.asChildOf(context);
-            }
-            Span span = spanBuilder.startManual();
-            MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
-                    .setHeader(OPENTRACING_SPAN, span);
-            if (spanKind == Tags.SPAN_KIND_CLIENT) {
-                tracer.inject(span.context(), Format.Builtin.TEXT_MAP, new TextMapInjectAdapter(messageBuilder));
-            }
-            message = messageBuilder.build();
         }
         return message;
+    }
+
+    private Message<?> preSendClientSpan(Message<?> message) {
+        Span span = tracer.buildSpan((String)message.getHeaders()
+                .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
+                .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+                .startManual();
+        MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
+                .setHeader(OPENTRACING_SPAN, span);
+        tracer.inject(span.context(), Format.Builtin.TEXT_MAP, new TextMapInjectAdapter(messageBuilder));
+        return messageBuilder.build();
+    }
+
+    private Message<?> preSendServerSpan(Message<?> message) {
+        Span span = tracer.buildSpan((String)message.getHeaders()
+                .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
+                .asChildOf(tracer.extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders())))
+                .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+                .startManual();
+        return MessageBuilder.fromMessage(message)
+                .setHeader(OPENTRACING_SPAN, span)
+                .build();
     }
 
     @Override

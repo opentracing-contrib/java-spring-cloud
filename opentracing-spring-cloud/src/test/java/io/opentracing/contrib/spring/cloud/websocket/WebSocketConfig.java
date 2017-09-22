@@ -14,16 +14,11 @@
 package io.opentracing.contrib.spring.cloud.websocket;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-
-import io.opentracing.mock.MockTracer;
-import io.opentracing.mock.MockTracer.Propagator;
-import io.opentracing.util.ThreadLocalActiveSpanSource;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -39,11 +34,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/test-websocket").withSockJS();
-    }
-
-    @Bean
-    public MockTracer mockTracer() {
-        return new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
     }
 
 }

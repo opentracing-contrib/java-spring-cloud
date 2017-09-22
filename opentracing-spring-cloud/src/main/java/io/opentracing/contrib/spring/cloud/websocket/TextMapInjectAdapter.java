@@ -24,7 +24,7 @@ import io.opentracing.propagation.TextMap;
 
 /**
  * A TextMap carrier for use with Tracer.inject() to inject tracing context into Spring messaging
- * {link {@link MessageHeaders}.
+ * {@link MessageHeaders}.
  *
  * @see Tracer#inject(SpanContext, Format, Object)
  */

@@ -24,7 +24,7 @@ import org.springframework.messaging.MessageHeaders;
 
 /**
  * A TextMap carrier for use with Tracer.extract() to extract tracing context from Spring messaging
- * {link {@link MessageHeaders}.
+ * {@link MessageHeaders}.
  *
  * @see Tracer#extract(Format, Object)
  */
@@ -33,9 +33,7 @@ public final class TextMapExtractAdapter implements TextMap {
 
     public TextMapExtractAdapter(final MessageHeaders headers) {
         for (Map.Entry<String, Object> entry : headers.entrySet()) {
-            if (entry.getValue() instanceof String) {
-                this.headers.put(entry.getKey(), (String)entry.getValue());
-            }
+            this.headers.put(entry.getKey(), entry.getValue().toString());
         }
     }
 

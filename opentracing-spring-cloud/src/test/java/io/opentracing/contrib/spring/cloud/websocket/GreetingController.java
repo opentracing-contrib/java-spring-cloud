@@ -18,7 +18,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 
 @Controller
@@ -27,14 +26,12 @@ public class GreetingController {
     public static final String DOING_WORK = "DoingWork";
 
     @Autowired
-    Tracer tracer;
+    private Tracer tracer;
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public Greeting greeting(HelloMessage message) throws Exception {
-        ActiveSpan span = tracer.buildSpan(DOING_WORK).startActive();
-        Thread.sleep(100); // simulated delay
-        span.close();
+        tracer.buildSpan(DOING_WORK).startActive().close();
         return new Greeting("Hello, " + message.getName() + "!");
     }
 
