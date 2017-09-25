@@ -30,27 +30,19 @@ public class WebsocketAutoConfiguration {
     @Autowired
     Tracer tracer;
 
-    @Autowired(required=false)
-    private ExecutorSubscribableChannel clientInboundChannel;
-    
-    @Autowired(required=false)
-    private ExecutorSubscribableChannel clientOutboundChannel; 
-
     @Bean
-    public TracingChannelInterceptor tracingInboundChannelInterceptor() {
+    @ConditionalOnBean(name="clientInboundChannel")
+    public TracingChannelInterceptor tracingInboundChannelInterceptor(ExecutorSubscribableChannel clientInboundChannel) {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_SERVER);
-        if (clientInboundChannel != null) {
-            clientInboundChannel.addInterceptor(interceptor);
-        }
+        clientInboundChannel.addInterceptor(interceptor);
         return interceptor;
     }
 
     @Bean
-    public TracingChannelInterceptor tracingOutboundChannelInterceptor() {
+    @ConditionalOnBean(name="clientOutboundChannel")
+    public TracingChannelInterceptor tracingOutboundChannelInterceptor(ExecutorSubscribableChannel clientOutboundChannel) {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_CLIENT);
-        if (clientOutboundChannel != null) {
-            clientOutboundChannel.addInterceptor(interceptor);
-        }
+        clientOutboundChannel.addInterceptor(interceptor);
         return interceptor;
     }
 }
