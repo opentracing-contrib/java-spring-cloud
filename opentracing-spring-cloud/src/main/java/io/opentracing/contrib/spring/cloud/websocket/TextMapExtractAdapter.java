@@ -14,6 +14,7 @@
 package io.opentracing.contrib.spring.cloud.websocket;
 
 import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 
 import java.util.HashMap;

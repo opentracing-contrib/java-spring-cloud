@@ -19,7 +19,9 @@ import java.util.Map;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 
 /**
