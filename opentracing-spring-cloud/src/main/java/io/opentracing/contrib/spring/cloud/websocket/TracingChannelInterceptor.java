@@ -36,6 +36,11 @@ import io.opentracing.tag.Tags;
 public class TracingChannelInterceptor extends ChannelInterceptorAdapter implements ExecutorChannelInterceptor {
 
     /**
+     * The span component tag value.
+     */
+    private static final String SPRING_WEBSOCKET = "spring-websocket";
+
+    /**
      * The STOMP simple destination.
      */
     protected static final String SIMP_DESTINATION = "simpDestination";
@@ -80,6 +85,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
         Span span = tracer.buildSpan((String)message.getHeaders()
                 .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
                 .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+                .withTag(Tags.COMPONENT.getKey(), SPRING_WEBSOCKET)
                 .startManual();
         MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
                 .setHeader(OPENTRACING_SPAN, span);
@@ -92,6 +98,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
                 .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
                 .asChildOf(tracer.extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders())))
                 .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+                .withTag(Tags.COMPONENT.getKey(), SPRING_WEBSOCKET)
                 .startManual();
         return MessageBuilder.fromMessage(message)
                 .setHeader(OPENTRACING_SPAN, span)
