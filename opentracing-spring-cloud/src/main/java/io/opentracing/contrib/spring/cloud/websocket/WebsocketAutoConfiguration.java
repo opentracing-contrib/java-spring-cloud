@@ -24,25 +24,24 @@ import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
 @Configuration
-@ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
+@ConditionalOnBean(Tracer.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.websocket.enabled", havingValue = "true", matchIfMissing = true)
 public class WebsocketAutoConfiguration {
 
     @Autowired
-    Tracer tracer;
-
-    @Autowired
-    WebSocketMessageBrokerConfigurationSupport config;
+    private Tracer tracer;
 
     @Bean
-    public TracingChannelInterceptor tracingInboundChannelInterceptor() {
+    @ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
+    public TracingChannelInterceptor tracingInboundChannelInterceptor(WebSocketMessageBrokerConfigurationSupport config) {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_SERVER);
         config.clientInboundChannel().addInterceptor(interceptor);
         return interceptor;
     }
 
     @Bean
-    public TracingChannelInterceptor tracingOutboundChannelInterceptor() {
+    @ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
+    public TracingChannelInterceptor tracingOutboundChannelInterceptor(WebSocketMessageBrokerConfigurationSupport config) {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_CLIENT);
         config.clientOutboundChannel().addInterceptor(interceptor);
         return interceptor;
