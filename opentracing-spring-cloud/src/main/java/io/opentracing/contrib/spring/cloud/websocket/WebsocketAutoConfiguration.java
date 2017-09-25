@@ -18,31 +18,33 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.support.ExecutorSubscribableChannel;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupport;
+
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
 @Configuration
-@ConditionalOnBean(Tracer.class)
+@ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.websocket.enabled", havingValue = "true", matchIfMissing = true)
 public class WebsocketAutoConfiguration {
 
     @Autowired
     Tracer tracer;
 
+    @Autowired
+    WebSocketMessageBrokerConfigurationSupport config;
+
     @Bean
-    @ConditionalOnBean(name="clientInboundChannel")
-    public TracingChannelInterceptor tracingInboundChannelInterceptor(ExecutorSubscribableChannel clientInboundChannel) {
+    public TracingChannelInterceptor tracingInboundChannelInterceptor() {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_SERVER);
-        clientInboundChannel.addInterceptor(interceptor);
+        config.clientInboundChannel().addInterceptor(interceptor);
         return interceptor;
     }
 
     @Bean
-    @ConditionalOnBean(name="clientOutboundChannel")
-    public TracingChannelInterceptor tracingOutboundChannelInterceptor(ExecutorSubscribableChannel clientOutboundChannel) {
+    public TracingChannelInterceptor tracingOutboundChannelInterceptor() {
         TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer, Tags.SPAN_KIND_CLIENT);
-        clientOutboundChannel.addInterceptor(interceptor);
+        config.clientOutboundChannel().addInterceptor(interceptor);
         return interceptor;
     }
 }
