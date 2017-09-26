@@ -34,6 +34,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable Propagation of spans across threads using in Hystrix command tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.websocket.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Websocket tracing.",
+      "defaultValue": true
     }
   ]
 }

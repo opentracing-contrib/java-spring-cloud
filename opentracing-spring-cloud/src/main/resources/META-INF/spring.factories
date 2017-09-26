@@ -5,7 +5,8 @@ io.opentracing.contrib.spring.cloud.jdbc.JdbcAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.zuul.ZuulAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.async.CustomAsyncConfigurerAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.async.DefaultAsyncAutoConfiguration,\
-io.opentracing.contrib.spring.cloud.hystrix.HystrixTracingAutoConfiguration
+io.opentracing.contrib.spring.cloud.hystrix.HystrixTracingAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.websocket.WebsocketAutoConfiguration
 
 # Environment Post Processor
 org.springframework.boot.env.EnvironmentPostProcessor=\
