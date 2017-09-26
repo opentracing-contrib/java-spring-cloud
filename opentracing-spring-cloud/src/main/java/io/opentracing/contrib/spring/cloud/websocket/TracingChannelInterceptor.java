@@ -38,7 +38,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     /**
      * The span component tag value.
      */
-    private static final String WEBSOCKET = "websocket";
+    protected static final String WEBSOCKET = "websocket";
 
     /**
      * The STOMP simple destination.
