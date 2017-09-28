@@ -26,6 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.annotation.JmsListenerConfigurer;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
@@ -39,8 +40,13 @@ import org.springframework.jms.core.JmsTemplate;
 public class JmsAutoConfiguration {
 
   @Bean
-  public JmsListenerAspect jmsListenerAspect() {
-    return new JmsListenerAspect();
+  public TracingJmsListenerEndpointRegistry createTracingJmsListenerEndpointRegistry(Tracer tracer) {
+    return new TracingJmsListenerEndpointRegistry(tracer);
+  }
+
+  @Bean
+  public JmsListenerConfigurer createTracingJmsListenerConfigurer(TracingJmsListenerEndpointRegistry registry) {
+    return new TracingJmsListenerConfigurer(registry);
   }
 
   @Bean

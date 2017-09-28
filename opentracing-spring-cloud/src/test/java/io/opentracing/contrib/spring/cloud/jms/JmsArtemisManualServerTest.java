@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.Message;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestUtils;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory;
@@ -40,13 +43,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
@@ -60,6 +59,7 @@ import io.opentracing.mock.MockTracer;
 public class JmsArtemisManualServerTest {
 
   @Configuration
+  @EnableJms
   static class JmsTestConfiguration {
     private static final Logger log = Logger.getLogger(JmsTestConfiguration.class.getName());
 
@@ -106,15 +106,15 @@ public class JmsArtemisManualServerTest {
     }
 
     public static class MsgListener {
-      private Message message;
+      private String message;
 
-      public Message getMessage() {
+      public String getMessage() {
         return message;
       }
 
       @JmsListener(destination = "fooQueue")
-      public void processMessage(Message msg) throws Exception {
-        log.info("Received msg: " + msg.toString());
+      public void processMessage(String msg) throws Exception {
+        log.info("Received msg: " + msg);
         message = msg;
       }
     }
