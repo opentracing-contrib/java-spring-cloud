@@ -30,3 +30,7 @@ hs_err_pid*
 
 .gitkeep
 .editorconfig
+
+# Intellij Idea
+*.iml
+.idea/
