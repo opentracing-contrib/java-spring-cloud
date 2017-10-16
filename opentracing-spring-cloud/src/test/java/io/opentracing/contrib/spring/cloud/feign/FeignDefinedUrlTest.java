@@ -19,6 +19,7 @@ import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestController;
 import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
 import io.opentracing.mock.MockTracer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,11 @@ public class FeignDefinedUrlTest {
 
   @Autowired
   protected FeignInterface feignInterface;
+
+  @Before
+  public void before() {
+    mockTracer.reset();
+  }
 
   @Test
   public void testTracedRequestDefinedUrl() throws InterruptedException {

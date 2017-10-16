@@ -13,12 +13,9 @@
  */
 package io.opentracing.contrib.spring.cloud;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 
-import io.opentracing.Tracer;
 import io.opentracing.mock.MockSpan;
-import io.opentracing.util.GlobalTracer;
 import org.junit.Assert;
 
 /**
@@ -36,21 +33,6 @@ public class TestUtils {
       for (MockSpan span : spans) {
         Assert.assertEquals(traceId, span.context().traceId());
       }
-    }
-  }
-
-  /**
-   * Set tracer in GlobalTracer
-   * @param tracer tracer
-   */
-  public static void setGlobal(Tracer tracer) {
-    try {
-      Field globalTracerField = GlobalTracer.class.getDeclaredField("tracer");
-      globalTracerField.setAccessible(true);
-      globalTracerField.set(null, tracer);
-      globalTracerField.setAccessible(false);
-    } catch (Exception e) {
-      throw new RuntimeException("Error reflecting globalTracer: " + e.getMessage(), e);
     }
   }
 }

@@ -14,7 +14,6 @@
 package io.opentracing.contrib.spring.cloud.data;
 
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
@@ -51,7 +50,6 @@ public class SpringDataTracingTest {
     @Before
     public void clearGlobalTracer() {
         mockTracer.reset();
-        TestUtils.setGlobal(mockTracer);
     }
 
     @Test

@@ -16,7 +16,6 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 import io.opentracing.ActiveSpan;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
@@ -61,7 +60,6 @@ public class JdbcTracingTest {
     @Before
     public void before() {
         tracer.reset();
-        TestUtils.setGlobal(tracer);
     }
 
     /**

@@ -62,6 +62,7 @@ public class SpringWebsocketTracingTest {
     @Before
     public void setup() {
         url = "ws://localhost:" + port + "/test-websocket";
+        mockTracer.reset();
     }
 
     @Test
