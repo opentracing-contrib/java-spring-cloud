@@ -15,7 +15,6 @@ package io.opentracing.contrib.spring.cloud.feign;
 
 import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +66,6 @@ public class FeignManualTest {
 
   @Autowired
   private MockTracer mockTracer;
-
-  @Before
-  public void before() {
-    mockTracer.reset();
-  }
 
   @Test
   public void testTracedRequestDefinedUrl() throws InterruptedException {
