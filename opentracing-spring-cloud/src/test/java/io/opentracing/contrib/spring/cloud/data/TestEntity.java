@@ -11,9 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.jpa;
+package io.opentracing.contrib.spring.cloud.data;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TestEntityRepository extends JpaRepository<TestEntity, Long> {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class TestEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

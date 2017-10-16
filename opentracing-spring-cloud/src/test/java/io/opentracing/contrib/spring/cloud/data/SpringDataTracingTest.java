@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.jpa;
+package io.opentracing.contrib.spring.cloud.data;
 
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -33,9 +35,9 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MockTracingConfiguration.class},
-        webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
-public class JpaTracingTest {
+public class SpringDataTracingTest {
 
     @Autowired
     private TestEntityRepository testEntityRepository;
@@ -43,8 +45,12 @@ public class JpaTracingTest {
     @Autowired
     private MockTracer mockTracer;
 
+    @Autowired
+    private TestRestTemplate testRestTemplate;
+
     @Before
     public void clearGlobalTracer() {
+        mockTracer.reset();
         TestUtils.setGlobal(mockTracer);
     }
 
@@ -56,6 +62,20 @@ public class JpaTracingTest {
         List<MockSpan> spans = mockTracer.finishedSpans();
         assertEquals(1, spans.size());
         assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
+    }
+
+    @Test
+    public void dataRestTest() {
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/test-entities/1", String.class);
+        assertEquals(200, responseEntity.getStatusCode().value());
+
+        List<MockSpan> spans = mockTracer.finishedSpans();
+        // One span from java-web-servlet
+        // One span from java-jdbc
+        assertEquals(2, spans.size());
+
+        assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
+        assertEquals("java-web-servlet", spans.get(1).tags().get(Tags.COMPONENT.getKey()));
     }
 
 }
