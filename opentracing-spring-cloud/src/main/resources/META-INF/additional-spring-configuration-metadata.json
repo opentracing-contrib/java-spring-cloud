@@ -40,6 +40,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable Websocket tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.scheduled.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable @Scheduled tracing.",
+      "defaultValue": true
     }
   ]
 }
