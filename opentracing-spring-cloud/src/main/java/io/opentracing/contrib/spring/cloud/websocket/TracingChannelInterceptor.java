@@ -31,97 +31,101 @@ import io.opentracing.tag.Tags;
 /**
  * This class implements a {@link ExecutorChannelInterceptor} to instrument the websocket
  * communications using an OpenTracing Tracer.
- *
  */
-public class TracingChannelInterceptor extends ChannelInterceptorAdapter implements ExecutorChannelInterceptor {
+public class TracingChannelInterceptor extends ChannelInterceptorAdapter implements
+    ExecutorChannelInterceptor {
 
-    /**
-     * The span component tag value.
-     */
-    protected static final String WEBSOCKET = "websocket";
+  /**
+   * The span component tag value.
+   */
+  protected static final String WEBSOCKET = "websocket";
 
-    /**
-     * The STOMP simple destination.
-     */
-    protected static final String SIMP_DESTINATION = "simpDestination";
+  /**
+   * The STOMP simple destination.
+   */
+  protected static final String SIMP_DESTINATION = "simpDestination";
 
-    /**
-     * The STOMP simple message type, values defined in enum {@link SimpMessageType}.
-     */
-    protected static final String SIMP_MESSAGE_TYPE = "simpMessageType";
+  /**
+   * The STOMP simple message type, values defined in enum {@link SimpMessageType}.
+   */
+  protected static final String SIMP_MESSAGE_TYPE = "simpMessageType";
 
-    /**
-     * Indicates that the destination is unknown.
-     */
-    private static final String UNKNOWN_DESTINATION = "Unknown";
+  /**
+   * Indicates that the destination is unknown.
+   */
+  private static final String UNKNOWN_DESTINATION = "Unknown";
 
-    /**
-     * Header name used to carry the current {@link Span} from the initial preSend phase to
-     * the beforeHandle phase.
-     */
-    protected static final String OPENTRACING_SPAN = "opentracing.span";
+  /**
+   * Header name used to carry the current {@link Span} from the initial preSend phase to the
+   * beforeHandle phase.
+   */
+  protected static final String OPENTRACING_SPAN = "opentracing.span";
 
-    private Tracer tracer;
-    private String spanKind;
+  private Tracer tracer;
+  private String spanKind;
 
-    public TracingChannelInterceptor(Tracer tracer, String spanKind) {
-        this.tracer = tracer;
-        this.spanKind = spanKind;
+  public TracingChannelInterceptor(Tracer tracer, String spanKind) {
+    this.tracer = tracer;
+    this.spanKind = spanKind;
+  }
+
+  @Override
+  public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    if (SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
+      if (Tags.SPAN_KIND_SERVER.equals(spanKind)) {
+        return preSendServerSpan(message);
+      } else if (Tags.SPAN_KIND_CLIENT.equals(spanKind)) {
+        return preSendClientSpan(message);
+      }
     }
+    return message;
+  }
 
-    @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        if (SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-            if (Tags.SPAN_KIND_SERVER.equals(spanKind)) {
-                return preSendServerSpan(message);
-            } else if (Tags.SPAN_KIND_CLIENT.equals(spanKind)) {
-                return preSendClientSpan(message);
-            }
-        }
-        return message;
-    }
+  private Message<?> preSendClientSpan(Message<?> message) {
+    Span span = tracer.buildSpan((String) message.getHeaders()
+        .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
+        .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+        .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
+        .startManual();
+    MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
+        .setHeader(OPENTRACING_SPAN, span);
+    tracer
+        .inject(span.context(), Format.Builtin.TEXT_MAP, new TextMapInjectAdapter(messageBuilder));
+    return messageBuilder.build();
+  }
 
-    private Message<?> preSendClientSpan(Message<?> message) {
-        Span span = tracer.buildSpan((String)message.getHeaders()
-                .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
-                .withTag(Tags.SPAN_KIND.getKey(), spanKind)
-                .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
-                .startManual();
-        MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
-                .setHeader(OPENTRACING_SPAN, span);
-        tracer.inject(span.context(), Format.Builtin.TEXT_MAP, new TextMapInjectAdapter(messageBuilder));
-        return messageBuilder.build();
-    }
+  private Message<?> preSendServerSpan(Message<?> message) {
+    Span span = tracer.buildSpan((String) message.getHeaders()
+        .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
+        .asChildOf(tracer
+            .extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders())))
+        .withTag(Tags.SPAN_KIND.getKey(), spanKind)
+        .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
+        .startManual();
+    return MessageBuilder.fromMessage(message)
+        .setHeader(OPENTRACING_SPAN, span)
+        .build();
+  }
 
-    private Message<?> preSendServerSpan(Message<?> message) {
-        Span span = tracer.buildSpan((String)message.getHeaders()
-                .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
-                .asChildOf(tracer.extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders())))
-                .withTag(Tags.SPAN_KIND.getKey(), spanKind)
-                .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
-                .startManual();
-        return MessageBuilder.fromMessage(message)
-                .setHeader(OPENTRACING_SPAN, span)
-                .build();
+  @Override
+  public void afterMessageHandled(Message<?> message, MessageChannel channel,
+      MessageHandler handler, Exception arg3) {
+    if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
+        handler instanceof SubProtocolWebSocketHandler) &&
+        SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
+      tracer.activeSpan().close();
     }
+  }
 
-    @Override
-    public void afterMessageHandled(Message<?> message, MessageChannel channel, MessageHandler handler, Exception arg3) {
-        if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
-                handler instanceof SubProtocolWebSocketHandler) &&
-                SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-            tracer.activeSpan().close();
-        }
+  @Override
+  public Message<?> beforeHandle(Message<?> message, MessageChannel channel,
+      MessageHandler handler) {
+    if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
+        handler instanceof SubProtocolWebSocketHandler) &&
+        SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
+      tracer.makeActive(message.getHeaders().get(OPENTRACING_SPAN, Span.class));
     }
-
-    @Override
-    public Message<?> beforeHandle(Message<?> message, MessageChannel channel, MessageHandler handler) {
-        if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
-                handler instanceof SubProtocolWebSocketHandler) &&
-                SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-            tracer.makeActive(message.getHeaders().get(OPENTRACING_SPAN, Span.class));
-        }
-        return message;
-    }
+    return message;
+  }
 
 }

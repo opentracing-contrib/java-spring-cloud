@@ -27,6 +27,7 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class ScheduledAspect {
+
   static final String COMPONENT_NAME = "scheduled";
 
   private Tracer tracer;

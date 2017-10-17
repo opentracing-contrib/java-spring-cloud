@@ -47,76 +47,77 @@ import io.opentracing.mock.MockTracer;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {
-                MockTracingConfiguration.class,
-                JmsArtemisStarterTest.JmsTestConfiguration.class,
-                MsgController.class})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {
+        MockTracingConfiguration.class,
+        JmsArtemisStarterTest.JmsTestConfiguration.class,
+        MsgController.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JmsArtemisStarterTest {
 
-    @Configuration
-    @EnableJms
-    static class JmsTestConfiguration {
+  @Configuration
+  @EnableJms
+  static class JmsTestConfiguration {
 
-        @Bean
-        public MsgListener msgListener() {
-            return new MsgListener();
-        }
-
-        @Bean
-        public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
-                                                        DefaultJmsListenerContainerFactoryConfigurer configurer) {
-            DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-            // This provides all boot's default to this factory, including the message converter
-            configurer.configure(factory, connectionFactory);
-            // You could still override some of Boot's default if necessary.
-            return factory;
-        }
-
-        public static class MsgListener {
-            private Message message;
-
-            public Message getMessage() {
-                return message;
-            }
-
-            @JmsListener(destination = "fooQueue", containerFactory = "myFactory")
-            public void processMessage(Message msg) throws Exception {
-                message = msg;
-            }
-        }
+    @Bean
+    public MsgListener msgListener() {
+      return new MsgListener();
     }
 
-    @Autowired
-    private MockTracer tracer;
-
-    @Autowired
-    private JmsTestConfiguration.MsgListener msgListener;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Before
-    public void before() {
-        tracer.reset();
+    @Bean
+    public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+        DefaultJmsListenerContainerFactoryConfigurer configurer) {
+      DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+      // This provides all boot's default to this factory, including the message converter
+      configurer.configure(factory, connectionFactory);
+      // You could still override some of Boot's default if necessary.
+      return factory;
     }
 
-    @Test
-    public void testListenerSpans() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
+    public static class MsgListener {
 
-        await().until(() -> {
-            List<MockSpan> mockSpans = tracer.finishedSpans();
-            return (mockSpans.size() == 3);
-        });
+      private Message message;
 
-        assertNotNull(msgListener.getMessage());
+      public Message getMessage() {
+        return message;
+      }
 
-        assertEquals(200, responseEntity.getStatusCode().value());
-        List<MockSpan> spans = tracer.finishedSpans();
-        // HTTP server span, jms send, jms receive
-        assertEquals(3, spans.size());
-        TestUtils.assertSameTraceId(spans);
+      @JmsListener(destination = "fooQueue", containerFactory = "myFactory")
+      public void processMessage(Message msg) throws Exception {
+        message = msg;
+      }
     }
+  }
+
+  @Autowired
+  private MockTracer tracer;
+
+  @Autowired
+  private JmsTestConfiguration.MsgListener msgListener;
+
+  @Autowired
+  private TestRestTemplate restTemplate;
+
+  @Before
+  public void before() {
+    tracer.reset();
+  }
+
+  @Test
+  public void testListenerSpans() {
+    ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
+
+    await().until(() -> {
+      List<MockSpan> mockSpans = tracer.finishedSpans();
+      return (mockSpans.size() == 3);
+    });
+
+    assertNotNull(msgListener.getMessage());
+
+    assertEquals(200, responseEntity.getStatusCode().value());
+    List<MockSpan> spans = tracer.finishedSpans();
+    // HTTP server span, jms send, jms receive
+    assertEquals(3, spans.size());
+    TestUtils.assertSameTraceId(spans);
+  }
 }

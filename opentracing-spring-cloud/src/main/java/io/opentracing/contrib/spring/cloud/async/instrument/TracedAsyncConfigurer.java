@@ -27,21 +27,21 @@ import io.opentracing.contrib.concurrent.TracedExecutor;
  */
 public class TracedAsyncConfigurer extends AsyncConfigurerSupport {
 
-    private final Tracer tracer;
-    private final AsyncConfigurer delegate;
+  private final Tracer tracer;
+  private final AsyncConfigurer delegate;
 
-    public TracedAsyncConfigurer(Tracer tracer, AsyncConfigurer delegate) {
-        this.tracer = tracer;
-        this.delegate = delegate;
-    }
+  public TracedAsyncConfigurer(Tracer tracer, AsyncConfigurer delegate) {
+    this.tracer = tracer;
+    this.delegate = delegate;
+  }
 
-    @Override
-    public Executor getAsyncExecutor() {
-       return new TracedExecutor(this.delegate.getAsyncExecutor(), this.tracer);
-    }
+  @Override
+  public Executor getAsyncExecutor() {
+    return new TracedExecutor(this.delegate.getAsyncExecutor(), this.tracer);
+  }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return delegate.getAsyncUncaughtExceptionHandler();
-    }
+  @Override
+  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+    return delegate.getAsyncUncaughtExceptionHandler();
+  }
 }

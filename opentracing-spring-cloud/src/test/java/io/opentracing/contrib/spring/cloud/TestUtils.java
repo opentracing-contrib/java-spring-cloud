@@ -22,6 +22,7 @@ import org.junit.Assert;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 public class TestUtils {
+
   /**
    * Check if all spans have same traceId.
    *

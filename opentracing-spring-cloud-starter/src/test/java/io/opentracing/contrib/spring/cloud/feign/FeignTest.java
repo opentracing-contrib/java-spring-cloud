@@ -33,26 +33,27 @@ import io.opentracing.Tracer;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {FeignTest.FeignWithoutRibbonConfiguration.class})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {FeignTest.FeignWithoutRibbonConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {
 
-    @Configuration
-    @EnableFeignClients
-    @EnableAutoConfiguration
-    static class FeignWithoutRibbonConfiguration {
-        @Bean
-        public Tracer tracer() {
-            return mock(Tracer.class);
-        }
-    }
+  @Configuration
+  @EnableFeignClients
+  @EnableAutoConfiguration
+  static class FeignWithoutRibbonConfiguration {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Test
-    public void testTracingFeignBeanCreated() {
-        assertNotNull(applicationContext.getBean(TraceFeignContext.class));
+    @Bean
+    public Tracer tracer() {
+      return mock(Tracer.class);
     }
+  }
+
+  @Autowired
+  private ApplicationContext applicationContext;
+
+  @Test
+  public void testTracingFeignBeanCreated() {
+    assertNotNull(applicationContext.getBean(TraceFeignContext.class));
+  }
 }

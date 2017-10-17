@@ -46,58 +46,63 @@ import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.mock.MockTracer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes= {WebSocketConfig.class,GreetingController.class,MockTracingConfiguration.class},
+@SpringBootTest(classes = {WebSocketConfig.class, GreetingController.class,
+    MockTracingConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpringWebsocketTracingTest {
-    private static final String SEND_HELLO_MESSAGE_ENDPOINT = "/app/hello";
-    private static final String SUBSCRIBE_GREETINGS_ENDPOINT = "/topic/greetings";
 
-    @Value("${local.server.port}")
-    private int port;
-    private String url;
+  private static final String SEND_HELLO_MESSAGE_ENDPOINT = "/app/hello";
+  private static final String SUBSCRIBE_GREETINGS_ENDPOINT = "/topic/greetings";
 
-    @Autowired
-    private MockTracer mockTracer;
+  @Value("${local.server.port}")
+  private int port;
+  private String url;
 
-    @Before
-    public void setup() {
-        url = "ws://localhost:" + port + "/test-websocket";
+  @Autowired
+  private MockTracer mockTracer;
+
+  @Before
+  public void setup() {
+    url = "ws://localhost:" + port + "/test-websocket";
+  }
+
+  @Test
+  public void testTracedWebsocketSession()
+      throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException {
+    WebSocketStompClient stompClient = new WebSocketStompClient(
+        new SockJsClient(createTransportClient()));
+    stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+
+    StompSession stompSession = stompClient.connect(url, new StompSessionHandlerAdapter() {
+    }).get(1, TimeUnit.SECONDS);
+
+    stompSession.subscribe(SUBSCRIBE_GREETINGS_ENDPOINT, new GreetingStompFrameHandler());
+    stompSession.send(SEND_HELLO_MESSAGE_ENDPOINT, new HelloMessage("Hi"));
+
+    // Three spans related to the websocket session, and two related to websocket connect
+    await().until(() -> mockTracer.finishedSpans().size() == 5);
+
+    assertTrue(mockTracer.finishedSpans().stream().filter(s ->
+        s.operationName().equals(SEND_HELLO_MESSAGE_ENDPOINT)).toArray().length == 1);
+    assertTrue(mockTracer.finishedSpans().stream().filter(s ->
+        s.operationName().equals(SUBSCRIBE_GREETINGS_ENDPOINT)).toArray().length == 1);
+    assertTrue(mockTracer.finishedSpans().stream().filter(s ->
+        s.operationName().equals(GreetingController.DOING_WORK)).toArray().length == 1);
+  }
+
+  private List<Transport> createTransportClient() {
+    return Collections.singletonList(new WebSocketTransport(new StandardWebSocketClient()));
+  }
+
+  private class GreetingStompFrameHandler implements StompFrameHandler {
+
+    @Override
+    public Type getPayloadType(StompHeaders stompHeaders) {
+      return Greeting.class;
     }
 
-    @Test
-    public void testTracedWebsocketSession() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException {
-        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(createTransportClient()));
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-
-        StompSession stompSession = stompClient.connect(url, new StompSessionHandlerAdapter() {
-        }).get(1, TimeUnit.SECONDS);
-
-        stompSession.subscribe(SUBSCRIBE_GREETINGS_ENDPOINT, new GreetingStompFrameHandler());
-        stompSession.send(SEND_HELLO_MESSAGE_ENDPOINT, new HelloMessage("Hi"));
-
-        // Three spans related to the websocket session, and two related to websocket connect
-        await().until(() -> mockTracer.finishedSpans().size() == 5);
-
-        assertTrue(mockTracer.finishedSpans().stream().filter(s ->
-            s.operationName().equals(SEND_HELLO_MESSAGE_ENDPOINT)).toArray().length == 1);
-        assertTrue(mockTracer.finishedSpans().stream().filter(s ->
-            s.operationName().equals(SUBSCRIBE_GREETINGS_ENDPOINT)).toArray().length == 1);
-        assertTrue(mockTracer.finishedSpans().stream().filter(s ->
-            s.operationName().equals(GreetingController.DOING_WORK)).toArray().length == 1);
+    @Override
+    public void handleFrame(StompHeaders stompHeaders, Object o) {
     }
-
-    private List<Transport> createTransportClient() {
-        return Collections.singletonList(new WebSocketTransport(new StandardWebSocketClient()));
-    }
-
-    private class GreetingStompFrameHandler implements StompFrameHandler {
-        @Override
-        public Type getPayloadType(StompHeaders stompHeaders) {
-            return Greeting.class;
-        }
-
-        @Override
-        public void handleFrame(StompHeaders stompHeaders, Object o) {
-        }
-    }
+  }
 }

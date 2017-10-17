@@ -26,7 +26,8 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 
 /**
- * This auto-configuration wraps available {@link AsyncConfigurer} in a {@link TracedAsyncConfigurer}
+ * This auto-configuration wraps available {@link AsyncConfigurer} in a {@link
+ * TracedAsyncConfigurer}
  *
  * @author Pavol Loffay
  */
@@ -37,20 +38,21 @@ import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigure
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
 public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor {
 
-    @Autowired
-    private Tracer tracer;
+  @Autowired
+  private Tracer tracer;
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName)
+      throws BeansException {
+    return bean;
+  }
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof AsyncConfigurer) {
-            AsyncConfigurer configurer = (AsyncConfigurer) bean;
-            return new TracedAsyncConfigurer(tracer, configurer);
-        }
-        return bean;
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    if (bean instanceof AsyncConfigurer) {
+      AsyncConfigurer configurer = (AsyncConfigurer) bean;
+      return new TracedAsyncConfigurer(tracer, configurer);
     }
+    return bean;
+  }
 }

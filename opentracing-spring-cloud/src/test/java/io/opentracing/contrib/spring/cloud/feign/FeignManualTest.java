@@ -47,6 +47,7 @@ public class FeignManualTest {
 
   @Configuration
   static class ManualFeignConfiguration {
+
     @Autowired
     public ManualFeignConfiguration(Client client) {
       feignInterface = Feign.builder().client(client)
@@ -56,6 +57,7 @@ public class FeignManualTest {
 
   @FeignClient(value = "localService")
   interface FeignInterface {
+
     @RequestLine("GET /notTraced")
     // TODO this has to be added when using spring Boot 1.4.1
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")

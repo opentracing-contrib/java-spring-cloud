@@ -30,21 +30,23 @@ import org.springframework.messaging.MessageHeaders;
  * @see Tracer#extract(Format, Object)
  */
 public final class TextMapExtractAdapter implements TextMap {
-    private final Map<String,String> headers = new HashMap<>();
 
-    public TextMapExtractAdapter(final MessageHeaders headers) {
-        for (Map.Entry<String, Object> entry : headers.entrySet()) {
-            this.headers.put(entry.getKey(), entry.getValue().toString());
-        }
-    }
+  private final Map<String, String> headers = new HashMap<>();
 
-    @Override
-    public Iterator<Map.Entry<String, String>> iterator() {
-        return headers.entrySet().iterator();
+  public TextMapExtractAdapter(final MessageHeaders headers) {
+    for (Map.Entry<String, Object> entry : headers.entrySet()) {
+      this.headers.put(entry.getKey(), entry.getValue().toString());
     }
+  }
 
-    @Override
-    public void put(String key, String value) {
-        throw new UnsupportedOperationException("TextMapInjectAdapter should only be used with Tracer.extract()");
-    }
+  @Override
+  public Iterator<Map.Entry<String, String>> iterator() {
+    return headers.entrySet().iterator();
+  }
+
+  @Override
+  public void put(String key, String value) {
+    throw new UnsupportedOperationException(
+        "TextMapInjectAdapter should only be used with Tracer.extract()");
+  }
 }

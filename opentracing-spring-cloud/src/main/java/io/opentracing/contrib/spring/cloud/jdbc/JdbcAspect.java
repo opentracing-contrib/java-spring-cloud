@@ -22,8 +22,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 
 /**
- * Spring AOP Aspect wrapping JDBC-related calls, delegating as much as possible to the official OpenTracing Java JDBC
- * framework integration.
+ * Spring AOP Aspect wrapping JDBC-related calls, delegating as much as possible to the official
+ * OpenTracing Java JDBC framework integration.
  *
  * @author Juraci Paixão Kröhling
  */
@@ -31,9 +31,11 @@ import java.sql.Connection;
 public class JdbcAspect {
 
   /**
-   * Intercepts calls to {@link DataSource#getConnection()} (and related), wrapping the outcome in a {@link TracingConnection}
+   * Intercepts calls to {@link DataSource#getConnection()} (and related), wrapping the outcome in a
+   * {@link TracingConnection}
+   *
    * @param pjp the intercepted join point
-   * @return  a new {@link TracingConnection} wrapping the result of the joint point
+   * @return a new {@link TracingConnection} wrapping the result of the joint point
    */
   @Around("execution(java.sql.Connection *.getConnection(..)) && target(javax.sql.DataSource)")
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
@@ -44,7 +46,8 @@ public class JdbcAspect {
     try {
       dbType = url.split(":")[1];
     } catch (Throwable t) {
-      throw new IllegalArgumentException("Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
+      throw new IllegalArgumentException(
+          "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
     }
     return new TracingConnection(conn, dbType, user);
   }

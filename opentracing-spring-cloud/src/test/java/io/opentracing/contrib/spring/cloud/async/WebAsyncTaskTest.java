@@ -39,62 +39,64 @@ import io.opentracing.mock.MockTracer;
 /**
  * @author Pavol Loffay
  */
-@SpringBootTest(classes = {MockTracingConfiguration.class, WebAsyncTaskTest.HelloWorldController.class},
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {MockTracingConfiguration.class,
+    WebAsyncTaskTest.HelloWorldController.class},
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class WebAsyncTaskTest {
 
-    @RestController
-    static class HelloWorldController {
-        @Autowired
-        MockTracer mockTracer;
-
-        @RequestMapping("/webAsyncTask")
-        public WebAsyncTask<String> webAsyncTask() {
-            return new WebAsyncTask<>(() -> {
-                mockTracer.buildSpan("foo").startManual().finish();
-                return "webAsyncTask";
-            });
-        }
-
-        @RequestMapping("/callable")
-        public Callable<String> callable() {
-            return () -> {
-                mockTracer.buildSpan("foo").startManual().finish();
-                return "callable";
-            };
-        }
-    }
+  @RestController
+  static class HelloWorldController {
 
     @Autowired
-    private MockTracer mockTracer;
-    @Autowired
-    private TestRestTemplate restTemplate;
+    MockTracer mockTracer;
 
-    @Before
-    public void before() {
-        mockTracer.reset();
+    @RequestMapping("/webAsyncTask")
+    public WebAsyncTask<String> webAsyncTask() {
+      return new WebAsyncTask<>(() -> {
+        mockTracer.buildSpan("foo").startManual().finish();
+        return "webAsyncTask";
+      });
     }
 
-    @Test
-    public void testWebAsyncTaskTraceAndSpans() throws Exception {
-        String response = restTemplate.getForObject("/webAsyncTask",String.class);
-        assertThat(response).isNotNull();
-        await().until(() -> mockTracer.finishedSpans().size() == 2);
-
-        List<MockSpan> mockSpans = mockTracer.finishedSpans();
-        assertEquals(2, mockSpans.size());
-        TestUtils.assertSameTraceId(mockSpans);
+    @RequestMapping("/callable")
+    public Callable<String> callable() {
+      return () -> {
+        mockTracer.buildSpan("foo").startManual().finish();
+        return "callable";
+      };
     }
+  }
 
-    @Test
-    public void testCallableTraceAndSpans() throws Exception {
-        String response = restTemplate.getForObject("/callable", String.class);
-        assertThat(response).isNotNull();
-        await().until(() -> mockTracer.finishedSpans().size() == 2);
+  @Autowired
+  private MockTracer mockTracer;
+  @Autowired
+  private TestRestTemplate restTemplate;
 
-        List<MockSpan> mockSpans = mockTracer.finishedSpans();
-        assertEquals(2, mockSpans.size());
-        TestUtils.assertSameTraceId(mockSpans);
-    }
+  @Before
+  public void before() {
+    mockTracer.reset();
+  }
+
+  @Test
+  public void testWebAsyncTaskTraceAndSpans() throws Exception {
+    String response = restTemplate.getForObject("/webAsyncTask", String.class);
+    assertThat(response).isNotNull();
+    await().until(() -> mockTracer.finishedSpans().size() == 2);
+
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(2, mockSpans.size());
+    TestUtils.assertSameTraceId(mockSpans);
+  }
+
+  @Test
+  public void testCallableTraceAndSpans() throws Exception {
+    String response = restTemplate.getForObject("/callable", String.class);
+    assertThat(response).isNotNull();
+    await().until(() -> mockTracer.finishedSpans().size() == 2);
+
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(2, mockSpans.size());
+    TestUtils.assertSameTraceId(mockSpans);
+  }
 }

@@ -54,11 +54,13 @@ public class ScheduledTest {
 
   @EnableScheduling
   static class Configuration {
+
   }
 
   @Component
   @EnableScheduling
   static class ScheduledComponent {
+
     @Autowired
     private Tracer tracer;
     @Autowired
@@ -69,7 +71,8 @@ public class ScheduledTest {
     @Scheduled(fixedDelay = 1)
     public void scheduledFoo() {
       // disable upcoming scheduling
-      scheduledAnnotationBeanPostProcessor.postProcessBeforeDestruction(beanFactory.getBean(ScheduledComponent.class), null);
+      scheduledAnnotationBeanPostProcessor
+          .postProcessBeforeDestruction(beanFactory.getBean(ScheduledComponent.class), null);
       tracer.buildSpan("child").startManual().finish();
     }
   }
@@ -100,7 +103,8 @@ public class ScheduledTest {
     assertEquals(3, scheduledSpan.tags().size());
     assertEquals(0, scheduledSpan.logEntries().size());
     assertEquals(ScheduledAspect.COMPONENT_NAME, scheduledSpan.tags().get(Tags.COMPONENT.getKey()));
-    assertEquals(ScheduledComponent.class.getSimpleName(), scheduledSpan.tags().get(ExtensionTags.CLASS_TAG.getKey()));
+    assertEquals(ScheduledComponent.class.getSimpleName(),
+        scheduledSpan.tags().get(ExtensionTags.CLASS_TAG.getKey()));
     assertEquals("scheduledFoo", scheduledSpan.tags().get(ExtensionTags.METHOD_TAG.getKey()));
   }
 }

@@ -58,12 +58,15 @@ public class FeignTest {
   @EnableFeignClients
   @RibbonClients(@RibbonClient(name = "localService", configuration = RibbonConfiguration.class))
   static class FeignRibbonLocalConfiguration {
+
   }
 
   @Configuration
   static class RibbonConfiguration {
+
     @LocalServerPort
     int port;
+
     @Bean
     public ILoadBalancer loadBalancer() {
       BaseLoadBalancer loadBalancer = new BaseLoadBalancer();
@@ -74,6 +77,7 @@ public class FeignTest {
 
   @FeignClient(value = "localService")
   interface FeignInterface {
+
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
     String hello();
   }

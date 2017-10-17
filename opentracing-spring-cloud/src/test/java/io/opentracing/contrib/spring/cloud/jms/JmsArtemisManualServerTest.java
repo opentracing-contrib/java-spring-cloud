@@ -52,15 +52,16 @@ import io.opentracing.mock.MockTracer;
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
 @SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = {MockTracingConfiguration.class,
-          JmsArtemisManualServerTest.JmsTestConfiguration.class,
-          MsgController.class})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {MockTracingConfiguration.class,
+        JmsArtemisManualServerTest.JmsTestConfiguration.class,
+        MsgController.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JmsArtemisManualServerTest {
 
   @Configuration
   static class JmsTestConfiguration {
+
     private static final Logger log = Logger.getLogger(JmsTestConfiguration.class.getName());
 
     @Bean
@@ -79,6 +80,7 @@ public class JmsArtemisManualServerTest {
     }
 
     public static class Server {
+
       private ActiveMQServer server;
 
       public void start() throws Exception {
@@ -106,6 +108,7 @@ public class JmsArtemisManualServerTest {
     }
 
     public static class MsgListener {
+
       private Message message;
 
       public Message getMessage() {
