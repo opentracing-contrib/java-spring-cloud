@@ -7,8 +7,8 @@ This repository provides OpenTracing instrumentation for Spring Cloud. It can be
 compatible implementation.
 
 It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud and other integrations:
-* Spring Web (RestControllers, RestTemplates)
-* Async annotation, AsyncWebTask, Executors
+* Spring Web (RestControllers, RestTemplates, WebAsyncTask)
+* @Async, @Scheduled, Executors
 * WebSocket STOMP
 * Feign, HystrixFeign
 * Hystrix
