@@ -83,6 +83,8 @@
     <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>2.20</version.maven-surefire-plugin>
     <version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
+    <version.maven-checkstyle-plugin>2.17</version.maven-checkstyle-plugin>
+    <version.checkstyle>8.3</version.checkstyle>
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
   </properties>
@@ -194,6 +196,35 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${version.maven-checkstyle-plugin}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${version.checkstyle}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <configuration>
+              <configLocation>checkstyle.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>false</failsOnError>
+              <failOnViolation>false</failOnViolation>
+              <linkXRef>false</linkXRef>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>${version.maven-release-plugin}</version>
