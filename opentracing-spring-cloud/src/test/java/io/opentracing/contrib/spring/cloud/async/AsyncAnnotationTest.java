@@ -18,6 +18,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -97,8 +98,8 @@ public class AsyncAnnotationTest {
         MockSpan asyncSpan = mockSpans.get(1);
         assertEquals(3, asyncSpan.tags().size());
         assertEquals(TraceAsyncAspect.TAG_COMPONENT, asyncSpan.tags().get(Tags.COMPONENT.getKey()));
-        assertEquals("fooAsync", asyncSpan.tags().get(TraceAsyncAspect.TAG_METHOD));
-        assertEquals(AsyncService.class.getSimpleName(), asyncSpan.tags().get(TraceAsyncAspect.TAG_CLASS));
+        assertEquals("fooAsync", asyncSpan.tags().get(ExtensionTags.METHOD_TAG.getKey()));
+        assertEquals(AsyncService.class.getSimpleName(), asyncSpan.tags().get(ExtensionTags.CLASS_TAG.getKey()));
     }
 
     @Test
