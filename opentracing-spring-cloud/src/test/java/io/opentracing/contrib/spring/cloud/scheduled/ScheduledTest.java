@@ -95,6 +95,7 @@ public class ScheduledTest {
     assertEquals("child", localSpan.operationName());
 
     MockSpan scheduledSpan = mockSpans.get(1);
+    assertEquals(scheduledSpan.context().spanId(), localSpan.parentId());
     assertEquals("scheduledFoo", scheduledSpan.operationName());
     assertEquals(3, scheduledSpan.tags().size());
     assertEquals(0, scheduledSpan.logEntries().size());
