@@ -14,6 +14,18 @@
     the License.
 
 -->
+
+<!--
+    Checkstyle configuration that checks the Google coding conventions from Google Java Style
+    that can be found at https://google.github.io/styleguide/javaguide.html.
+
+    Checkstyle is very configurable. Be sure to read the documentation at
+    http://checkstyle.sf.net (or in your downloaded distribution).
+
+    To completely disable a check, just comment it out or delete it from the file.
+
+    Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
+ -->
 <!DOCTYPE module PUBLIC
   "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
   "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
