@@ -37,38 +37,39 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
 
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {WebsocketTest.WebSocketConfig.class})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {WebsocketTest.WebSocketConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class WebsocketTest {
 
-    @Configuration
-    @EnableWebSocketMessageBroker
-    @EnableAutoConfiguration
-    public static class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
-        @Bean
-        public Tracer tracer() {
-            return mock(Tracer.class);
-        }
+  @Configuration
+  @EnableWebSocketMessageBroker
+  @EnableAutoConfiguration
+  public static class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-        @Override
-        public void configureMessageBroker(MessageBrokerRegistry config) {
-            config.enableSimpleBroker("/topic");
-            config.setApplicationDestinationPrefixes("/app");
-        }
-
-        @Override
-        public void registerStompEndpoints(StompEndpointRegistry registry) {
-            registry.addEndpoint("/websocket").withSockJS();
-        }
-
+    @Bean
+    public Tracer tracer() {
+      return mock(Tracer.class);
     }
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+      config.enableSimpleBroker("/topic");
+      config.setApplicationDestinationPrefixes("/app");
+    }
 
-    @Test
-    public void test() {
-        assertEquals(2, applicationContext.getBeansOfType(TracingChannelInterceptor.class).size());
-     }
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+      registry.addEndpoint("/websocket").withSockJS();
+    }
+
+  }
+
+  @Autowired
+  private ApplicationContext applicationContext;
+
+  @Test
+  public void test() {
+    assertEquals(2, applicationContext.getBeansOfType(TracingChannelInterceptor.class).size());
+  }
 }

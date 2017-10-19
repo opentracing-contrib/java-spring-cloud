@@ -19,8 +19,8 @@ import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
 /**
- * Implement this class if you need traced variant of {@link HystrixCommand}. It creates
- * a span that wraps the whole invocation.
+ * Implement this class if you need traced variant of {@link HystrixCommand}. It creates a span that
+ * wraps the whole invocation.
  */
 public abstract class TracedHystrixCommand<R> extends HystrixCommand<R> {
 
@@ -41,14 +41,14 @@ public abstract class TracedHystrixCommand<R> extends HystrixCommand<R> {
     String commandKeyName = getCommandKey().name();
 
     try (ActiveSpan span = this.tracer.buildSpan(commandKeyName)
-      .withTag(Tags.COMPONENT.getKey(), TAG_HYSTRIX_COMPONENT)
-      .withTag(TAG_COMMAND_KEY, commandKeyName)
-      .withTag(TAG_COMMAND_GROUP, commandGroup.name())
-      .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
+        .withTag(Tags.COMPONENT.getKey(), TAG_HYSTRIX_COMPONENT)
+        .withTag(TAG_COMMAND_KEY, commandKeyName)
+        .withTag(TAG_COMMAND_GROUP, commandGroup.name())
+        .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
         .startActive()) {
-        return doRun();
-        }
+      return doRun();
     }
+  }
 
   public abstract R doRun() throws Exception;
 }

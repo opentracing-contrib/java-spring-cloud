@@ -13,12 +13,8 @@
  */
 package io.opentracing.contrib.spring.cloud.websocket;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.simp.SimpMessageType;
-import org.springframework.messaging.support.MessageBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.mock.MockSpan;
@@ -27,65 +23,78 @@ import io.opentracing.mock.MockTracer.Propagator;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.ThreadLocalActiveSpanSource;
+import org.junit.Test;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.messaging.support.MessageBuilder;
 
 public class TracingChannelInterceptorTest {
 
-    private static final String TEST_DESTINATION = "/app/test";
+  private static final String TEST_DESTINATION = "/app/test";
 
-    private MockTracer mockTracer = new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
+  private MockTracer mockTracer = new MockTracer(new ThreadLocalActiveSpanSource(),
+      Propagator.TEXT_MAP);
 
-    @Test
-    public void testPreSendServerSpan() {
-        MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
-            .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
-            .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
-      
-        MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
-        mockTracer.inject(parentSpan.context(), Format.Builtin.TEXT_MAP, new TextMapInjectAdapter(messageBuilder));
+  @Test
+  public void testPreSendServerSpan() {
+    MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
+        .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
+        .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
 
-        TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer, Tags.SPAN_KIND_SERVER);
+    MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
+    mockTracer.inject(parentSpan.context(), Format.Builtin.TEXT_MAP,
+        new TextMapInjectAdapter(messageBuilder));
 
-        Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
-        
-        // Verify span cached with message is child of propagated parentSpan span context
-        assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));
-        MockSpan childSpan = (MockSpan)processed.getHeaders().get(TracingChannelInterceptor.OPENTRACING_SPAN);
-        assertEquals(parentSpan.context().spanId(), childSpan.parentId());
-        assertEquals(parentSpan.context().traceId(), childSpan.context().traceId());
-        assertEquals(TEST_DESTINATION, childSpan.operationName());
-        assertEquals(Tags.SPAN_KIND_SERVER, childSpan.tags().get(Tags.SPAN_KIND.getKey()));
-        assertEquals(TracingChannelInterceptor.WEBSOCKET, childSpan.tags().get(Tags.COMPONENT.getKey()));
-    }
+    TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer,
+        Tags.SPAN_KIND_SERVER);
 
-    @Test
-    public void testPreSendClientSpan() {
-        MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
-                .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
-                .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
+    Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
 
-        MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
-        ActiveSpan activeParentSpan = mockTracer.makeActive(parentSpan);
+    // Verify span cached with message is child of propagated parentSpan span context
+    assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));
+    MockSpan childSpan = (MockSpan) processed.getHeaders()
+        .get(TracingChannelInterceptor.OPENTRACING_SPAN);
+    assertEquals(parentSpan.context().spanId(), childSpan.parentId());
+    assertEquals(parentSpan.context().traceId(), childSpan.context().traceId());
+    assertEquals(TEST_DESTINATION, childSpan.operationName());
+    assertEquals(Tags.SPAN_KIND_SERVER, childSpan.tags().get(Tags.SPAN_KIND.getKey()));
+    assertEquals(TracingChannelInterceptor.WEBSOCKET,
+        childSpan.tags().get(Tags.COMPONENT.getKey()));
+  }
 
-        TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer, Tags.SPAN_KIND_CLIENT);
+  @Test
+  public void testPreSendClientSpan() {
+    MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
+        .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
+        .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
 
-        Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
-       
-        activeParentSpan.close();
-        
-        // Verify span cached with message is child of the active parentSpan
-        assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));
-        MockSpan childSpan = (MockSpan)processed.getHeaders().get(TracingChannelInterceptor.OPENTRACING_SPAN);
-        assertEquals(parentSpan.context().spanId(), childSpan.parentId());
-        assertEquals(parentSpan.context().traceId(), childSpan.context().traceId());
+    MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
+    ActiveSpan activeParentSpan = mockTracer.makeActive(parentSpan);
 
-        // Verify child span context propagated with message
-        MockSpan.MockContext context = (MockSpan.MockContext )
-                mockTracer.extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(processed.getHeaders()));
-        assertEquals(childSpan.context().traceId(), context.traceId());
-        assertEquals(childSpan.context().spanId(), context.spanId());
-        assertEquals(TEST_DESTINATION, childSpan.operationName());
-        assertEquals(Tags.SPAN_KIND_CLIENT, childSpan.tags().get(Tags.SPAN_KIND.getKey()));
-        assertEquals(TracingChannelInterceptor.WEBSOCKET, childSpan.tags().get(Tags.COMPONENT.getKey()));
-    }
+    TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer,
+        Tags.SPAN_KIND_CLIENT);
+
+    Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
+
+    activeParentSpan.close();
+
+    // Verify span cached with message is child of the active parentSpan
+    assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));
+    MockSpan childSpan = (MockSpan) processed.getHeaders()
+        .get(TracingChannelInterceptor.OPENTRACING_SPAN);
+    assertEquals(parentSpan.context().spanId(), childSpan.parentId());
+    assertEquals(parentSpan.context().traceId(), childSpan.context().traceId());
+
+    // Verify child span context propagated with message
+    MockSpan.MockContext context = (MockSpan.MockContext)
+        mockTracer
+            .extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(processed.getHeaders()));
+    assertEquals(childSpan.context().traceId(), context.traceId());
+    assertEquals(childSpan.context().spanId(), context.spanId());
+    assertEquals(TEST_DESTINATION, childSpan.operationName());
+    assertEquals(Tags.SPAN_KIND_CLIENT, childSpan.tags().get(Tags.SPAN_KIND.getKey()));
+    assertEquals(TracingChannelInterceptor.WEBSOCKET,
+        childSpan.tags().get(Tags.COMPONENT.getKey()));
+  }
 
 }

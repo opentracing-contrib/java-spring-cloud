@@ -32,21 +32,21 @@ import io.opentracing.propagation.TextMap;
  */
 public class TextMapInjectAdapter implements TextMap {
 
-    private final MessageBuilder<?> messageBuilder;
+  private final MessageBuilder<?> messageBuilder;
 
-    public TextMapInjectAdapter(MessageBuilder<?> messageBuilder) {
-        this.messageBuilder = messageBuilder;
-    }
+  public TextMapInjectAdapter(MessageBuilder<?> messageBuilder) {
+    this.messageBuilder = messageBuilder;
+  }
 
-    @Override
-    public Iterator<Map.Entry<String, String>> iterator() {
-        throw new UnsupportedOperationException(
-                TextMapInjectAdapter.class.getName() +" should only be used with Tracer.inject()");
-    }
+  @Override
+  public Iterator<Map.Entry<String, String>> iterator() {
+    throw new UnsupportedOperationException(
+        TextMapInjectAdapter.class.getName() + " should only be used with Tracer.inject()");
+  }
 
-    @Override
-    public void put(String key, String value) {
-        messageBuilder.setHeader(key, value);
-    }
+  @Override
+  public void put(String key, String value) {
+    messageBuilder.setHeader(key, value);
+  }
 
 }

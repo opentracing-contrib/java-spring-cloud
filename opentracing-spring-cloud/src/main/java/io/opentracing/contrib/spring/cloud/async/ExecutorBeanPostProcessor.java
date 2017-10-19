@@ -1,6 +1,5 @@
 /**
- * Copyright 2013-2017 the original author or authors.
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2013-2017 the original author or authors. Copyright 2017 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -39,76 +38,78 @@ import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTask
  */
 class ExecutorBeanPostProcessor implements BeanPostProcessor {
 
-    private final Tracer tracer;
+  private final Tracer tracer;
 
-    ExecutorBeanPostProcessor(Tracer tracer) {
-        this.tracer = tracer;
-    }
+  ExecutorBeanPostProcessor(Tracer tracer) {
+    this.tracer = tracer;
+  }
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName)
+      throws BeansException {
+    return bean;
+  }
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof Executor && !(bean instanceof ThreadPoolTaskExecutor)) {
-            Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute", Runnable.class);
-            boolean methodFinal = Modifier.isFinal(execute.getModifiers());
-            boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-            boolean cglibProxy = !methodFinal && !classFinal;
-            Executor executor = (Executor) bean;
-            ProxyFactoryBean factory = new ProxyFactoryBean();
-            factory.setProxyTargetClass(cglibProxy);
-            factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer));
-            factory.setTarget(bean);
-            return factory.getObject();
-        } else if (bean instanceof ThreadPoolTaskExecutor) {
-            boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-            boolean cglibProxy = !classFinal;
-            ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
-            ProxyFactoryBean factory = new ProxyFactoryBean();
-            factory.setProxyTargetClass(cglibProxy);
-            factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, tracer) {
-                @Override Executor tracedExecutor(Tracer tracer, ThreadPoolTaskExecutor executor) {
-                    return new TracedThreadPoolTaskExecutor(tracer, executor);
-                }
-            });
-            factory.setTarget(bean);
-            return factory.getObject();
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    if (bean instanceof Executor && !(bean instanceof ThreadPoolTaskExecutor)) {
+      Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute", Runnable.class);
+      boolean methodFinal = Modifier.isFinal(execute.getModifiers());
+      boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+      boolean cglibProxy = !methodFinal && !classFinal;
+      Executor executor = (Executor) bean;
+      ProxyFactoryBean factory = new ProxyFactoryBean();
+      factory.setProxyTargetClass(cglibProxy);
+      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer));
+      factory.setTarget(bean);
+      return factory.getObject();
+    } else if (bean instanceof ThreadPoolTaskExecutor) {
+      boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
+      boolean cglibProxy = !classFinal;
+      ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
+      ProxyFactoryBean factory = new ProxyFactoryBean();
+      factory.setProxyTargetClass(cglibProxy);
+      factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, tracer) {
+        @Override
+        Executor tracedExecutor(Tracer tracer, ThreadPoolTaskExecutor executor) {
+          return new TracedThreadPoolTaskExecutor(tracer, executor);
         }
-        return bean;
+      });
+      factory.setTarget(bean);
+      return factory.getObject();
     }
+    return bean;
+  }
 }
 
 class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor {
 
-    private final T delegate;
-    private final Tracer tracer;
+  private final T delegate;
+  private final Tracer tracer;
 
-    ExecutorMethodInterceptor(T delegate, Tracer tracer) {
-        this.delegate = delegate;
-        this.tracer = tracer;
-    }
+  ExecutorMethodInterceptor(T delegate, Tracer tracer) {
+    this.delegate = delegate;
+    this.tracer = tracer;
+  }
 
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        Executor tracedExecutor = tracedExecutor(tracer, delegate);
-        Method methodOnTracedBean = getMethod(invocation, tracedExecutor);
-        if (methodOnTracedBean != null) {
-            return methodOnTracedBean.invoke(tracedExecutor, invocation.getArguments());
-        }
-        return invocation.proceed();
+  @Override
+  public Object invoke(MethodInvocation invocation) throws Throwable {
+    Executor tracedExecutor = tracedExecutor(tracer, delegate);
+    Method methodOnTracedBean = getMethod(invocation, tracedExecutor);
+    if (methodOnTracedBean != null) {
+      return methodOnTracedBean.invoke(tracedExecutor, invocation.getArguments());
     }
+    return invocation.proceed();
+  }
 
-    private Method getMethod(MethodInvocation invocation, Object object) {
-        Method method = invocation.getMethod();
-        return ReflectionUtils
-                .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
-    }
+  private Method getMethod(MethodInvocation invocation, Object object) {
+    Method method = invocation.getMethod();
+    return ReflectionUtils
+        .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
+  }
 
-    Executor tracedExecutor(Tracer tracer, T executor) {
-        return new TracedExecutor(executor, tracer);
-    }
+  Executor tracedExecutor(Tracer tracer, T executor) {
+    return new TracedExecutor(executor, tracer);
+  }
 }
 

@@ -46,10 +46,12 @@ public class FeignDefinedUrlTest {
   @Configuration
   @EnableFeignClients
   static class FeignWithoutRibbonConfiguration {
+
   }
 
   @FeignClient(value = "localService", url = "localhost:13598")
   interface FeignInterface {
+
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
     String hello();
   }

@@ -41,34 +41,34 @@ import io.opentracing.contrib.concurrent.TracedExecutor;
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
 public class DefaultAsyncAutoConfiguration {
 
+  @Autowired
+  private Tracer tracer;
+
+  @Configuration
+  @ConditionalOnMissingBean(AsyncConfigurer.class)
+  static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
+
     @Autowired
     private Tracer tracer;
 
-    @Configuration
-    @ConditionalOnMissingBean(AsyncConfigurer.class)
-    static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
-
-        @Autowired
-        private Tracer tracer;
-
-        @Override
-        public Executor getAsyncExecutor() {
-            return new TracedExecutor(new SimpleAsyncTaskExecutor(), tracer);
-        }
+    @Override
+    public Executor getAsyncExecutor() {
+      return new TracedExecutor(new SimpleAsyncTaskExecutor(), tracer);
     }
+  }
 
-    @Bean
-    public ExecutorBeanPostProcessor executorBeanPostProcessor() {
-        return new ExecutorBeanPostProcessor(tracer);
-    }
+  @Bean
+  public ExecutorBeanPostProcessor executorBeanPostProcessor() {
+    return new ExecutorBeanPostProcessor(tracer);
+  }
 
-    @Bean
-    public TraceAsyncAspect traceAsyncAspect() {
-        return new TraceAsyncAspect(tracer);
-    }
+  @Bean
+  public TraceAsyncAspect traceAsyncAspect() {
+    return new TraceAsyncAspect(tracer);
+  }
 
-    @Bean
-    public TracedAsyncWebAspect tracedAsyncWebAspect() {
-        return new TracedAsyncWebAspect(tracer);
-    }
+  @Bean
+  public TracedAsyncWebAspect tracedAsyncWebAspect() {
+    return new TracedAsyncWebAspect(tracer);
+  }
 }

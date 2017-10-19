@@ -50,6 +50,7 @@ public class TracedHystrixCommandTest {
   @EnableHystrix
   @Configuration
   static class TestConfig {
+
     @Bean
     public GreetingService greetingService() {
       return new GreetingService();
@@ -58,6 +59,7 @@ public class TracedHystrixCommandTest {
 
   @Service
   static class GreetingService {
+
     @Autowired
     private MockTracer tracer;
 
@@ -169,7 +171,6 @@ public class TracedHystrixCommandTest {
       }.execute();
     }
 
-
     /**
      * 3 spans totally
      * <ul>
@@ -189,8 +190,11 @@ public class TracedHystrixCommandTest {
 
     //The instrumented trace should have the tags
     assertThat(String.valueOf(tags.get((Tags.COMPONENT.getKey())))).isEqualTo("hystrix");
-    assertThat(String.valueOf(tags.get(TracedHystrixCommand.TAG_COMMAND_GROUP))).isEqualTo(groupKey);
-    assertThat(String.valueOf(tags.get((TracedHystrixCommand.TAG_COMMAND_KEY)))).isEqualTo(commandKey);
-    assertThat(String.valueOf(tags.get(TracedHystrixCommand.TAG_THREAD_POOL_KEY))).isEqualTo(groupKey);
+    assertThat(String.valueOf(tags.get(TracedHystrixCommand.TAG_COMMAND_GROUP)))
+        .isEqualTo(groupKey);
+    assertThat(String.valueOf(tags.get((TracedHystrixCommand.TAG_COMMAND_KEY))))
+        .isEqualTo(commandKey);
+    assertThat(String.valueOf(tags.get(TracedHystrixCommand.TAG_THREAD_POOL_KEY)))
+        .isEqualTo(groupKey);
   }
 }

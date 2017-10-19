@@ -39,36 +39,37 @@ import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {JmsTest.JmsEmbeddedArtemisConfiguration.class})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {JmsTest.JmsEmbeddedArtemisConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JmsTest {
 
-    @Configuration
-    @EnableJms
-    @EnableAutoConfiguration
-    static class JmsEmbeddedArtemisConfiguration {
-        @Bean
-        public Tracer tracer() {
-            return mock(Tracer.class);
-        }
+  @Configuration
+  @EnableJms
+  @EnableAutoConfiguration
+  static class JmsEmbeddedArtemisConfiguration {
 
-        @Bean
-        public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
-                                                        DefaultJmsListenerContainerFactoryConfigurer configurer) {
-            DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-            // This provides all boot's default to this factory, including the message converter
-            configurer.configure(factory, connectionFactory);
-            // You could still override some of Boot's default if necessary.
-            return factory;
-        }
+    @Bean
+    public Tracer tracer() {
+      return mock(Tracer.class);
     }
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Test
-    public void testTracingFeignBeanCreated() {
-        assertNotNull(applicationContext.getBean(TracingJmsTemplate.class));
+    @Bean
+    public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+        DefaultJmsListenerContainerFactoryConfigurer configurer) {
+      DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+      // This provides all boot's default to this factory, including the message converter
+      configurer.configure(factory, connectionFactory);
+      // You could still override some of Boot's default if necessary.
+      return factory;
     }
+  }
+
+  @Autowired
+  private ApplicationContext applicationContext;
+
+  @Test
+  public void testTracingFeignBeanCreated() {
+    assertNotNull(applicationContext.getBean(TracingJmsTemplate.class));
+  }
 }

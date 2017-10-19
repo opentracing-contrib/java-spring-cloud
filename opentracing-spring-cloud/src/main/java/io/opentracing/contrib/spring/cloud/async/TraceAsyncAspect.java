@@ -33,44 +33,45 @@ import io.opentracing.tag.Tags;
  */
 @Aspect
 public class TraceAsyncAspect {
-    static final String TAG_COMPONENT = "async";
 
-    @Autowired
-    private Tracer tracer;
+  static final String TAG_COMPONENT = "async";
 
-    public TraceAsyncAspect(Tracer tracer) {
-        this.tracer = tracer;
+  @Autowired
+  private Tracer tracer;
+
+  public TraceAsyncAspect(Tracer tracer) {
+    this.tracer = tracer;
+  }
+
+  @Around("execution (@org.springframework.scheduling.annotation.Async * *.*(..))")
+  public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
+    /**
+     * We create a span because parent span might be missing. E.g. method is invoked
+     */
+    Span span = null;
+    try {
+      span = this.tracer.buildSpan(operationName(pjp))
+          .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
+          .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
+          .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
+          .startManual();
+      return pjp.proceed();
+    } catch (Exception ex) {
+      SpanUtils.captureException(span, ex);
+      throw ex;
+    } finally {
+      span.finish();
     }
+  }
 
-    @Around("execution (@org.springframework.scheduling.annotation.Async * *.*(..))")
-    public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
-        /**
-         * We create a span because parent span might be missing. E.g. method is invoked
-         */
-        Span span = null;
-        try {
-            span = this.tracer.buildSpan(operationName(pjp))
-                    .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
-                    .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
-                    .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-                    .startManual();
-            return pjp.proceed();
-        } catch (Exception ex) {
-            SpanUtils.captureException(span, ex);
-            throw ex;
-        } finally {
-            span.finish();
-        }
-    }
+  private static String operationName(ProceedingJoinPoint pjp) {
+    return getMethod(pjp, pjp.getTarget()).getName();
+  }
 
-    private static String operationName(ProceedingJoinPoint pjp) {
-        return getMethod(pjp, pjp.getTarget()).getName();
-    }
-
-    private static Method getMethod(ProceedingJoinPoint pjp, Object object) {
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        Method method = signature.getMethod();
-        return ReflectionUtils
-                .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
-    }
+  private static Method getMethod(ProceedingJoinPoint pjp, Object object) {
+    MethodSignature signature = (MethodSignature) pjp.getSignature();
+    Method method = signature.getMethod();
+    return ReflectionUtils
+        .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
+  }
 }

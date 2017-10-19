@@ -54,6 +54,7 @@ public class FeignTracingAutoConfiguration {
   @ConditionalOnClass(name = {"com.netflix.hystrix.HystrixCommand", "feign.hystrix.HystrixFeign"})
   @ConditionalOnProperty(name = "feign.hystrix.enabled", havingValue = "true")
   public static class HystrixFeign {
+
     @Autowired
     public HystrixFeign(Tracer tracer) {
       TracingConcurrencyStrategy.register(tracer);
@@ -70,12 +71,14 @@ public class FeignTracingAutoConfiguration {
    */
   @Aspect
   class TracingAspect {
+
     @Around("execution (* feign.Client.*(..)) && !within(is(FinalType))")
     public Object feignClientWasCalled(final ProceedingJoinPoint pjp) throws Throwable {
       Object bean = pjp.getTarget();
       if (!(bean instanceof TracingClient)) {
         Object[] args = pjp.getArgs();
-        return new TracingClient((Client) bean, tracer).execute((Request) args[0], (Request.Options) args[1]);
+        return new TracingClient((Client) bean, tracer)
+            .execute((Request) args[0], (Request.Options) args[1]);
       }
       return pjp.proceed();
     }

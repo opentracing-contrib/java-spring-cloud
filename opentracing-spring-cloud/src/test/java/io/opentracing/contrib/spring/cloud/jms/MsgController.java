@@ -23,13 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class MsgController {
-    @Autowired
-    JmsTemplate jmsTemplate;
 
-    @RequestMapping("/hello")
-    public String hello() {
-        String message = "Hello!";
-        jmsTemplate.convertAndSend("fooQueue", message);
-        return message;
-    }
+  @Autowired
+  JmsTemplate jmsTemplate;
+
+  @RequestMapping("/hello")
+  public String hello() {
+    String message = "Hello!";
+    jmsTemplate.convertAndSend("fooQueue", message);
+    return message;
+  }
 }

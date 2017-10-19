@@ -42,7 +42,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = {MockTracingConfiguration.class, TestController.class})
+    classes = {MockTracingConfiguration.class, TestController.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SpringWebTracingTest {
 

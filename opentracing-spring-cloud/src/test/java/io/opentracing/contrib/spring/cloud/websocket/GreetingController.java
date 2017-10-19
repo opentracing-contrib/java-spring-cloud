@@ -23,16 +23,16 @@ import io.opentracing.Tracer;
 @Controller
 public class GreetingController {
 
-    public static final String DOING_WORK = "DoingWork";
+  public static final String DOING_WORK = "DoingWork";
 
-    @Autowired
-    private Tracer tracer;
+  @Autowired
+  private Tracer tracer;
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
-        tracer.buildSpan(DOING_WORK).startActive().close();
-        return new Greeting("Hello, " + message.getName() + "!");
-    }
+  @MessageMapping("/hello")
+  @SendTo("/topic/greetings")
+  public Greeting greeting(HelloMessage message) throws Exception {
+    tracer.buildSpan(DOING_WORK).startActive().close();
+    return new Greeting("Hello, " + message.getName() + "!");
+  }
 
 }

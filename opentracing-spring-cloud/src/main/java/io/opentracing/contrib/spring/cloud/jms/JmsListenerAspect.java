@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Aspect
 public class JmsListenerAspect {
+
   @Autowired
   Tracer tracer;
 
@@ -40,6 +41,7 @@ public class JmsListenerAspect {
   }
 
   private static class JoinPointMessageListener implements MessageListener {
+
     private final ProceedingJoinPoint pjp;
     private Object returnValue;
 

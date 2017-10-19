@@ -18,4 +18,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "test-entities", path = "test-entities")
 public interface TestEntityRepository extends JpaRepository<TestEntity, Long> {
+
 }

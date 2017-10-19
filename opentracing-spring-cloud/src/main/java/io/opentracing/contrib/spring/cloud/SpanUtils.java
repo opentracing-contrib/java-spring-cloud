@@ -22,7 +22,9 @@ import java.util.Map;
  * @author Pavol Loffay
  */
 public class SpanUtils {
-  private SpanUtils() {}
+
+  private SpanUtils() {
+  }
 
   /**
    * Add appropriate error tags and logs to a span when an exception occurs

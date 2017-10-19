@@ -19,7 +19,9 @@ import io.opentracing.tag.StringTag;
  * @author Pavol Loffay
  */
 public class ExtensionTags {
-  private ExtensionTags() {}
+
+  private ExtensionTags() {
+  }
 
   /**
    * Tag for {@link Class#getSimpleName()}

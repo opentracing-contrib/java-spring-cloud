@@ -46,57 +46,58 @@ import io.opentracing.mock.MockTracer;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TracedExecutorTest {
 
-    @org.springframework.context.annotation.Configuration
-    static class Configuration {
-        @Bean
-        public Executor threadPoolTaskExecutor() {
-            ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-            executor.initialize();
-            return executor;
-        }
+  @org.springframework.context.annotation.Configuration
+  static class Configuration {
 
-        @Bean
-        public Executor simpleAsyncTaskExecutor() {
-            return new SimpleAsyncTaskExecutor();
-        }
+    @Bean
+    public Executor threadPoolTaskExecutor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.initialize();
+      return executor;
     }
 
-    @Autowired
-    private MockTracer mockTracer;
-    @Qualifier("threadPoolTaskExecutor")
-    @Autowired
-    private Executor threadPoolExecutor;
-    @Qualifier("simpleAsyncTaskExecutor")
-    @Autowired
-    private Executor simpleAsyncExecutor;
-
-    @Before
-    public void before() {
-        mockTracer.reset();
+    @Bean
+    public Executor simpleAsyncTaskExecutor() {
+      return new SimpleAsyncTaskExecutor();
     }
+  }
 
-    @Test
-    public void testThreadPoolTracedExecutor() throws ExecutionException, InterruptedException {
-        testTracedExecutor(threadPoolExecutor);
+  @Autowired
+  private MockTracer mockTracer;
+  @Qualifier("threadPoolTaskExecutor")
+  @Autowired
+  private Executor threadPoolExecutor;
+  @Qualifier("simpleAsyncTaskExecutor")
+  @Autowired
+  private Executor simpleAsyncExecutor;
+
+  @Before
+  public void before() {
+    mockTracer.reset();
+  }
+
+  @Test
+  public void testThreadPoolTracedExecutor() throws ExecutionException, InterruptedException {
+    testTracedExecutor(threadPoolExecutor);
+  }
+
+  @Test
+  public void testSimpleTracedExecutor() throws ExecutionException, InterruptedException {
+    testTracedExecutor(simpleAsyncExecutor);
+  }
+
+  private void testTracedExecutor(Executor executor) {
+    try (ActiveSpan activeSpan = mockTracer.buildSpan("foo").startActive()) {
+      CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
+        mockTracer.buildSpan("child").start().finish();
+        return "ok";
+      }, executor);
+      completableFuture.join();
     }
+    await().until(() -> mockTracer.finishedSpans().size() == 2);
 
-    @Test
-    public void testSimpleTracedExecutor() throws ExecutionException, InterruptedException {
-        testTracedExecutor(simpleAsyncExecutor);
-    }
-
-    private void testTracedExecutor(Executor executor) {
-        try(ActiveSpan activeSpan = mockTracer.buildSpan("foo").startActive()) {
-            CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
-                mockTracer.buildSpan("child").start().finish();
-                return "ok";
-            }, executor);
-            completableFuture.join();
-        }
-        await().until(() -> mockTracer.finishedSpans().size() == 2);
-
-        List<MockSpan> mockSpans = mockTracer.finishedSpans();
-        assertEquals(2, mockSpans.size());
-        TestUtils.assertSameTraceId(mockSpans);
-    }
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(2, mockSpans.size());
+    TestUtils.assertSameTraceId(mockSpans);
+  }
 }

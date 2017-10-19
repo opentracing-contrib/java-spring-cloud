@@ -1,6 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
- * Copyright 2013-2017 the original author or authors.
+ * Copyright 2017 The OpenTracing Authors Copyright 2013-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -39,39 +38,40 @@ import org.springframework.core.env.PropertySource;
  */
 public class TraceEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
-    private static final String PROPERTY_SOURCE_NAME = "defaultProperties";
-    private static final String SPRING_AOP_PROXY_TARGET_CLASS = "spring.aop.proxyTargetClass";
+  private static final String PROPERTY_SOURCE_NAME = "defaultProperties";
+  private static final String SPRING_AOP_PROXY_TARGET_CLASS = "spring.aop.proxyTargetClass";
 
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        Map<String, Object> map = new HashMap<>();
+  @Override
+  public void postProcessEnvironment(ConfigurableEnvironment environment,
+      SpringApplication application) {
+    Map<String, Object> map = new HashMap<>();
 
-        if (!environment.containsProperty(SPRING_AOP_PROXY_TARGET_CLASS)) {
-            map.put(SPRING_AOP_PROXY_TARGET_CLASS, "true");
-        }
-
-        addOrReplace(environment.getPropertySources(), map);
+    if (!environment.containsProperty(SPRING_AOP_PROXY_TARGET_CLASS)) {
+      map.put(SPRING_AOP_PROXY_TARGET_CLASS, "true");
     }
 
-    private void addOrReplace(MutablePropertySources propertySources,
-                              Map<String, Object> map) {
-        MapPropertySource target = null;
-        if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
-            PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
-            if (source instanceof MapPropertySource) {
-                target = (MapPropertySource) source;
-                for (String key : map.keySet()) {
-                    if (!target.containsProperty(key)) {
-                        target.getSource().put(key, map.get(key));
-                    }
-                }
-            }
+    addOrReplace(environment.getPropertySources(), map);
+  }
+
+  private void addOrReplace(MutablePropertySources propertySources,
+      Map<String, Object> map) {
+    MapPropertySource target = null;
+    if (propertySources.contains(PROPERTY_SOURCE_NAME)) {
+      PropertySource<?> source = propertySources.get(PROPERTY_SOURCE_NAME);
+      if (source instanceof MapPropertySource) {
+        target = (MapPropertySource) source;
+        for (String key : map.keySet()) {
+          if (!target.containsProperty(key)) {
+            target.getSource().put(key, map.get(key));
+          }
         }
-        if (target == null) {
-            target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
-        }
-        if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {
-            propertySources.addLast(target);
-        }
+      }
     }
+    if (target == null) {
+      target = new MapPropertySource(PROPERTY_SOURCE_NAME, map);
+    }
+    if (!propertySources.contains(PROPERTY_SOURCE_NAME)) {
+      propertySources.addLast(target);
+    }
+  }
 }

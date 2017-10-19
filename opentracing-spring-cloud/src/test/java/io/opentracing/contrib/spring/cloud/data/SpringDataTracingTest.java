@@ -34,46 +34,47 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MockTracingConfiguration.class},
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
 public class SpringDataTracingTest {
 
-    @Autowired
-    private TestEntityRepository testEntityRepository;
+  @Autowired
+  private TestEntityRepository testEntityRepository;
 
-    @Autowired
-    private MockTracer mockTracer;
+  @Autowired
+  private MockTracer mockTracer;
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
-    @Before
-    public void clearGlobalTracer() {
-        mockTracer.reset();
-    }
+  @Before
+  public void clearGlobalTracer() {
+    mockTracer.reset();
+  }
 
-    @Test
-    public void jpaTest() {
-        TestEntity entity = testEntityRepository.save(new TestEntity());
-        assertNotNull(entity.getId());
+  @Test
+  public void jpaTest() {
+    TestEntity entity = testEntityRepository.save(new TestEntity());
+    assertNotNull(entity.getId());
 
-        List<MockSpan> spans = mockTracer.finishedSpans();
-        assertEquals(1, spans.size());
-        assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
-    }
+    List<MockSpan> spans = mockTracer.finishedSpans();
+    assertEquals(1, spans.size());
+    assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
+  }
 
-    @Test
-    public void dataRestTest() {
-        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/test-entities/1", String.class);
-        assertEquals(200, responseEntity.getStatusCode().value());
+  @Test
+  public void dataRestTest() {
+    ResponseEntity<String> responseEntity = testRestTemplate
+        .getForEntity("/test-entities/1", String.class);
+    assertEquals(200, responseEntity.getStatusCode().value());
 
-        List<MockSpan> spans = mockTracer.finishedSpans();
-        // One span from java-web-servlet
-        // One span from java-jdbc
-        assertEquals(2, spans.size());
+    List<MockSpan> spans = mockTracer.finishedSpans();
+    // One span from java-web-servlet
+    // One span from java-jdbc
+    assertEquals(2, spans.size());
 
-        assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
-        assertEquals("java-web-servlet", spans.get(1).tags().get(Tags.COMPONENT.getKey()));
-    }
+    assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
+    assertEquals("java-web-servlet", spans.get(1).tags().get(Tags.COMPONENT.getKey()));
+  }
 
 }

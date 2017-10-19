@@ -35,7 +35,8 @@ public class FeignTracingAutoConfigurationTest {
   @Test
   public void loadFeignTracingByDefault() {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-    context.register(FeignContextConfig.class, TracerConfig.class, FeignTracingAutoConfiguration.class);
+    context.register(FeignContextConfig.class, TracerConfig.class,
+        FeignTracingAutoConfiguration.class);
     context.refresh();
     FeignContext feignContext = context.getBean(TraceFeignContext.class);
     assertNotNull(feignContext);

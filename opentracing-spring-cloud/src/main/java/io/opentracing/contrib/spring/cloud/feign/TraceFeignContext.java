@@ -53,7 +53,8 @@ public class TraceFeignContext extends FeignContext {
     }
     Map<String, T> tracedInstances = new HashMap<>();
     for (Map.Entry<String, T> instanceEntry : instances.entrySet()) {
-      tracedInstances.put(instanceEntry.getKey(), (T) this.addTracingClient(instanceEntry.getValue()));
+      tracedInstances
+          .put(instanceEntry.getKey(), (T) this.addTracingClient(instanceEntry.getValue()));
     }
     return tracedInstances;
   }
@@ -65,8 +66,10 @@ public class TraceFeignContext extends FeignContext {
 
     if (bean instanceof Client) {
       if (bean instanceof LoadBalancerFeignClient && !(bean instanceof LoadBalancedTracedFeign)) {
-        return new LoadBalancedTracedFeign(new TracingClient(((LoadBalancerFeignClient)bean).getDelegate(), tracer),
-            beanFactory.getBean(CachingSpringLoadBalancerFactory.class), beanFactory.getBean(SpringClientFactory.class));
+        return new LoadBalancedTracedFeign(
+            new TracingClient(((LoadBalancerFeignClient) bean).getDelegate(), tracer),
+            beanFactory.getBean(CachingSpringLoadBalancerFactory.class),
+            beanFactory.getBean(SpringClientFactory.class));
       }
       return new TracingClient((Client) bean, tracer);
     }
@@ -78,6 +81,7 @@ public class TraceFeignContext extends FeignContext {
    * Needed for cast in {@link org.springframework.cloud.netflix.feign.FeignClientFactoryBean}
    */
   static class LoadBalancedTracedFeign extends LoadBalancerFeignClient {
+
     public LoadBalancedTracedFeign(Client delegate,
         CachingSpringLoadBalancerFactory lbClientFactory,
         SpringClientFactory clientFactory) {
