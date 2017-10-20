@@ -17,8 +17,8 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.contrib.spring.cloud.scheduled.ScheduledTest.Configuration;
 import io.opentracing.contrib.spring.cloud.scheduled.ScheduledTest.ScheduledComponent;

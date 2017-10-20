@@ -13,17 +13,15 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedCallable;
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.web.context.request.async.WebAsyncTask;
-
-import io.opentracing.Tracer;
-import io.opentracing.contrib.concurrent.TracedCallable;
 
 /**
  * this class adds tracing to all {@link org.springframework.stereotype.Controller} or {@link

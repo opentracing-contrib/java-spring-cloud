@@ -14,12 +14,11 @@
 package io.opentracing.contrib.spring.cloud.jdbc;
 
 import io.opentracing.contrib.jdbc.TracingConnection;
+import java.sql.Connection;
+import javax.sql.DataSource;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
 
 /**
  * Spring AOP Aspect wrapping JDBC-related calls, delegating as much as possible to the official

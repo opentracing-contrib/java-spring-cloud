@@ -13,14 +13,12 @@
  */
 package io.opentracing.contrib.spring.cloud.async.instrument;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 import java.util.concurrent.Executor;
-
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
-
-import io.opentracing.Tracer;
-import io.opentracing.contrib.concurrent.TracedExecutor;
 
 /**
  * @author kameshsampath

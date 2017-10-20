@@ -13,17 +13,15 @@
  */
 package io.opentracing.contrib.spring.cloud.async.instrument;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.util.concurrent.ListenableFuture;
-
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedCallable;
 import io.opentracing.contrib.concurrent.TracedRunnable;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * @author kameshsampath

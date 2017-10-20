@@ -13,6 +13,8 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -21,9 +23,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-
-import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 
 /**
  * This auto-configuration wraps available {@link AsyncConfigurer} in a {@link

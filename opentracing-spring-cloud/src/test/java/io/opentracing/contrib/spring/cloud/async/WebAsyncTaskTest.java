@@ -17,9 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestUtils;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +33,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.WebAsyncTask;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
 
 /**
  * @author Pavol Loffay

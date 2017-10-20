@@ -16,10 +16,9 @@ package io.opentracing.contrib.spring.cloud.async;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.Mockito.mock;
 
+import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 import org.junit.Test;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-
-import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 
 /**
  * @author kameshs

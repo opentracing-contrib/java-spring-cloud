@@ -13,11 +13,10 @@
  */
 package io.opentracing.contrib.spring.cloud.jms;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
-
 import io.opentracing.Tracer;
 import io.opentracing.contrib.jms.common.TracingMessageListener;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

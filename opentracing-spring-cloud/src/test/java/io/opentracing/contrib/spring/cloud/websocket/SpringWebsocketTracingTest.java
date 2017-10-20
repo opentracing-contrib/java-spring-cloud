@@ -16,6 +16,8 @@ package io.opentracing.contrib.spring.cloud.websocket;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertTrue;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.mock.MockTracer;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +42,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.mock.MockTracer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {WebSocketConfig.class, GreetingController.class,

@@ -13,11 +13,10 @@
  */
 package io.opentracing.contrib.spring.cloud.jms;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
-
 import io.opentracing.Tracer;
 import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
+import javax.jms.ConnectionFactory;
+import javax.jms.Message;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.target.AbstractLazyCreationTargetSource;
 import org.springframework.beans.factory.BeanFactory;

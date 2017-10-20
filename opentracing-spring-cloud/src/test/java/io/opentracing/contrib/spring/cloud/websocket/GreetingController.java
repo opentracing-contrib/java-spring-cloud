@@ -13,12 +13,11 @@
  */
 package io.opentracing.contrib.spring.cloud.websocket;
 
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-
-import io.opentracing.Tracer;
 
 @Controller
 public class GreetingController {
