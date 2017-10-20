@@ -13,16 +13,14 @@
  */
 package io.opentracing.contrib.spring.cloud.websocket;
 
-import java.util.Iterator;
-import java.util.Map;
-
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.support.MessageBuilder;
-
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 
 /**
  * A TextMap carrier for use with Tracer.inject() to inject tracing context into Spring messaging

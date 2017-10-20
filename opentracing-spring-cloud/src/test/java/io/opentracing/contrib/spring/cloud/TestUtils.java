@@ -13,9 +13,8 @@
  */
 package io.opentracing.contrib.spring.cloud;
 
-import java.util.Collection;
-
 import io.opentracing.mock.MockSpan;
+import java.util.Collection;
 import org.junit.Assert;
 
 /**

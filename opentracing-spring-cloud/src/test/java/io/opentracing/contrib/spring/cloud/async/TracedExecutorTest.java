@@ -13,15 +13,18 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
-
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import io.opentracing.ActiveSpan;
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestUtils;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,12 +35,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import io.opentracing.ActiveSpan;
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
 
 /**
  * @author Pavol Loffay

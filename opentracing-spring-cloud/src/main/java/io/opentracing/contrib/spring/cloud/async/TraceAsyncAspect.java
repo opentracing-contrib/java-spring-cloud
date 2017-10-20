@@ -13,20 +13,18 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import io.opentracing.contrib.spring.cloud.SpanUtils;
+import io.opentracing.tag.Tags;
 import java.lang.reflect.Method;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
-
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
 
 /**
  * @author kameshsampath

@@ -16,14 +16,16 @@ package io.opentracing.contrib.spring.cloud.jms;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.TestUtils;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
-
 import javax.jms.ConnectionFactory;
 import javax.jms.Message;
-
 import org.apache.activemq.artemis.api.core.TransportConfiguration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
 import org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory;
@@ -42,11 +44,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.contrib.spring.cloud.TestUtils;
-import io.opentracing.mock.MockSpan;
-import io.opentracing.mock.MockTracer;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>

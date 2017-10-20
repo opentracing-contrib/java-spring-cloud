@@ -13,8 +13,9 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 import java.util.concurrent.Executor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -26,9 +27,6 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
-
-import io.opentracing.Tracer;
-import io.opentracing.contrib.concurrent.TracedExecutor;
 
 /**
  * This auto-configuration provides all necessary bean to instrument @Async. AsyncWebTask/Callable

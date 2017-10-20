@@ -15,8 +15,8 @@ package io.opentracing.contrib.spring.cloud.scheduled;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.SpanUtils;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
+import io.opentracing.contrib.spring.cloud.SpanUtils;
 import io.opentracing.tag.Tags;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

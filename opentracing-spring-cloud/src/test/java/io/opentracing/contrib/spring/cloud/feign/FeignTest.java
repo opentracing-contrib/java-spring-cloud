@@ -16,9 +16,6 @@ package io.opentracing.contrib.spring.cloud.feign;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.netflix.loadbalancer.BaseLoadBalancer;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
@@ -28,6 +25,8 @@ import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfi
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -13,19 +13,18 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
 import io.opentracing.Tracer;
 import org.junit.Test;
-
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.cloud.netflix.feign.FeignContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 /**
  * @author Eddú Meléndez

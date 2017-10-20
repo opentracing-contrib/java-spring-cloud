@@ -13,15 +13,14 @@
  */
 package io.opentracing.contrib.spring.cloud.websocket;
 
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupport;
-
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
 
 @Configuration
 @ConditionalOnBean(Tracer.class)

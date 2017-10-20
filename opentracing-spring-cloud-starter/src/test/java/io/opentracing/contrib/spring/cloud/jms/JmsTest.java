@@ -16,8 +16,9 @@ package io.opentracing.contrib.spring.cloud.jms;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
 import javax.jms.ConnectionFactory;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,6 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import io.opentracing.Tracer;
-import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
 
 /**
  * @author Pavol Loffay
