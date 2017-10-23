@@ -14,17 +14,13 @@
 package io.opentracing.contrib.spring.cloud.jms;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
-import javax.jms.ConnectionFactory;
+import io.opentracing.contrib.jms.spring.TracingJmsConfiguration;
 import javax.jms.Message;
-import org.springframework.aop.framework.ProxyFactory;
-import org.springframework.aop.target.AbstractLazyCreationTargetSource;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
@@ -35,33 +31,7 @@ import org.springframework.jms.core.JmsTemplate;
 @ConditionalOnClass({Message.class, JmsTemplate.class})
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.jms.enabled", havingValue = "true", matchIfMissing = true)
+@Import(TracingJmsConfiguration.class)
 public class JmsAutoConfiguration {
 
-  @Bean
-  public JmsListenerAspect jmsListenerAspect() {
-    return new JmsListenerAspect();
-  }
-
-  @Bean
-  public JmsTemplate jmsTemplate(BeanFactory beanFactory, Tracer tracer) {
-    // we create lazy proxy, to avoid dependency and config order
-    // if JMS is used, and ConnectionFactory bean is not present,
-    // it will throw an error on first use, so imo, we should be all good
-    ConnectionFactory connectionFactory = createProxy(beanFactory);
-    return new TracingJmsTemplate(connectionFactory, tracer);
-  }
-
-  private ConnectionFactory createProxy(final BeanFactory beanFactory) {
-    return (ConnectionFactory) ProxyFactory.getProxy(new AbstractLazyCreationTargetSource() {
-      @Override
-      public synchronized Class<?> getTargetClass() {
-        return ConnectionFactory.class;
-      }
-
-      @Override
-      protected Object createObject() throws Exception {
-        return beanFactory.getBean(ConnectionFactory.class);
-      }
-    });
-  }
 }
