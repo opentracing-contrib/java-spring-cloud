@@ -23,6 +23,7 @@
   <modules>
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
+    <module>opentracing-spring-messaging</module>
   </modules>
   <packaging>pom</packaging>
 
