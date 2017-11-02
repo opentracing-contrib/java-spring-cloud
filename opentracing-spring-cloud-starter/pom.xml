@@ -77,6 +77,7 @@
             <configuration combine.self="override">
               <testIncludes>
                 <include>**/NoDepsTest.java</include>
+                <include>**/NoDepsContextLoadsTest.java</include>
               </testIncludes>
             </configuration>
           </plugin>
@@ -94,6 +95,7 @@
             <configuration combine.self="override">
               <testExcludes>
                 <testExclude>**/NoDepsTest.java</testExclude>
+                <testExclude>**/NoDepsContextLoadsTest.java</testExclude>
               </testExcludes>
             </configuration>
           </plugin>
