@@ -18,16 +18,67 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.opentracing.contrib</groupId>
-    <artifactId>opentracing-spring-cloud-parent</artifactId>
+    <artifactId>opentracing-spring-boot-parent</artifactId>
     <version>0.0.6-SNAPSHOT</version>
+    <relativePath>../opentracing-spring-boot-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>opentracing-spring-cloud-starter</artifactId>
+  <artifactId>opentracing-spring-cloud-test</artifactId>
+
+  <properties>
+    <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
+  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>opentracing-spring-cloud</artifactId>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-spring-web-autoconfigure</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-jdbc</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.openfeign.opentracing</groupId>
+      <artifactId>feign-hystrix-opentracing</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-jms-spring</artifactId>
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-jms-1</artifactId>
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-jms-common</artifactId>
+      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -103,8 +154,8 @@
       </build>
       <dependencies>
         <dependency>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-feign</artifactId>
+          <groupId>io.opentracing.contrib</groupId>
+          <artifactId>opentracing-feign-spring-boot-starter</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -124,8 +175,8 @@
           <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-websocket</artifactId>
+          <groupId>io.opentracing.contrib</groupId>
+          <artifactId>opentracing-websocket-spring-boot-starter</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>

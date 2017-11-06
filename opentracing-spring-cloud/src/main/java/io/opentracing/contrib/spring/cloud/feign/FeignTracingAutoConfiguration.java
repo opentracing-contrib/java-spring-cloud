@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Eddú Meléndez
  */
 @Configuration
-@ConditionalOnClass(Client.class)
+@ConditionalOnClass({ Client.class, TracingConcurrencyStrategy.class})
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureBefore(FeignAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.feign.enabled", havingValue = "true", matchIfMissing = true)

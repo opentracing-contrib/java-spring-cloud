@@ -31,6 +31,57 @@ Just add the following dependency in your pom.xml:
   <artifactId>opentracing-spring-cloud-starter</artifactId>
 </dependency>
 ```
+
+Since version `0.0.6`, opentracing provides specific starters:
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-feign-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-hystrix-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-jdbc-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-jms-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-web-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-websocket-spring-boot-starter</artifactId>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-zuul-spring-boot-starter</artifactId>
+</dependency>
+```
+
 , and provide OpenTracing tracer bean:
 ```java
 @Bean
