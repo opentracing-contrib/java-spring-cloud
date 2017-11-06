@@ -21,8 +21,11 @@
   <artifactId>opentracing-spring-cloud-parent</artifactId>
   <version>0.0.6-SNAPSHOT</version>
   <modules>
+    <module>opentracing-spring-boot-bom</module>
+    <module>opentracing-spring-boot-parent</module>
     <module>opentracing-spring-cloud</module>
-    <module>opentracing-spring-cloud-starter</module>
+    <module>opentracing-spring-cloud-test</module>
+    <module>opentracing-spring-boot-starters</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -56,27 +59,6 @@
   </developers>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <version.io.opentracing>0.30.0</version.io.opentracing>
-    <version.io.opentracing.contrib-opentracing-spring-web>0.0.10</version.io.opentracing.contrib-opentracing-spring-web>
-    <version.io.opentracing.contrib-opentracing-spring-jms>0.0.4</version.io.opentracing.contrib-opentracing-spring-jms>
-    <version.io.opentracing.contrib-java-jdbc>0.0.3</version.io.opentracing.contrib-java-jdbc>
-    <version.io.opentracing.contrib-java-concurrent>0.0.2</version.io.opentracing.contrib-java-concurrent>
-    <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
-    <version.io.github.openfeign.opentracing>0.0.5</version.io.github.openfeign.opentracing>
-    <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
-        https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/spring-boot-starter-parent/pom.xml -->
-    <version.org.springframework.boot>1.4.1.RELEASE</version.org.springframework.boot>
-    <version.org.springframework.cloud-spring-cloud-dependencies>Camden.SR7</version.org.springframework.cloud-spring-cloud-dependencies>
-    <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
-
-    <version.javax.jms>1.1-rev-1</version.javax.jms>
-
-    <!-- plugins -->
-    <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.maven-license-plugin>3.0</version.maven-license-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
@@ -88,84 +70,6 @@
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.0</version.io.zikin.centralsync-maven-plugin>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>opentracing-spring-cloud</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>opentracing-spring-cloud-starter</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.opentracing</groupId>
-        <artifactId>opentracing-api</artifactId>
-        <version>${version.io.opentracing}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentracing</groupId>
-        <artifactId>opentracing-noop</artifactId>
-        <version>${version.io.opentracing}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentracing</groupId>
-        <artifactId>opentracing-mock</artifactId>
-        <version>${version.io.opentracing}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentracing</groupId>
-        <artifactId>opentracing-util</artifactId>
-        <version>${version.io.opentracing}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.opentracing.contrib</groupId>
-        <artifactId>opentracing-jms-spring</artifactId>
-        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentracing.contrib</groupId>
-        <artifactId>opentracing-jms-common</artifactId>
-        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.opentracing.contrib</groupId>
-        <artifactId>opentracing-jms-1</artifactId>
-        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.jms</groupId>
-        <artifactId>jms-api</artifactId>
-        <version>${version.javax.jms}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.opentracing.contrib</groupId>
-        <artifactId>opentracing-concurrent</artifactId>
-        <version>${version.io.opentracing.contrib-java-concurrent}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${version.org.springframework.cloud-spring-cloud-dependencies}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <distributionManagement>
     <repository>

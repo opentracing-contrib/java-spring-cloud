@@ -18,8 +18,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.opentracing.contrib</groupId>
-    <artifactId>opentracing-spring-cloud-parent</artifactId>
+    <artifactId>opentracing-spring-boot-parent</artifactId>
     <version>0.0.6-SNAPSHOT</version>
+    <relativePath>../opentracing-spring-boot-parent/pom.xml</relativePath>
   </parent>
 
   <artifactId>opentracing-spring-cloud</artifactId>
@@ -44,28 +45,18 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-web-autoconfigure</artifactId>
-      <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jdbc</artifactId>
-      <version>${version.io.opentracing.contrib-java-jdbc}</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>io.github.openfeign.opentracing</groupId>
       <artifactId>feign-hystrix-opentracing</artifactId>
-      <version>${version.io.github.openfeign.opentracing}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-hystrix</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-core</artifactId>
-        </exclusion>
-      </exclusions>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -113,6 +104,7 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jms-spring</artifactId>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
@@ -123,6 +115,7 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jms-1</artifactId>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>
@@ -133,6 +126,7 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-jms-common</artifactId>
+      <optional>true</optional>
       <exclusions>
         <exclusion>
           <artifactId>*</artifactId>

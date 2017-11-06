@@ -16,6 +16,6 @@ dalston:
 classpath:
 	@for profile in $(PROFILES) ; do \
 		echo "---> Executing profile $$profile"; \
-		./mvnw -f opentracing-spring-cloud-starter -P $$profile clean test || exit 1; \
+		./mvnw -f opentracing-spring-cloud-test -P $$profile clean test || exit 1; \
 	done
 

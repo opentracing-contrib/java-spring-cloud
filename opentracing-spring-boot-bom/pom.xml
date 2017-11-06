@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2017 The OpenTracing Authors
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+    in compliance with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software distributed under the License
+    is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing permissions and limitations under
+    the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-spring-boot-bom</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.6-SNAPSHOT</version>
+
+  <properties>
+    <version.io.opentracing>0.30.0</version.io.opentracing>
+    <version.io.opentracing.contrib-opentracing-spring-web>0.0.10</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.io.opentracing.contrib-opentracing-spring-jms>0.0.4</version.io.opentracing.contrib-opentracing-spring-jms>
+    <version.io.opentracing.contrib-java-concurrent>0.0.2</version.io.opentracing.contrib-java-concurrent>
+    <version.io.opentracing.contrib-java-jdbc>0.0.3</version.io.opentracing.contrib-java-jdbc>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-api</artifactId>
+        <version>${version.io.opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-noop</artifactId>
+        <version>${version.io.opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-mock</artifactId>
+        <version>${version.io.opentracing}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing</groupId>
+        <artifactId>opentracing-util</artifactId>
+        <version>${version.io.opentracing}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-concurrent</artifactId>
+        <version>${version.io.opentracing.contrib-java-concurrent}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jdbc</artifactId>
+        <version>${version.io.opentracing.contrib-java-jdbc}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-spring</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-common</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-1</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-spring-web-autoconfigure</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-feign-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-hystrix-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jdbc-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-jms-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-web-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-websocket-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-zuul-spring-boot-starter</artifactId>
+        <version>0.0.6-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
