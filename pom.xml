@@ -59,6 +59,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <main.basedir>${project.basedir}</main.basedir>
 
     <version.io.opentracing>0.30.0</version.io.opentracing>
     <version.io.opentracing.contrib-opentracing-spring-web>0.0.10</version.io.opentracing.contrib-opentracing-spring-web>
@@ -250,7 +251,7 @@
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
         <configuration>
-          <header>header.txt</header>
+          <header>${main.basedir}/header.txt</header>
           <failIfMissing>true</failIfMissing>
           <failIfUnknown>true</failIfUnknown>
           <excludes>
