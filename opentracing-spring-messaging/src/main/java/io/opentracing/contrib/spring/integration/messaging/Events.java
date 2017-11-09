@@ -16,6 +16,7 @@ package io.opentracing.contrib.spring.integration.messaging;
 
 /**
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
+ *     -TODO REMOVE
  */
 public final class Events {
 
@@ -26,7 +27,4 @@ public final class Events {
   public static final String SERVER_SEND = "ss";
 
   public static final String SERVER_RECEIVE = "sr";
-
-  public static final String ERROR = "error";
-
 }

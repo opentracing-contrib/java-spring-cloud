@@ -18,7 +18,6 @@ package io.opentracing.contrib.spring.integration.messaging;
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
  */
 public final class Headers {
-
   public static final String MESSAGE_SENT_FROM_CLIENT = "messageSent";
-
+  public static final String MESSAGE_CONSUMED = "messageConsumed";
 }

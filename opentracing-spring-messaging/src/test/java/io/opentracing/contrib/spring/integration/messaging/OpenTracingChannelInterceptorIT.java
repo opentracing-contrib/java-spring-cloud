@@ -18,9 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.BDDAssertions.then;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import io.opentracing.util.ThreadLocalActiveSpanSource;
 import org.junit.After;
 import org.junit.Before;
@@ -91,7 +93,6 @@ public class OpenTracingChannelInterceptorIT implements MessageHandler {
   @Before
   public void before() {
     tracedChannel.subscribe(this);
-    mockTracer.reset();
   }
 
   @After
@@ -162,31 +163,27 @@ public class OpenTracingChannelInterceptorIT implements MessageHandler {
   public void shouldCreateSpanWithActiveParent() {
     MockSpan parentSpan = mockTracer.buildSpan("http:testSendMessage")
         .start();
-    mockTracer.makeActive(parentSpan);
+    try (ActiveSpan activeSpan = mockTracer.makeActive(parentSpan)) {
+      tracedChannel.send(MessageBuilder.withPayload("hi")
+          .build());
+    }
 
-    tracedChannel.send(MessageBuilder.withPayload("hi")
-        .build());
     then(message).isNotNull();
     then(message.getHeaders()).containsKeys(TRACE_ID_HEADER, SPAN_ID_HEADER);
-    then(mockTracer.finishedSpans()).hasSize(1); // TODO because parent span is not finished
+    then(mockTracer.finishedSpans()).hasSize(2);
 
+    MockSpan interceptorSpan = mockTracer.finishedSpans().get(0);
+    then(interceptorSpan.context().traceId()).isEqualTo(parentSpan.context().traceId());
+    then(interceptorSpan.parentId()).isEqualTo(parentSpan.context().spanId());
+    then(interceptorSpan.operationName()).isEqualTo("send:tracedChannel");
+
+    // test inject
     Long traceId = Long.valueOf(message.getHeaders()
         .get(TRACE_ID_HEADER, String.class));
     Long spanId = Long.valueOf(message.getHeaders()
         .get(SPAN_ID_HEADER, String.class));
-
-    MockSpan.MockContext parentSpanContext = parentSpan.context();
-
-    then(traceId).isEqualTo(parentSpanContext.traceId());
-    then(spanId).isNotEqualTo(parentSpanContext.spanId());
-
-    MockSpan finishedSpan = mockTracer.finishedSpans()
-        .get(0);
-    then(finishedSpan.parentId()).isEqualTo(parentSpanContext.spanId());
-
-    MockSpan.MockContext finishedSpanContext = finishedSpan.context();
-    then(finishedSpanContext.traceId()).isEqualTo(traceId);
-    then(finishedSpanContext.spanId()).isEqualTo(spanId);
+    then(traceId).isEqualTo(parentSpan.context().traceId());
+    then(spanId).isEqualTo(interceptorSpan.context().spanId());
   }
 
   @Test
@@ -213,7 +210,7 @@ public class OpenTracingChannelInterceptorIT implements MessageHandler {
     then(mockTracer.finishedSpans()).hasSize(1);
     MockSpan span = mockTracer.finishedSpans()
         .get(0);
-    then(span.logEntries()).hasSize(3);
+    then(span.logEntries()).hasSize(2);
     then(span.logEntries()
         .get(0)
         .fields()).containsOnlyKeys("event");
@@ -228,13 +225,9 @@ public class OpenTracingChannelInterceptorIT implements MessageHandler {
         .get(1)
         .fields()
         .get("event")).isEqualTo(Events.CLIENT_RECEIVE);
-    then(span.logEntries()
-        .get(2)
-        .fields()).containsOnlyKeys("error");
-    then(span.logEntries()
-        .get(2)
-        .fields()
-        .get("error")).isEqualTo("A terrible exception has occurred");
+    then(span.tags()).hasSize(4);
+    then(span.tags().get(Tags.ERROR.getKey()))
+        .isEqualTo(true);
   }
 
   @Test
@@ -311,15 +304,9 @@ public class OpenTracingChannelInterceptorIT implements MessageHandler {
   @Configuration
   @EnableAutoConfiguration
   static class App {
-
     @Bean
-    public ThreadLocalActiveSpanSource threadLocalActiveSpanSource() {
-      return new ThreadLocalActiveSpanSource();
-    }
-
-    @Bean
-    public MockTracer mockTracer(ThreadLocalActiveSpanSource threadLocalActiveSpanSource) {
-      return new MockTracer(threadLocalActiveSpanSource, MockTracer.Propagator.TEXT_MAP);
+    public MockTracer mockTracer() {
+      return new MockTracer(new ThreadLocalActiveSpanSource(), MockTracer.Propagator.TEXT_MAP);
     }
 
     @Bean
