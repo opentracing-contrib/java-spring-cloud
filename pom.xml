@@ -63,7 +63,7 @@
     <main.basedir>${project.basedir}</main.basedir>
 
     <version.io.opentracing>0.30.0</version.io.opentracing>
-    <version.io.opentracing.contrib-opentracing-spring-web>0.0.10</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.io.opentracing.contrib-opentracing-spring-web>0.0.12</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.4</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-java-jdbc>0.0.3</version.io.opentracing.contrib-java-jdbc>
     <version.io.opentracing.contrib-java-concurrent>0.0.2</version.io.opentracing.contrib-java-concurrent>
