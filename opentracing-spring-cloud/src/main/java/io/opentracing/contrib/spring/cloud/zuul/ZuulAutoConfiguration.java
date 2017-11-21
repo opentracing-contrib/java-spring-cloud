@@ -15,6 +15,9 @@ package io.opentracing.contrib.spring.cloud.zuul;
 
 import com.netflix.zuul.ZuulFilter;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
+
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnWebApplication
 @ConditionalOnBean(Tracer.class)
+@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnClass(ZuulFilter.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.zuul.enabled", havingValue = "true", matchIfMissing = true)
 public class ZuulAutoConfiguration {
