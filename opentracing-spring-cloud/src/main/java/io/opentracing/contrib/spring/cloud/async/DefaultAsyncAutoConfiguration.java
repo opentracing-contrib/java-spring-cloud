@@ -15,6 +15,8 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
+
 import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -35,7 +37,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @Configuration
 @ConditionalOnBean(Tracer.class)
-@AutoConfigureAfter(CustomAsyncConfigurerAutoConfiguration.class)
+@AutoConfigureAfter({CustomAsyncConfigurerAutoConfiguration.class, TracerAutoConfiguration.class})
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
 public class DefaultAsyncAutoConfiguration {
 

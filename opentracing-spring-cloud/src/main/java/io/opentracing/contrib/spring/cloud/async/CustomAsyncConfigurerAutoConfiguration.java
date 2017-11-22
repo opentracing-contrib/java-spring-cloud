@@ -15,9 +15,12 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,6 +37,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 @ConditionalOnBean(AsyncConfigurer.class)
 //TODO when Scheduling is added we need to do @AutoConfigurationAfter on it
 @AutoConfigureBefore(DefaultAsyncAutoConfiguration.class)
+@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
 public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor {
 

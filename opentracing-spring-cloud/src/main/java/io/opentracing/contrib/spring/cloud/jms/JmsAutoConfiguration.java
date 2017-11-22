@@ -15,7 +15,11 @@ package io.opentracing.contrib.spring.cloud.jms;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.jms.spring.TracingJmsConfiguration;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
+
 import javax.jms.Message;
+
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +34,7 @@ import org.springframework.jms.core.JmsTemplate;
 @Configuration
 @ConditionalOnClass({Message.class, JmsTemplate.class})
 @ConditionalOnBean(Tracer.class)
+@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.jms.enabled", havingValue = "true", matchIfMissing = true)
 @Import(TracingJmsConfiguration.class)
 public class JmsAutoConfiguration {

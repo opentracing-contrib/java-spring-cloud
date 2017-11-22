@@ -16,6 +16,9 @@ package io.opentracing.contrib.spring.cloud.hystrix;
 import com.netflix.hystrix.HystrixCommand;
 import feign.opentracing.hystrix.TracingConcurrencyStrategy;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
+
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass(HystrixCommand.class)
 @ConditionalOnBean(Tracer.class)
+@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.hystrix.strategy.enabled", matchIfMissing = true)
 public class HystrixTracingAutoConfiguration {
 
