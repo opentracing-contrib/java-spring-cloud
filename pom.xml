@@ -24,6 +24,7 @@
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
     <module>opentracing-spring-messaging</module>
+    <module>opentracing-spring-messaging-it</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -265,6 +266,7 @@
             <exclude>**/*.factories</exclude>
             <exclude>**/ExecutorBeanPostProcessor.java</exclude>
             <exclude>**/TraceEnvironmentPostProcessor.java</exclude>
+            <exclude>**/test/resources/application.yml</exclude>
           </excludes>
         </configuration>
         <executions>
