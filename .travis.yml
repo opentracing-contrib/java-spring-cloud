@@ -24,11 +24,8 @@ install:
 jobs:
   include:
     - stage: test
-      env: [ NAME=camden ]
+      env: [ NAME=dalston ]
       script: make default
-
-    - env: [ NAME=dalston ]
-      script: make dalston
 
     - env: [ NAME=classpath-no-dependencies ]
       script: PROFILES=nodeps make classpath
