@@ -25,20 +25,25 @@ import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jms.core.JmsTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author <a href="mailto:gytis@redhat.com">Gytis Trikleris</a>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
-public class ArtemisBinderTest {
+@SpringBootTest(classes = {
+    RabbitBinderTest.TestConfiguration.class,
+    StreamApplication.class
+})
+public class RabbitBinderTest {
 
   @Autowired
   private Sender sender;
@@ -49,14 +54,9 @@ public class ArtemisBinderTest {
   @Autowired
   private MockTracer tracer;
 
+  @Rule
   @Autowired
-  private JmsTemplate jmsTemplate;
-
-  @Before
-  public void before() {
-    receiver.clear();
-    tracer.reset();
-  }
+  public RabbitBrokerRule rabbitBrokerRule;
 
   /**
    * Sleuth flow:
@@ -64,22 +64,22 @@ public class ArtemisBinderTest {
    * 2. Parent span is null
    * 3. Name of the span will be [message:output]
    * 4. Marking span with client send
-   * 5. Completed sending and current span is [Trace: 4730e0ce0c182eb9, Span: 4730e0ce0c182eb9, Parent: null,
+   * 5. Completed sending and current span is [Trace: 89df9af5dc34663e, Span: 89df9af5dc34663e, Parent: null,
    * exportable:false]
    * 6. Marking span with client received
-   * 7. Closing messaging span [Trace: 4730e0ce0c182eb9, Span: 4730e0ce0c182eb9, Parent: null, exportable:false]
-   * 8. Messaging span [Trace: 4730e0ce0c182eb9, Span: 4730e0ce0c182eb9, Parent: null, exportable:false] successfully
+   * 7. Closing messaging span [Trace: 89df9af5dc34663e, Span: 89df9af5dc34663e, Parent: null, exportable:false]
+   * 8. Messaging span [Trace: 89df9af5dc34663e, Span: 89df9af5dc34663e, Parent: null, exportable:false] successfully
    * closed
    * 9. Processing message before sending it to the channel
-   * 10. Parent span is [Trace: 4730e0ce0c182eb9, Span: 4730e0ce0c182eb9, Parent: null, exportable:false]
+   * 10. Parent span is [Trace: 89df9af5dc34663e, Span: 89df9af5dc34663e, Parent: null, exportable:false]
    * 11. Name of the span will be [message:input]
-   * 13. Marking span with server received
-   * 14. Completed sending and current span is [Trace: 4730e0ce0c182eb9, Span: c8a8655bb5216278, Parent:
-   * 4730e0ce0c182eb9, exportable:false]
-   * 15. Marking span with server send
-   * 16. Closing messaging span [Trace: 4730e0ce0c182eb9, Span: c8a8655bb5216278, Parent: 4730e0ce0c182eb9,
+   * 12. Marking span with server received
+   * 13. Completed sending and current span is [Trace: 89df9af5dc34663e, Span: f11085cf0d323b28, Parent:
+   * 89df9af5dc34663e, exportable:false]
+   * 14. Marking span with server send
+   * 15. Closing messaging span [Trace: 89df9af5dc34663e, Span: f11085cf0d323b28, Parent: 89df9af5dc34663e,
    * exportable:false]
-   * 17. Messaging span [Trace: 4730e0ce0c182eb9, Span: c8a8655bb5216278, Parent: 4730e0ce0c182eb9, exportable:false]
+   * 16. Messaging span [Trace: 89df9af5dc34663e, Span: f11085cf0d323b28, Parent: 89df9af5dc34663e, exportable:false]
    * successfully closed
    */
   @Test
@@ -109,29 +109,6 @@ public class ArtemisBinderTest {
     assertThat(inputSpan.tags()).containsEntry(Tags.MESSAGE_BUS_DESTINATION.getKey(), "input");
   }
 
-  @Test
-  public void testFromFromJmsTemplateToSink() {
-    jmsTemplate.setPubSubDomain(true);
-    jmsTemplate.convertAndSend("testDestination", "Ping");
-
-    await().atMost(5, SECONDS)
-        .until(receiver::getReceivedMessages, hasSize(1));
-
-    List<MockSpan> finishedSpans = tracer.finishedSpans();
-    assertThat(finishedSpans).hasSize(2);
-
-    MockSpan jmsSpan = getSpanByOperation("jms-send");
-    assertThat(jmsSpan.parentId()).isEqualTo(0);
-
-    MockSpan inputSpan = getSpanByOperation("send:input");
-    assertThat(inputSpan.parentId()).isEqualTo(jmsSpan.context().spanId());
-    assertEvents(inputSpan, Arrays.asList(Events.CLIENT_SEND, Events.CLIENT_RECEIVE));
-    assertThat(inputSpan.tags()).hasSize(3);
-    assertThat(inputSpan.tags()).containsEntry(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);
-    assertThat(inputSpan.tags()).containsEntry(Tags.COMPONENT.getKey(), OpenTracingChannelInterceptor.COMPONENT_NAME);
-    assertThat(inputSpan.tags()).containsEntry(Tags.MESSAGE_BUS_DESTINATION.getKey(), "input");
-  }
-
   private MockSpan getSpanByOperation(String operationName) {
     return tracer.finishedSpans()
         .stream()
@@ -141,4 +118,11 @@ public class ArtemisBinderTest {
             () -> new RuntimeException(String.format("Span for operation '%s' doesn't exist", operationName)));
   }
 
+  @Configuration
+  public static class TestConfiguration {
+    @Bean
+    public RabbitBrokerRule rabbitBrokerRule(RabbitTemplate rabbitTemplate) {
+      return new RabbitBrokerRule(rabbitTemplate);
+    }
+  }
 }
