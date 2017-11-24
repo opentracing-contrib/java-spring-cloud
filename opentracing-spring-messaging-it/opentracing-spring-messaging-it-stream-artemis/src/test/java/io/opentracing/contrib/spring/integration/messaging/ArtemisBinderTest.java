@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -47,6 +48,9 @@ public class ArtemisBinderTest {
 
   @Autowired
   private MockTracer tracer;
+
+  @Autowired
+  private JmsTemplate jmsTemplate;
 
   @Before
   public void before() {
@@ -100,6 +104,29 @@ public class ArtemisBinderTest {
     assertEvents(inputSpan, Arrays.asList(Events.SERVER_RECEIVE, Events.SERVER_SEND));
     assertThat(inputSpan.tags()).hasSize(3);
     assertThat(inputSpan.tags()).containsEntry(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
+    assertThat(inputSpan.tags()).containsEntry(Tags.COMPONENT.getKey(), OpenTracingChannelInterceptor.COMPONENT_NAME);
+    assertThat(inputSpan.tags()).containsEntry(Tags.MESSAGE_BUS_DESTINATION.getKey(), "input");
+  }
+
+  @Test
+  public void testFromFromJmsTemplateToSink() {
+    jmsTemplate.setPubSubDomain(true);
+    jmsTemplate.convertAndSend("testDestination", "Ping");
+
+    await().atMost(5, SECONDS)
+        .until(receiver::getReceivedMessages, hasSize(1));
+
+    List<MockSpan> finishedSpans = tracer.finishedSpans();
+    assertThat(finishedSpans).hasSize(2);
+
+    MockSpan jmsSpan = getSpanByOperation("jms-send");
+    assertThat(jmsSpan.parentId()).isEqualTo(0);
+
+    MockSpan inputSpan = getSpanByOperation("send:input");
+    assertThat(inputSpan.parentId()).isEqualTo(jmsSpan.context().spanId());
+    assertEvents(inputSpan, Arrays.asList(Events.CLIENT_SEND, Events.CLIENT_RECEIVE));
+    assertThat(inputSpan.tags()).hasSize(3);
+    assertThat(inputSpan.tags()).containsEntry(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_PRODUCER);
     assertThat(inputSpan.tags()).containsEntry(Tags.COMPONENT.getKey(), OpenTracingChannelInterceptor.COMPONENT_NAME);
     assertThat(inputSpan.tags()).containsEntry(Tags.MESSAGE_BUS_DESTINATION.getKey(), "input");
   }

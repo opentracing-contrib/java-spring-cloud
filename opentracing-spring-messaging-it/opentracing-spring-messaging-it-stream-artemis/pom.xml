@@ -33,6 +33,7 @@
 
     <version.me.snowdrop.spring-cloud-starter-stream-artemis>1.0.0.Alpha1</version.me.snowdrop.spring-cloud-starter-stream-artemis>
     <version.org.apache.activemq>2.1.0</version.org.apache.activemq>
+    <version.org.springframework.boot>1.5.8.RELEASE</version.org.springframework.boot>
   </properties>
 
   <dependencies>
@@ -40,6 +41,18 @@
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-messaging-it-stream-common</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-spring-cloud-starter</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+      <version>${version.org.springframework.boot}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
