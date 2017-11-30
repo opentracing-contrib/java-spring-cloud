@@ -107,6 +107,8 @@ public class RabbitBinderTest {
     assertThat(inputSpan.tags()).containsEntry(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
     assertThat(inputSpan.tags()).containsEntry(Tags.COMPONENT.getKey(), OpenTracingChannelInterceptor.COMPONENT_NAME);
     assertThat(inputSpan.tags()).containsEntry(Tags.MESSAGE_BUS_DESTINATION.getKey(), "input");
+
+    assertThat(outputSpan.startMicros()).isLessThanOrEqualTo(inputSpan.startMicros());
   }
 
   private MockSpan getSpanByOperation(String operationName) {
