@@ -29,19 +29,7 @@
 
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
-
-    <version.org.awaitility>3.0.0</version.org.awaitility>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>${version.org.awaitility}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

@@ -59,6 +59,7 @@
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
+      <version>${version.org.awaitility-awaitility}</version>
     </dependency>
   </dependencies>
 </project>
