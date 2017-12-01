@@ -16,7 +16,8 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * JDBC
 * Zuul
 
-This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7` and `Dalston.SR3`.
+This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
+ and `Edgware.RELEASE`
 
 ## Comparison to `spring-cloud-sleuth`
 [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) also instruments 
