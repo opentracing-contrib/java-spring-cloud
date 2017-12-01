@@ -27,6 +27,9 @@ jobs:
       env: [ NAME=dalston ]
       script: make default
 
+    - env: [ NAME=edgware ]
+      script: make edgware
+
     - env: [ NAME=classpath-no-dependencies ]
       script: PROFILES=nodeps make classpath
 
