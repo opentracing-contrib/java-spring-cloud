@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,13 +16,11 @@ package io.opentracing.contrib.spring.cloud.websocket;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
-import io.opentracing.mock.MockTracer.Propagator;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
-import io.opentracing.util.ThreadLocalActiveSpanSource;
 import org.junit.Test;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -32,8 +30,7 @@ public class TracingChannelInterceptorTest {
 
   private static final String TEST_DESTINATION = "/app/test";
 
-  private MockTracer mockTracer = new MockTracer(new ThreadLocalActiveSpanSource(),
-      Propagator.TEXT_MAP);
+  private MockTracer mockTracer = new MockTracer();
 
   @Test
   public void testPreSendServerSpan() {
@@ -69,14 +66,14 @@ public class TracingChannelInterceptorTest {
         .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
 
     MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
-    ActiveSpan activeParentSpan = mockTracer.makeActive(parentSpan);
+    Scope parentScope = mockTracer.scopeManager().activate(parentSpan, true);
 
     TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer,
         Tags.SPAN_KIND_CLIENT);
 
     Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
 
-    activeParentSpan.close();
+    parentScope.close();
 
     // Verify span cached with message is child of the active parentSpan
     assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));

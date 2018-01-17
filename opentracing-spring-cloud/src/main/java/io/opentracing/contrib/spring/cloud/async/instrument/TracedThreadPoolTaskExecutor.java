@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,6 @@
  */
 package io.opentracing.contrib.spring.cloud.async.instrument;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedCallable;
 import io.opentracing.contrib.concurrent.TracedRunnable;
@@ -38,32 +37,32 @@ public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
 
   @Override
   public void execute(Runnable task) {
-    this.delegate.execute(new TracedRunnable(task, activeSpan()));
+    this.delegate.execute(new TracedRunnable(task, tracer));
   }
 
   @Override
   public void execute(Runnable task, long startTimeout) {
-    this.delegate.execute(new TracedRunnable(task, activeSpan()), startTimeout);
+    this.delegate.execute(new TracedRunnable(task, tracer), startTimeout);
   }
 
   @Override
   public Future<?> submit(Runnable task) {
-    return this.delegate.submit(new TracedRunnable(task, activeSpan()));
+    return this.delegate.submit(new TracedRunnable(task, tracer));
   }
 
   @Override
   public <T> Future<T> submit(Callable<T> task) {
-    return this.delegate.submit(new TracedCallable<>(task, activeSpan()));
+    return this.delegate.submit(new TracedCallable<>(task, tracer));
   }
 
   @Override
   public ListenableFuture<?> submitListenable(Runnable task) {
-    return this.delegate.submitListenable(new TracedRunnable(task, activeSpan()));
+    return this.delegate.submitListenable(new TracedRunnable(task, tracer));
   }
 
   @Override
   public <T> ListenableFuture<T> submitListenable(Callable<T> task) {
-    return this.delegate.submitListenable(new TracedCallable<>(task, activeSpan()));
+    return this.delegate.submitListenable(new TracedCallable<>(task, tracer));
   }
 
   @Override
@@ -86,9 +85,5 @@ public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
   @Override
   public ThreadPoolExecutor getThreadPoolExecutor() throws IllegalStateException {
     return this.delegate.getThreadPoolExecutor();
-  }
-
-  private ActiveSpan activeSpan() {
-    return tracer.activeSpan();
   }
 }

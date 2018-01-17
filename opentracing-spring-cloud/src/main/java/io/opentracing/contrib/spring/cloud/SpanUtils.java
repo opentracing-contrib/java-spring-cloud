@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud;
 
-import io.opentracing.BaseSpan;
+import io.opentracing.Span;
 import io.opentracing.tag.Tags;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class SpanUtils {
    * @param span the span "monitoring" the code which threw the exception
    * @param ex captured exception
    */
-  public static void captureException(BaseSpan<?> span, Exception ex) {
+  public static void captureException(Span span, Exception ex) {
     Map<String, Object> exceptionLogs = new LinkedHashMap<>(2);
     exceptionLogs.put("event", Tags.ERROR.getKey());
     exceptionLogs.put("error.object", ex);

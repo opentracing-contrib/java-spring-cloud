@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -85,7 +85,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
         .getOrDefault(SIMP_DESTINATION, UNKNOWN_DESTINATION))
         .withTag(Tags.SPAN_KIND.getKey(), spanKind)
         .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
-        .startManual();
+        .start();
     MessageBuilder<?> messageBuilder = MessageBuilder.fromMessage(message)
         .setHeader(OPENTRACING_SPAN, span);
     tracer
@@ -100,7 +100,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
             .extract(Format.Builtin.TEXT_MAP, new TextMapExtractAdapter(message.getHeaders())))
         .withTag(Tags.SPAN_KIND.getKey(), spanKind)
         .withTag(Tags.COMPONENT.getKey(), WEBSOCKET)
-        .startManual();
+        .start();
     return MessageBuilder.fromMessage(message)
         .setHeader(OPENTRACING_SPAN, span)
         .build();
@@ -112,7 +112,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
         handler instanceof SubProtocolWebSocketHandler) &&
         SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-      tracer.activeSpan().close();
+      tracer.scopeManager().active().close();
     }
   }
 
@@ -122,7 +122,7 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
         handler instanceof SubProtocolWebSocketHandler) &&
         SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-      tracer.makeActive(message.getHeaders().get(OPENTRACING_SPAN, Span.class));
+      tracer.scopeManager().activate(message.getHeaders().get(OPENTRACING_SPAN, Span.class), true);
     }
     return message;
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -42,12 +42,13 @@ public class JdbcAspect {
     String url = conn.getMetaData().getURL();
     String user = conn.getMetaData().getUserName();
     String dbType;
+    boolean withActiveSpanOnly = false;
     try {
       dbType = url.split(":")[1];
     } catch (Throwable t) {
       throw new IllegalArgumentException(
           "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
     }
-    return new TracingConnection(conn, dbType, user);
+    return new TracingConnection(conn, dbType, user, withActiveSpanOnly);
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -66,7 +66,7 @@ public class TracedAsyncWebAspect {
   @Around("anyControllerOrRestControllerWithPublicAsyncMethod()")
   public Object tracePublicAsyncMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     final Callable<Object> delegate = (Callable<Object>) proceedingJoinPoint.proceed();
-    return new TracedCallable<>(delegate, tracer.activeSpan());
+    return new TracedCallable<>(delegate, tracer);
   }
 
   @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
@@ -77,7 +77,7 @@ public class TracedAsyncWebAspect {
     callableField.setAccessible(true);
     // do not create span (there is always server span) just pass it to new thread.
     callableField
-        .set(webAsyncTask, new TracedCallable<>(webAsyncTask.getCallable(), tracer.activeSpan()));
+        .set(webAsyncTask, new TracedCallable<>(webAsyncTask.getCallable(), tracer));
     return webAsyncTask;
   }
 }
