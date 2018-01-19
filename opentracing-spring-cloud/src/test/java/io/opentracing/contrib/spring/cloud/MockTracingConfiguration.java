@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,12 +13,10 @@
  */
 package io.opentracing.contrib.spring.cloud;
 
-import io.opentracing.NoopTracerFactory;
 import io.opentracing.contrib.spring.web.autoconfig.WebTracingConfiguration;
 import io.opentracing.mock.MockTracer;
-import io.opentracing.mock.MockTracer.Propagator;
+import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.util.GlobalTracer;
-import io.opentracing.util.ThreadLocalActiveSpanSource;
 import java.lang.reflect.Field;
 import java.util.regex.Pattern;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -38,7 +36,7 @@ public class MockTracingConfiguration {
   @Bean
   public MockTracer mockTracer() {
     resetGlobalTracer();
-    return new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
+    return new MockTracer();
   }
 
   @Bean

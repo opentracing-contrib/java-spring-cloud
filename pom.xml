@@ -19,7 +19,7 @@
 
   <groupId>io.opentracing.contrib</groupId>
   <artifactId>opentracing-spring-cloud-parent</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
@@ -61,13 +61,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <main.basedir>${project.basedir}</main.basedir>
 
-    <version.io.opentracing>0.30.0</version.io.opentracing>
-    <version.io.opentracing.contrib-opentracing-spring-web>0.0.12</version.io.opentracing.contrib-opentracing-spring-web>
-    <version.io.opentracing.contrib-opentracing-spring-jms>0.0.4</version.io.opentracing.contrib-opentracing-spring-jms>
-    <version.io.opentracing.contrib-java-jdbc>0.0.3</version.io.opentracing.contrib-java-jdbc>
-    <version.io.opentracing.contrib-java-concurrent>0.0.2</version.io.opentracing.contrib-java-concurrent>
+    <version.io.opentracing>0.31.0</version.io.opentracing>
+    <version.io.opentracing.contrib-opentracing-spring-web>0.1.0</version.io.opentracing.contrib-opentracing-spring-web>
+    <version.io.opentracing.contrib-opentracing-spring-jms>0.0.5</version.io.opentracing.contrib-opentracing-spring-jms>
+    <version.io.opentracing.contrib-java-jdbc>0.0.6</version.io.opentracing.contrib-java-jdbc>
+    <version.io.opentracing.contrib-java-concurrent>0.1.0</version.io.opentracing.contrib-java-concurrent>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
-    <version.io.github.openfeign.opentracing>0.0.5</version.io.github.openfeign.opentracing>
+    <version.io.github.openfeign.opentracing>0.1.0</version.io.github.openfeign.opentracing>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
         https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/spring-boot-starter-parent/pom.xml -->
     <version.org.springframework.boot>1.5.8.RELEASE</version.org.springframework.boot>

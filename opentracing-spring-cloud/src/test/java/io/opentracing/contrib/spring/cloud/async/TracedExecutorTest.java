@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package io.opentracing.contrib.spring.cloud.async;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
@@ -84,7 +84,7 @@ public class TracedExecutorTest {
   }
 
   private void testTracedExecutor(Executor executor) {
-    try (ActiveSpan activeSpan = mockTracer.buildSpan("foo").startActive()) {
+    try (Scope scope = mockTracer.buildSpan("foo").startActive(true)) {
       CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
         mockTracer.buildSpan("child").start().finish();
         return "ok";

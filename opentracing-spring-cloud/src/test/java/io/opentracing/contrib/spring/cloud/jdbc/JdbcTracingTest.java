@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -17,7 +17,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.mock.MockSpan;
@@ -86,7 +86,7 @@ public class JdbcTracingTest {
    */
   @Test
   public void spanJoinsActiveSpan() throws SQLException {
-    try (ActiveSpan ignored = tracer.buildSpan("parent").startActive()) {
+    try (Scope ignored = tracer.buildSpan("parent").startActive(true)) {
       assertTrue(dataSource.getConnection().prepareStatement("select 1").execute());
       assertEquals(1, tracer.finishedSpans().size());
     }
@@ -129,8 +129,8 @@ public class JdbcTracingTest {
     IntStream.rangeClosed(1, 150).parallel().forEach(i -> {
       service.submit(() -> {
         // each iteration is like a request
-        try (ActiveSpan parent = tracer.buildSpan("parent_" + i).startActive()) {
-          parent.setTag("iteration", i);
+        try (Scope parent = tracer.buildSpan("parent_" + i).startActive(true)) {
+          parent.span().setTag("iteration", i);
           jdbcTemplate.execute("select " + i);
         }
       });

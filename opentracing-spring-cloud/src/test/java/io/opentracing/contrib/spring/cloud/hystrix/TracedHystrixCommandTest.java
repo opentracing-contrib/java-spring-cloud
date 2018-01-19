@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -21,7 +21,8 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.strategy.HystrixPlugins;
-import io.opentracing.ActiveSpan;
+
+import io.opentracing.Scope;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
@@ -102,8 +103,8 @@ public class TracedHystrixCommandTest {
   @Test
   public void testWithoutCircuitBreaker() throws Exception {
 
-    try (ActiveSpan span = mockTracer.buildSpan("test_without_circuit_breaker")
-        .startActive()) {
+    try (Scope scope = mockTracer.buildSpan("test_without_circuit_breaker")
+        .startActive(true)) {
       String response = greetingService.sayHello();
       assertThat(response).isNotNull();
     }
@@ -127,8 +128,8 @@ public class TracedHystrixCommandTest {
 
   @Test
   public void testWithCircuitBreaker() {
-    try (ActiveSpan span = mockTracer.buildSpan("test_with_circuit_breaker")
-        .startActive()) {
+    try (Scope scope = mockTracer.buildSpan("test_with_circuit_breaker")
+        .startActive(true)) {
       String response = greetingService.alwaysFail();
       assertThat(response).isNotNull();
     }
@@ -157,8 +158,8 @@ public class TracedHystrixCommandTest {
     String groupKey = "test_hystrix";
     String commandKey = "hystrix_trace_command";
 
-    try (ActiveSpan activeSpan = mockTracer.buildSpan("test_with_circuit_breaker")
-        .startActive()) {
+    try (Scope scope = mockTracer.buildSpan("test_with_circuit_breaker")
+        .startActive(true)) {
       com.netflix.hystrix.HystrixCommand.Setter setter = com.netflix.hystrix.HystrixCommand.Setter
           .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
           .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));

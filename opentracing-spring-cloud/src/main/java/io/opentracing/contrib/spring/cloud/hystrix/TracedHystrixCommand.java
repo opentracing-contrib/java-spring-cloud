@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 package io.opentracing.contrib.spring.cloud.hystrix;
 
 import com.netflix.hystrix.HystrixCommand;
-import io.opentracing.ActiveSpan;
+import io.opentracing.Scope;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 
@@ -40,12 +40,12 @@ public abstract class TracedHystrixCommand<R> extends HystrixCommand<R> {
   protected R run() throws Exception {
     String commandKeyName = getCommandKey().name();
 
-    try (ActiveSpan span = this.tracer.buildSpan(commandKeyName)
+    try (Scope scope = this.tracer.buildSpan(commandKeyName)
         .withTag(Tags.COMPONENT.getKey(), TAG_HYSTRIX_COMPONENT)
         .withTag(TAG_COMMAND_KEY, commandKeyName)
         .withTag(TAG_COMMAND_GROUP, commandGroup.name())
         .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
-        .startActive()) {
+        .startActive(true)) {
       return doRun();
     }
   }
