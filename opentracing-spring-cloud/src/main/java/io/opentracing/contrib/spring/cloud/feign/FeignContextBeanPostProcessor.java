@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,29 +13,31 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import io.opentracing.Tracer;
+import feign.Client;
+
+import io.opentracing.contrib.spring.cloud.TracerUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.netflix.feign.FeignContext;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Pavol Loffay
  */
+@Configuration
+@ConditionalOnClass(Client.class)
 public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
-  private Tracer tracer;
+  @Autowired
   private BeanFactory beanFactory;
-
-  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory) {
-    this.tracer = tracer;
-    this.beanFactory = beanFactory;
-  }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
     if (bean instanceof FeignContext && !(bean instanceof TraceFeignContext)) {
-      return new TraceFeignContext(tracer, (FeignContext) bean, beanFactory);
+      return new TraceFeignContext(TracerUtils.getTracer(beanFactory), (FeignContext) bean, beanFactory);
     }
     return bean;
   }

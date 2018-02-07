@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -15,9 +15,11 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
+import io.opentracing.contrib.spring.cloud.TracerUtils;
 import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
-
 import java.util.concurrent.Executor;
+
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -49,17 +51,12 @@ public class DefaultAsyncAutoConfiguration {
   static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
 
     @Autowired
-    private Tracer tracer;
+    private BeanFactory beanFactory;
 
     @Override
     public Executor getAsyncExecutor() {
-      return new TracedExecutor(new SimpleAsyncTaskExecutor(), tracer);
+      return new TracedExecutor(new SimpleAsyncTaskExecutor(), TracerUtils.getTracer(beanFactory));
     }
-  }
-
-  @Bean
-  public ExecutorBeanPostProcessor executorBeanPostProcessor() {
-    return new ExecutorBeanPostProcessor(tracer);
   }
 
   @Bean

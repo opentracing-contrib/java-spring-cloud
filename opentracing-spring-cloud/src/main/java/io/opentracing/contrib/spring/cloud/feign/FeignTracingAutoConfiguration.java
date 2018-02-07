@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -23,7 +23,6 @@ import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -48,11 +47,6 @@ public class FeignTracingAutoConfiguration {
 
   @Autowired
   private Tracer tracer;
-
-  @Bean
-  FeignContextBeanPostProcessor feignContextBeanPostProcessor(BeanFactory beanFactory) {
-    return new FeignContextBeanPostProcessor(tracer, beanFactory);
-  }
 
   @Configuration
   @ConditionalOnClass(name = {"com.netflix.hystrix.HystrixCommand", "feign.hystrix.HystrixFeign"})

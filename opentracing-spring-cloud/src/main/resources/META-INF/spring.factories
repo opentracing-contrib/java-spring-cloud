@@ -1,10 +1,12 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.opentracing.contrib.spring.cloud.feign.FeignTracingAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.feign.FeignContextBeanPostProcessor,\
 io.opentracing.contrib.spring.cloud.jms.JmsAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.jdbc.JdbcAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.zuul.ZuulAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.async.CustomAsyncConfigurerAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.async.DefaultAsyncAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.async.ExecutorBeanPostProcessor,\
 io.opentracing.contrib.spring.cloud.hystrix.HystrixTracingAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.websocket.WebsocketAutoConfiguration,\
 io.opentracing.contrib.spring.cloud.scheduled.ScheduledAutoConfiguration

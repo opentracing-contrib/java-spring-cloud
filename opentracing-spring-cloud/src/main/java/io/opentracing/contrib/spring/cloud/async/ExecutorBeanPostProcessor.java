@@ -15,7 +15,9 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
+import io.opentracing.contrib.spring.cloud.TracerUtils;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
@@ -23,7 +25,10 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.ReflectionUtils;
 
@@ -34,13 +39,11 @@ import org.springframework.util.ReflectionUtils;
  *
  * @author Marcin Grzejszczak
  */
+@Configuration
 class ExecutorBeanPostProcessor implements BeanPostProcessor {
 
-  private final Tracer tracer;
-
-  ExecutorBeanPostProcessor(Tracer tracer) {
-    this.tracer = tracer;
-  }
+  @Autowired
+  private BeanFactory beanFactory;
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -58,7 +61,7 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
       Executor executor = (Executor) bean;
       ProxyFactoryBean factory = new ProxyFactoryBean();
       factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer));
+      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, TracerUtils.getTracer(beanFactory)));
       factory.setTarget(bean);
       return factory.getObject();
     } else if (bean instanceof ThreadPoolTaskExecutor) {
@@ -67,7 +70,7 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
       ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
       ProxyFactoryBean factory = new ProxyFactoryBean();
       factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, tracer) {
+      factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, TracerUtils.getTracer(beanFactory)) {
         @Override
         Executor tracedExecutor(Tracer tracer, ThreadPoolTaskExecutor executor) {
           return new TracedThreadPoolTaskExecutor(tracer, executor);
