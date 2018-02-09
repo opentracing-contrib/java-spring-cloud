@@ -16,7 +16,6 @@ package io.opentracing.contrib.spring.cloud.async;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
@@ -24,10 +23,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.ReflectionUtils;
 
@@ -38,12 +34,13 @@ import org.springframework.util.ReflectionUtils;
  *
  * @author Marcin Grzejszczak
  */
-@Configuration
 class ExecutorBeanPostProcessor implements BeanPostProcessor {
 
-  @Autowired
-  @Lazy
-  private Tracer tracer;
+  private final Tracer tracer;
+
+  ExecutorBeanPostProcessor(Tracer tracer) {
+    this.tracer = tracer;
+  }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
