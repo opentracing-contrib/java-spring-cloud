@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -33,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * @author Pavol Loffay
@@ -47,6 +48,7 @@ import org.springframework.context.annotation.Configuration;
 public class FeignTracingAutoConfiguration {
 
   @Autowired
+  @Lazy
   private Tracer tracer;
 
   @Bean

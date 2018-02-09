@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
@@ -42,6 +43,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class DefaultAsyncAutoConfiguration {
 
   @Autowired
+  @Lazy
   private Tracer tracer;
 
   @Configuration
@@ -49,6 +51,7 @@ public class DefaultAsyncAutoConfiguration {
   static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
 
     @Autowired
+    @Lazy
     private Tracer tracer;
 
     @Override
