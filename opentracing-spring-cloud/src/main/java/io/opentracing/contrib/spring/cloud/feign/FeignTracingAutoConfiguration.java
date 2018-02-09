@@ -23,6 +23,7 @@ import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -32,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * @author Pavol Loffay
@@ -46,7 +48,13 @@ import org.springframework.context.annotation.Configuration;
 public class FeignTracingAutoConfiguration {
 
   @Autowired
+  @Lazy
   private Tracer tracer;
+
+  @Bean
+  FeignContextBeanPostProcessor feignContextBeanPostProcessor(BeanFactory beanFactory) {
+    return new FeignContextBeanPostProcessor(tracer, beanFactory);
+  }
 
   @Configuration
   @ConditionalOnClass(name = {"com.netflix.hystrix.HystrixCommand", "feign.hystrix.HystrixFeign"})

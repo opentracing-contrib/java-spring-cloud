@@ -13,30 +13,24 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import feign.Client;
 import io.opentracing.Tracer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.netflix.feign.FeignContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 /**
  * @author Pavol Loffay
  */
-@Configuration
-@ConditionalOnClass(Client.class)
 public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
-  @Autowired
-  @Lazy
   private Tracer tracer;
-
-  @Autowired
   private BeanFactory beanFactory;
+
+  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory) {
+    this.tracer = tracer;
+    this.beanFactory = beanFactory;
+  }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
