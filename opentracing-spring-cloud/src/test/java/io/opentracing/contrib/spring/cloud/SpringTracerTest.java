@@ -11,12 +11,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.web;
+package io.opentracing.contrib.spring.cloud;
 
 import static org.junit.Assert.assertFalse;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.mock.MockTracer;
 
 import org.junit.Test;
@@ -28,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(
     classes = {MockTracingConfiguration.class, TracerConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SpringWebTracerTest {
+public class SpringTracerTest {
 
   @Autowired
   protected Tracer tracer;
