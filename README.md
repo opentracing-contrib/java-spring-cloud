@@ -1,7 +1,5 @@
 [![Build Status][ci-img]][ci] [![Released Version][maven-img]][maven]
 
-Note: this is under an active development!
-
 # OpenTracing Spring Cloud
 This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
 compatible implementation.
