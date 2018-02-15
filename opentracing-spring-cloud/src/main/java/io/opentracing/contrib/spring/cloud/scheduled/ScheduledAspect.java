@@ -18,6 +18,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import io.opentracing.contrib.spring.cloud.SpanUtils;
 import io.opentracing.tag.Tags;
+import java.util.regex.Pattern;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,13 +32,19 @@ public class ScheduledAspect {
   static final String COMPONENT_NAME = "scheduled";
 
   private Tracer tracer;
+  private Pattern skipPattern;
 
-  public ScheduledAspect(Tracer tracer) {
+  public ScheduledAspect(Tracer tracer, ScheduledTracingProperties scheduledTracingProperties) {
     this.tracer = tracer;
+    this.skipPattern = Pattern.compile(scheduledTracingProperties.getSkipPattern());
   }
 
   @Around("execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))")
   public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
+    if (skipPattern.matcher(pjp.getTarget().getClass().getName()).matches()) {
+      return pjp.proceed();
+    }
+
     // operation name is method name
     Scope scope = tracer.buildSpan(pjp.getSignature().getName())
         .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
