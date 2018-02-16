@@ -13,7 +13,11 @@
  */
 package io.opentracing.contrib.spring.cloud.log;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
@@ -22,6 +26,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.Status;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +57,24 @@ public class SpanLogsAppender implements Appender<ILoggingEvent> {
   public void doAppend(ILoggingEvent event) throws LogbackException {
     Span span = tracer.activeSpan();
     if (span != null) {
-      Map<String, String> logs = new HashMap<>(4);
+      Map<String, Object> logs = new HashMap<>(6);
       logs.put("logger", event.getLoggerName());
       logs.put("level", event.getLevel().toString());
       logs.put("thread", event.getThreadName());
       logs.put("message", event.getFormattedMessage());
+
+      if (Level.ERROR.equals(event.getLevel())) {
+        logs.put("event", Tags.ERROR);
+      }
+
+      IThrowableProxy throwableProxy = event.getThrowableProxy();
+      if (throwableProxy instanceof ThrowableProxy) {
+        Throwable throwable = ((ThrowableProxy)throwableProxy).getThrowable();
+        // String stackTrace = ThrowableProxyUtil.asString(throwableProxy);
+        if (throwable != null) {
+          logs.put("error.object", throwable);
+        }
+      }
       span.log(TimeUnit.MICROSECONDS.convert(event.getTimeStamp(), TimeUnit.MILLISECONDS), logs);
     }
   }

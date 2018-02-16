@@ -20,6 +20,7 @@ import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockSpan.LogEntry;
 import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class LoggingAutoConfigurationTest {
   private static final String LOG = "log message";
+  private static final Exception EXCEPTION = new RuntimeException("exception message");
 
   @RestController
   @SpringBootApplication
@@ -57,32 +59,46 @@ public class LoggingAutoConfigurationTest {
     private static final java.util.logging.Logger julLog = java.util.logging.Logger.getLogger(Controller.class.getName());
     private static final org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger(Controller.class);
 
-    private ContextData contextData() {
+    private ContextData contextData(Throwable throwable, boolean errorLog, String level) {
       ContextData contextData = new ContextData();
       contextData.setTimestamp(System.currentTimeMillis() * 1000);
       contextData.setThread(Thread.currentThread().getName());
+      contextData.setThrowable(throwable);
+      contextData.setError(errorLog);
+      contextData.setLevel(level);
       return contextData;
     }
 
     @RequestMapping("/jcl")
     public ContextData jcl() {
-      commonsLog.info(LOG);
-      return contextData();
+      commonsLog.info(LOG, EXCEPTION);
+      return contextData(EXCEPTION, false, Level.INFO.toString());
     }
     @RequestMapping("/slf4j")
     public ContextData slf4j() {
-      slf4jLog.info(LOG);
-      return contextData();
+      slf4jLog.info(LOG, EXCEPTION);
+      return contextData(EXCEPTION, false, Level.INFO.toString());
     }
     @RequestMapping("/jul")
     public ContextData jul() {
-      julLog.info(LOG);
-      return contextData();
+      julLog.log(java.util.logging.Level.INFO, LOG, EXCEPTION);
+      return contextData(EXCEPTION, false, Level.INFO.toString());
     }
     @RequestMapping("/log4j")
     public ContextData log4j() {
+      log4j.info(LOG, EXCEPTION);
+      return contextData(EXCEPTION, false, Level.INFO.toString());
+    }
+    @RequestMapping("/no-exception")
+    public ContextData noException() {
       log4j.info(LOG);
-      return contextData();
+      return contextData(null, false, Level.INFO.toString());
+    }
+
+    @RequestMapping("/log-error")
+    public ContextData logError() {
+      log4j.error(LOG);
+      return contextData(null, true, Level.ERROR.toString());
     }
   }
 
@@ -120,6 +136,18 @@ public class LoggingAutoConfigurationTest {
     assertLogging(response.getBody());
   }
 
+  @Test
+  public void testNoException() {
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/no-exception", ContextData.class);
+    assertLogging(response.getBody());
+  }
+
+  @Test
+  public void testError() {
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/log-error", ContextData.class);
+    assertLogging(response.getBody());
+  }
+
   private void assertLogging(ContextData contextData) {
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(1, mockSpans.size());
@@ -129,18 +157,36 @@ public class LoggingAutoConfigurationTest {
     // afterCompletion log
     assertEquals(3, mockSpan.logEntries().size());
     LogEntry logEntry = mockSpan.logEntries().get(1);
-    assertEquals(4, logEntry.fields().size());
+
+    if (contextData.getThrowable() == null && !contextData.isError()) {
+      assertEquals(4, logEntry.fields().size());
+    } else if (contextData.getThrowable() != null && contextData.isError()) {
+      assertEquals(6, logEntry.fields().size());
+    } else {
+      assertEquals(5, logEntry.fields().size());
+    }
+
+
     assertEquals(Controller.class.getName(), logEntry.fields().get("logger"));
     assertEquals(LOG, logEntry.fields().get("message"));
     assertEquals(contextData.getThread(), logEntry.fields().get("thread"));
-    assertEquals(Level.INFO.toString(), logEntry.fields().get("level"));
-    // now <= timestamp < now + 10ms
-    assertTrue(logEntry.timestampMicros() >= contextData.getTimestamp() && logEntry.timestampMicros() < contextData.getTimestamp() + 10 * 1000);
+    assertEquals(contextData.getLevel(), logEntry.fields().get("level"));
+    if (contextData.getThrowable() != null) {
+      assertEquals(contextData.getThrowable().getMessage(), ((Throwable)logEntry.fields().get("error.object")).getMessage());
+    }
+    if (contextData.isError()) {
+      assertEquals(Tags.ERROR, logEntry.fields().get("event"));
+    }
+    // now >= timestamp < now + 10ms
+    assertTrue(contextData.getTimestamp() >= logEntry.timestampMicros()  && logEntry.timestampMicros() < contextData.getTimestamp() + 10 * 1000);
   }
 
   private static class ContextData {
-    long timestamp;
-    String thread;
+    private long timestamp;
+    private String level;
+    private String thread;
+    private Throwable throwable;
+    private boolean error;
 
     public long getTimestamp() {
       return timestamp;
@@ -156,6 +202,30 @@ public class LoggingAutoConfigurationTest {
 
     public void setThread(String thread) {
       this.thread = thread;
+    }
+
+    public Throwable getThrowable() {
+      return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+      this.throwable = throwable;
+    }
+
+    public boolean isError() {
+      return error;
+    }
+
+    public void setError(boolean error) {
+      this.error = error;
+    }
+
+    public String getLevel() {
+      return level;
+    }
+
+    public void setLevel(String level) {
+      this.level = level;
     }
   }
 }
