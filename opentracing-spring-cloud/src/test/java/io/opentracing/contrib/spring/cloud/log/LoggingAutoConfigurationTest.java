@@ -177,8 +177,8 @@ public class LoggingAutoConfigurationTest {
     if (contextData.isError()) {
       assertEquals(Tags.ERROR, logEntry.fields().get("event"));
     }
-    // now >= timestamp < now + 10ms
-    assertTrue(contextData.getTimestamp() >= logEntry.timestampMicros()  && logEntry.timestampMicros() < contextData.getTimestamp() + 10 * 1000);
+    // now >= timestamp +20ms > now
+    assertTrue(contextData.getTimestamp() >= logEntry.timestampMicros()  && logEntry.timestampMicros() + 20 * 1000 > contextData.getTimestamp());
   }
 
   private static class ContextData {
