@@ -34,6 +34,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,8 +48,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class LoggingAutoConfigurationTest {
   private static final String LOG = "log message";
-  private static String threadName;
-  private static long timestampMicros;
 
   @RestController
   @SpringBootApplication
@@ -58,29 +57,32 @@ public class LoggingAutoConfigurationTest {
     private static final java.util.logging.Logger julLog = java.util.logging.Logger.getLogger(Controller.class.getName());
     private static final org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger(Controller.class);
 
+    private ContextData contextData() {
+      ContextData contextData = new ContextData();
+      contextData.setTimestamp(System.currentTimeMillis() * 1000);
+      contextData.setThread(Thread.currentThread().getName());
+      return contextData;
+    }
+
     @RequestMapping("/jcl")
-    public void jcl() {
-      threadName = Thread.currentThread().getName();
-      timestampMicros = System.currentTimeMillis() * 1000;
+    public ContextData jcl() {
       commonsLog.info(LOG);
+      return contextData();
     }
     @RequestMapping("/slf4j")
-    public void slf4j() {
-      threadName = Thread.currentThread().getName();
-      timestampMicros = System.currentTimeMillis() * 1000;
+    public ContextData slf4j() {
       slf4jLog.info(LOG);
+      return contextData();
     }
     @RequestMapping("/jul")
-    public void jul() {
-      threadName = Thread.currentThread().getName();
-      timestampMicros = System.currentTimeMillis() * 1000;
+    public ContextData jul() {
       julLog.info(LOG);
+      return contextData();
     }
     @RequestMapping("/log4j")
-    public void log4j() {
-      threadName = Thread.currentThread().getName();
-      timestampMicros = System.currentTimeMillis() * 1000;
+    public ContextData log4j() {
       log4j.info(LOG);
+      return contextData();
     }
   }
 
@@ -96,29 +98,29 @@ public class LoggingAutoConfigurationTest {
 
   @Test
   public void testJcl() {
-    restTemplate.getForEntity("/jcl", Void.class);
-    assertLogging();
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/jcl", ContextData.class);
+    assertLogging(response.getBody());
   }
 
   @Test
   public void testSlf4j() {
-    restTemplate.getForEntity("/slf4j", Void.class);
-    assertLogging();
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/slf4j", ContextData.class);
+    assertLogging(response.getBody());
   }
 
   @Test
   public void testJul() {
-    restTemplate.getForEntity("/jul", Void.class);
-    assertLogging();
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/jul", ContextData.class);
+    assertLogging(response.getBody());
   }
 
   @Test
   public void testLog4j() {
-    restTemplate.getForEntity("/log4j", Void.class);
-    assertLogging();
+    ResponseEntity<ContextData> response = restTemplate.getForEntity("/log4j", ContextData.class);
+    assertLogging(response.getBody());
   }
 
-  private void assertLogging() {
+  private void assertLogging(ContextData contextData) {
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(1, mockSpans.size());
     MockSpan mockSpan = mockSpans.get(0);
@@ -130,9 +132,30 @@ public class LoggingAutoConfigurationTest {
     assertEquals(4, logEntry.fields().size());
     assertEquals(Controller.class.getName(), logEntry.fields().get("logger"));
     assertEquals(LOG, logEntry.fields().get("message"));
-    assertEquals(threadName, logEntry.fields().get("thread"));
+    assertEquals(contextData.getThread(), logEntry.fields().get("thread"));
     assertEquals(Level.INFO.toString(), logEntry.fields().get("level"));
     // now <= timestamp < now + 10ms
-    assertTrue(logEntry.timestampMicros() >= timestampMicros && logEntry.timestampMicros() < timestampMicros + 10 * 1000);
+    assertTrue(logEntry.timestampMicros() >= contextData.getTimestamp() && logEntry.timestampMicros() < contextData.getTimestamp() + 10 * 1000);
+  }
+
+  private static class ContextData {
+    long timestamp;
+    String thread;
+
+    public long getTimestamp() {
+      return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+      this.timestamp = timestamp;
+    }
+
+    public String getThread() {
+      return thread;
+    }
+
+    public void setThread(String thread) {
+      this.thread = thread;
+    }
   }
 }
