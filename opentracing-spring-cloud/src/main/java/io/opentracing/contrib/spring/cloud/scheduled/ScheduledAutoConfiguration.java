@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -19,6 +19,7 @@ import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,10 +30,11 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.scheduled.enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(ScheduledTracingProperties.class)
 public class ScheduledAutoConfiguration {
 
   @Bean
-  public ScheduledAspect scheduledAspect(Tracer tracer) {
-    return new ScheduledAspect(tracer);
+  public ScheduledAspect scheduledAspect(Tracer tracer, ScheduledTracingProperties scheduledTracingProperties) {
+    return new ScheduledAspect(tracer, scheduledTracingProperties);
   }
 }
