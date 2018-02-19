@@ -13,6 +13,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * JMS
 * JDBC
 * Zuul
+* Standard logging - logs are added to active span
 
 This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
  and `Edgware.RELEASE`
