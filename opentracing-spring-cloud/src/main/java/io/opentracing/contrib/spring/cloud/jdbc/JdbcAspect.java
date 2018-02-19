@@ -35,6 +35,7 @@ public class JdbcAspect {
    *
    * @param pjp the intercepted join point
    * @return a new {@link TracingConnection} wrapping the result of the joint point
+   * @throws Throwable in case of wrong JDBC URL
    */
   @Around("execution(java.sql.Connection *.getConnection(..)) && target(javax.sql.DataSource)")
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {

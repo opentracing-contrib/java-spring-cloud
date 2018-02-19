@@ -25,10 +25,14 @@ import org.springframework.web.context.request.async.WebAsyncTask;
 
 /**
  * this class adds tracing to all {@link org.springframework.stereotype.Controller} or {@link
- * org.springframework.web.bind.annotation.RestController} that has <ul> <li>public {@link
- * java.util.concurrent.Callable} methods</li> <li>public {@link org.springframework.web.context.request.async.WebAsyncTask}
- * methods</li> </ul> All those methods which will eventually have {@link Callable#call()} will be
- * wrapped with {@link io.opentracing.contrib.concurrent.TracedCallable} <p>
+ * org.springframework.web.bind.annotation.RestController} that has
+ * <ul>
+ *   <li>public {@link java.util.concurrent.Callable} methods</li>
+ *   <li>public {@link org.springframework.web.context.request.async.WebAsyncTask} methods</li>
+*  </ul>
+ *
+ *  All those methods which will eventually have {@link Callable#call()} will be
+ * wrapped with {@link io.opentracing.contrib.concurrent.TracedCallable}
  */
 @Aspect
 public class TracedAsyncWebAspect {

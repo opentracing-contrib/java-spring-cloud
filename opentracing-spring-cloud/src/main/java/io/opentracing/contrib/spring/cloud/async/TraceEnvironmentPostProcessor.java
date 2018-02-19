@@ -28,9 +28,9 @@ import org.springframework.core.env.PropertySource;
  *     <li>logging pattern level that prints trace information (e.g. trace ids)</li>
  *     <li>enables usage of subclass-based (CGLIB) proxies are to be created as opposed
  * to standard Java interface-based proxies</li>
- *     It's required for the tracing aspects like
- *     {@link io.opentracing.contrib.spring.cloud.async.TraceAsyncAspect}
  * </ul>
+ * It's required for the tracing aspects like
+ * {@link io.opentracing.contrib.spring.cloud.async.TraceAsyncAspect}
  *
  * @author Dave Syer
  * @author Pavol Loffay
