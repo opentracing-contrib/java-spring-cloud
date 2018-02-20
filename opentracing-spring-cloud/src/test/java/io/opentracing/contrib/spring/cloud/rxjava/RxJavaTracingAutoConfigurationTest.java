@@ -81,6 +81,7 @@ public class RxJavaTracingAutoConfigurationTest {
     ResponseEntity<Integer> responseEntity = testRestTemplate
         .getForEntity("/single", Integer.class);
 
+    // span is created in spring-web
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(200, responseEntity.getStatusCode().value());
     List<MockSpan> spans = mockTracer.finishedSpans();

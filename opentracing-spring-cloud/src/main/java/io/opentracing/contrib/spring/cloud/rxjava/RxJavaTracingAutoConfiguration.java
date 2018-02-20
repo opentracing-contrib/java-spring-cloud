@@ -14,17 +14,21 @@
 package io.opentracing.contrib.spring.cloud.rxjava;
 
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import io.opentracing.rxjava.TracingRxJavaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import rx.plugins.RxJavaHooks;
 
 
 @Configuration
+@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnBean(Tracer.class)
-@ConditionalOnClass(name = "rx.plugins.RxJavaHooks")
+@ConditionalOnClass(RxJavaHooks.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.rxjava.enabled", havingValue = "true", matchIfMissing = true)
 public class RxJavaTracingAutoConfiguration {
 
