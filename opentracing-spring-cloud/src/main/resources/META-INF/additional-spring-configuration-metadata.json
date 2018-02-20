@@ -25,6 +25,12 @@
       "defaultValue": true
     },
     {
+      "name": "opentracing.spring.cloud.rxjava.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable RxJava tracing.",
+      "defaultValue": true
+    },
+    {
       "name": "opentracing.spring.cloud.async.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable tracing for @Async, Executor and WebAsyncTask/Callable."
