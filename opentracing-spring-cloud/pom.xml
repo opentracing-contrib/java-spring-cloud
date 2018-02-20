@@ -57,6 +57,18 @@
     </dependency>
 
     <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-rxjava-1</artifactId>
+      <version>${version.io.opentracing.contrib-opentracing-rxjava-1}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.reactivex</groupId>
+          <artifactId>rxjava</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>io.github.openfeign.opentracing</groupId>
       <artifactId>feign-hystrix-opentracing</artifactId>
       <version>${version.io.github.openfeign.opentracing}</version>

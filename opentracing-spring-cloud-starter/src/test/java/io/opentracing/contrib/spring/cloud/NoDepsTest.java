@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -43,6 +43,11 @@ public class NoDepsTest {
   @Test(expected = ClassNotFoundException.class)
   public void testNoZuulFilter() throws ClassNotFoundException {
     this.getClass().getClassLoader().loadClass("com.netflix.zuul.ZuulFilter");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoRxJavaHooks() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("rx.plugins.RxJavaHooks");
   }
 
   @Test(expected = ClassNotFoundException.class)

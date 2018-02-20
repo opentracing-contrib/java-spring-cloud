@@ -66,6 +66,7 @@
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.5</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-java-jdbc>0.0.6</version.io.opentracing.contrib-java-jdbc>
     <version.io.opentracing.contrib-java-concurrent>0.1.0</version.io.opentracing.contrib-java-concurrent>
+    <version.io.opentracing.contrib-opentracing-rxjava-1>0.0.7</version.io.opentracing.contrib-opentracing-rxjava-1>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.1.0</version.io.github.openfeign.opentracing>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
