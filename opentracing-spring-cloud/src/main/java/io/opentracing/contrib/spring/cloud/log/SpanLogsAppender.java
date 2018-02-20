@@ -17,36 +17,24 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.LogbackException;
-import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Pavol Loffay
  */
-public class SpanLogsAppender implements Appender<ILoggingEvent> {
+public class SpanLogsAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
-  private final String name = SpanLogsAppender.class.getSimpleName();
   private final Tracer tracer;
 
   public SpanLogsAppender(Tracer tracer) {
+    this.name = SpanLogsAppender.class.getSimpleName();
     this.tracer = tracer;
-  }
-
-  @Override
-  public String getName() {
-    return this.name;
   }
 
   /**
@@ -54,7 +42,7 @@ public class SpanLogsAppender implements Appender<ILoggingEvent> {
    * It will not be executed for DEBUG level if root logger is INFO.
    */
   @Override
-  public void doAppend(ILoggingEvent event) throws LogbackException {
+  protected void append(ILoggingEvent event) {
     Span span = tracer.activeSpan();
     if (span != null) {
       Map<String, Object> logs = new HashMap<>(6);
@@ -77,77 +65,5 @@ public class SpanLogsAppender implements Appender<ILoggingEvent> {
       }
       span.log(TimeUnit.MICROSECONDS.convert(event.getTimeStamp(), TimeUnit.MILLISECONDS), logs);
     }
-  }
-
-  @Override
-  public void setName(String name) {
-  }
-
-  @Override
-  public void setContext(Context context) {
-  }
-
-  @Override
-  public Context getContext() {
-    return null;
-  }
-
-  @Override
-  public void addStatus(Status status) {
-  }
-
-  @Override
-  public void addInfo(String msg) {
-  }
-
-  @Override
-  public void addInfo(String msg, Throwable ex) {
-  }
-
-  @Override
-  public void addWarn(String msg) {
-  }
-
-  @Override
-  public void addWarn(String msg, Throwable ex) {
-  }
-
-  @Override
-  public void addError(String msg) {
-  }
-
-  @Override
-  public void addError(String msg, Throwable ex) {
-  }
-
-  @Override
-  public void addFilter(Filter<ILoggingEvent> newFilter) {
-  }
-
-  @Override
-  public void clearAllFilters() {
-  }
-
-  @Override
-  public List<Filter<ILoggingEvent>> getCopyOfAttachedFiltersList() {
-    return null;
-  }
-
-  @Override
-  public FilterReply getFilterChainDecision(ILoggingEvent event) {
-    return FilterReply.NEUTRAL;
-  }
-
-  @Override
-  public void start() {
-  }
-
-  @Override
-  public void stop() {
-  }
-
-  @Override
-  public boolean isStarted() {
-    return true;
   }
 }

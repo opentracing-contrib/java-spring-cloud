@@ -15,6 +15,7 @@ package io.opentracing.contrib.spring.cloud.log;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.filter.EvaluatorFilter;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration;
 import javax.annotation.PostConstruct;
@@ -22,8 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
+@ConditionalOnClass(ch.qos.logback.classic.Logger.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.log.enabled", havingValue = "true", matchIfMissing = true)
 public class LoggingAutoConfiguration {
 
@@ -41,6 +43,7 @@ public class LoggingAutoConfiguration {
   @PostConstruct
   public void postConstruct() {
     SpanLogsAppender spanLogsAppender = new SpanLogsAppender(tracer);
+    spanLogsAppender.start();
     Logger rootLogger = getRootLogger();
     rootLogger.addAppender(spanLogsAppender);
   }
