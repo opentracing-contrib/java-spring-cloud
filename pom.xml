@@ -85,7 +85,7 @@
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
     <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>2.20</version.maven-surefire-plugin>
-    <version.maven-javadoc-plugin>2.10.4</version.maven-javadoc-plugin>
+    <version.maven-javadoc-plugin>3.0.0</version.maven-javadoc-plugin>
     <version.maven-checkstyle-plugin>2.17</version.maven-checkstyle-plugin>
     <version.checkstyle>8.3</version.checkstyle>
     <version.io.takari-maven>0.3.4</version.io.takari-maven>
@@ -319,6 +319,8 @@
             <version>${version.maven-javadoc-plugin}</version>
             <configuration>
               <failOnError>false</failOnError>
+              <!-- disable strict lint: we don't document all params, throws statements.. -->
+              <doclint>none</doclint>
             </configuration>
             <executions>
               <execution>
