@@ -15,6 +15,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Zuul
 * RxJava
 * Standard logging - logs are added to active span
+* Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
 
 This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
  and `Edgware.RELEASE`
