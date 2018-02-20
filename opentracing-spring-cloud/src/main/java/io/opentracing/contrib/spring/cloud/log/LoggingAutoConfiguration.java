@@ -45,7 +45,6 @@ public class LoggingAutoConfiguration {
     SpanLogsAppender spanLogsAppender = new SpanLogsAppender(tracer);
     spanLogsAppender.start();
     Logger rootLogger = getRootLogger();
-    spanLogsAppender.addFilter(new EvaluatorFilter<>());
     rootLogger.addAppender(spanLogsAppender);
   }
 
