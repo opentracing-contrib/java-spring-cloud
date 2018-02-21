@@ -21,9 +21,14 @@ This library is compatible with [Spring Cloud](http://projects.spring.io/spring-
  and `Edgware.RELEASE`
 
 ## Comparison to `spring-cloud-sleuth`
-[spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth) also instruments 
-a number of different frameworks. However, it is not currently possible to use it with the OpenTracing API, or
-wire different instrumentations that are not supported by sleuth.
+This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth), 
+both provide out of the box tracing solution for Spring Boot/Cloud. Some of the instrumentations in this 
+package are based on original `sleuth` work.
+
+However there are a couple of differences:
+* OpenTracing support in `sleuth` is limited to one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
+* `sleuth` might support different set of instrumentations.
+* Generated tracing data in `sleuth` follow Zipkin semantics e.g. `cs`, `cr`, `ss` annotations. This project complies with OpenTracing semantic conventions.
 
 ## Configuration
 Just add the following dependency in your pom.xml:
