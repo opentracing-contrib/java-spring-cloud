@@ -13,16 +13,15 @@
  */
 package io.opentracing.contrib.spring.cloud;
 
-import io.opentracing.contrib.spring.web.autoconfig.WebTracingConfiguration;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.noop.NoopTracerFactory;
 import io.opentracing.util.GlobalTracer;
 import java.lang.reflect.Field;
-import java.util.regex.Pattern;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,19 +30,13 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @EnableAutoConfiguration
+@PropertySource(value = {"classpath:test.properties"})
 public class MockTracingConfiguration {
 
   @Bean
   public MockTracer mockTracer() {
     resetGlobalTracer();
     return new MockTracer();
-  }
-
-  @Bean
-  public WebTracingConfiguration webTracingConfiguration() {
-    return WebTracingConfiguration.builder()
-        .withSkipPattern(Pattern.compile("/notTraced"))
-        .build();
   }
 
   @Bean
