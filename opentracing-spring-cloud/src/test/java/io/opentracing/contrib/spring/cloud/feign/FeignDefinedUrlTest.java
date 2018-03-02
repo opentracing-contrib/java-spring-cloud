@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -39,7 +39,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
     webEnvironment = WebEnvironment.DEFINED_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
         FeignWithoutRibbonConfiguration.class})
-@TestPropertySource(properties = {"server.port=13598"})
+@TestPropertySource(properties = {
+    "opentracing.spring.web.skipPattern=/notTraced",
+    "server.port=13598"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignDefinedUrlTest {
 

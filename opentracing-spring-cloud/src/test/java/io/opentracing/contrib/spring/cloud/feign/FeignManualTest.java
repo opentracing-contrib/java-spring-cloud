@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -40,7 +40,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
-        ManualFeignConfiguration.class, FeignRibbonLocalConfiguration.class})
+        ManualFeignConfiguration.class, FeignRibbonLocalConfiguration.class},
+    properties = {"opentracing.spring.web.skipPattern=/notTraced"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignManualTest {
 

@@ -27,7 +27,9 @@ import org.springframework.test.context.TestPropertySource;
 /**
  * @author Pavol Loffay
  */
-@TestPropertySource(properties = {"feign.hystrix.enabled=true"})
+@TestPropertySource(properties = {
+    "feign.hystrix.enabled=true",
+    "opentracing.spring.web.skipPattern=/notTraced"})
 public class FeignHystrixTest extends FeignTest {
 
   @BeforeClass
