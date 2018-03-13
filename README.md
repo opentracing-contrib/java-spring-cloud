@@ -28,7 +28,7 @@ package are based on original `sleuth` work.
 However there are a couple of differences:
 * OpenTracing support in `sleuth` is limited to one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
 * `sleuth` might support different set of instrumentations.
-* Generated tracing data in `sleuth` follow Zipkin semantics e.g. `cs`, `cr`, `ss` annotations. This project complies with OpenTracing semantic conventions.
+* Instrumentations in `sleuth` might add different set of tags and logs to represent the same events.
 
 ## Configuration
 Just add the following dependency in your pom.xml:
