@@ -77,7 +77,6 @@
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
 
     <version.javax.jms>1.1-rev-1</version.javax.jms>
-    <version.log4j>1.2.17</version.log4j>
 
     <!-- plugins -->
     <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>

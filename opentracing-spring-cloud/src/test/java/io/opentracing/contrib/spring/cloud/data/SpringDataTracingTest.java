@@ -57,7 +57,7 @@ public class SpringDataTracingTest {
     assertNotNull(entity.getId());
 
     List<MockSpan> spans = mockTracer.finishedSpans();
-    assertEquals(1, spans.size());
+    assertEquals(2, spans.size());
     assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
   }
 
