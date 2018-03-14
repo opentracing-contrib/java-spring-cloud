@@ -91,7 +91,7 @@
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-feign</artifactId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
       <optional>true</optional>
       <exclusions>
         <!-- TODO "explicit" artemis server fails with:
@@ -105,7 +105,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-hystrix</artifactId>
+      <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
       <optional>true</optional>
     </dependency>
 
@@ -117,7 +117,7 @@
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zuul</artifactId>
+      <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
       <optional>true</optional>
     </dependency>
 
@@ -231,6 +231,12 @@
       <groupId>io.github.openfeign</groupId>
       <artifactId>feign-okhttp</artifactId>
       <version>${version.io.github.openfeign-feign-okhttp}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${version.log4j}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
