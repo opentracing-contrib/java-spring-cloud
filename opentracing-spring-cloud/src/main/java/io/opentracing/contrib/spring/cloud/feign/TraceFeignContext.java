@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -19,10 +19,10 @@ import io.opentracing.Tracer;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.netflix.feign.FeignContext;
-import org.springframework.cloud.netflix.feign.ribbon.CachingSpringLoadBalancerFactory;
-import org.springframework.cloud.netflix.feign.ribbon.LoadBalancerFeignClient;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
+import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
+import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 
 /**
  * @author Pavol Loffay

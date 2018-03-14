@@ -17,7 +17,7 @@ import io.opentracing.Tracer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.cloud.netflix.feign.FeignContext;
+import org.springframework.cloud.openfeign.FeignContext;
 
 /**
  * @author Pavol Loffay
