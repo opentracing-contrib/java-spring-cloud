@@ -30,7 +30,7 @@
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
 
-    <jaeger.version>0.24.0</jaeger.version>
+    <jaeger.version>0.26.0</jaeger.version>
   </properties>
 
   <dependencies>
