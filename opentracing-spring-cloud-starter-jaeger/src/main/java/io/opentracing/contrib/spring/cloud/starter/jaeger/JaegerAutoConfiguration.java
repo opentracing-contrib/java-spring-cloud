@@ -14,10 +14,10 @@
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
 import com.uber.jaeger.Tracer.Builder;
-import com.uber.jaeger.metrics.InMemoryStatsReporter;
+import com.uber.jaeger.metrics.InMemoryMetricsFactory;
 import com.uber.jaeger.metrics.Metrics;
-import com.uber.jaeger.metrics.NullStatsReporter;
-import com.uber.jaeger.metrics.StatsReporter;
+import com.uber.jaeger.metrics.MetricsFactory;
+import com.uber.jaeger.metrics.NoopMetricsFactory;
 import com.uber.jaeger.reporters.CompositeReporter;
 import com.uber.jaeger.reporters.LoggingReporter;
 import com.uber.jaeger.reporters.RemoteReporter;
@@ -28,7 +28,9 @@ import com.uber.jaeger.samplers.ProbabilisticSampler;
 import com.uber.jaeger.samplers.RateLimitingSampler;
 import com.uber.jaeger.samplers.RemoteControlledSampler;
 import com.uber.jaeger.samplers.Sampler;
+import com.uber.jaeger.senders.Sender;
 import com.uber.jaeger.tracerresolver.JaegerTracerResolver;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties.RemoteReporterProperties;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecJaegerTracerCustomizer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import java.util.Arrays;
@@ -71,8 +73,10 @@ public class JaegerAutoConfiguration {
         Sampler sampler,
         Reporter reporter) {
 
-      final Builder builder = new Builder(jaegerConfigurationProperties.getServiceName(), reporter,
-          sampler);
+      final Builder builder =
+          new Builder(jaegerConfigurationProperties.getServiceName())
+              .withReporter(reporter)
+              .withSampler(sampler);
 
       tracerCustomizers.forEach(c -> c.customize(builder));
 
@@ -88,14 +92,13 @@ public class JaegerAutoConfiguration {
 
       JaegerConfigurationProperties.RemoteReporterProperties remoteReporterProperties =
           properties.getRemoteReporterProperties();
-      JaegerConfigurationProperties.HttpSender httpSender =
-          properties.getHttpSender();
+
+      JaegerConfigurationProperties.HttpSender httpSender = properties.getHttpSender();
       if (!StringUtils.isEmpty(httpSender.getUrl()) && !httpSender.isDisable()) {
         reporters.add(getHttpReporter(metrics, remoteReporterProperties, httpSender));
       }
 
-      JaegerConfigurationProperties.UdpSender udpSender =
-          properties.getUdpSender();
+      JaegerConfigurationProperties.UdpSender udpSender = properties.getUdpSender();
       if (!StringUtils.isEmpty(udpSender.getHost()) && !udpSender.isDisable()) {
         reporters.add(getUdpReporter(metrics, remoteReporterProperties, udpSender));
       }
@@ -117,32 +120,54 @@ public class JaegerAutoConfiguration {
       com.uber.jaeger.senders.UdpSender udpSender = new com.uber.jaeger.senders.UdpSender(
           udpSenderProperties.getHost(), udpSenderProperties.getPort(),
           udpSenderProperties.getMaxPacketSize());
-      return new RemoteReporter(udpSender, remoteReporterProperties.getFlushInterval(),
-          remoteReporterProperties.getMaxQueueSize(), metrics);
+
+      return createReporter(metrics, remoteReporterProperties, udpSender);
     }
 
     private Reporter getHttpReporter(Metrics metrics,
         JaegerConfigurationProperties.RemoteReporterProperties remoteReporterProperties,
         JaegerConfigurationProperties.HttpSender httpSenderProperties) {
+      /*
+       * this would have been changed to use HttpSender.Builder,
+       * but HttpSender.Builder.withMaxPacketSize is private
+       */
       com.uber.jaeger.senders.HttpSender httpSender = new com.uber.jaeger.senders.HttpSender(
           httpSenderProperties.getUrl(), httpSenderProperties.getMaxPayload());
-      return new RemoteReporter(httpSender, remoteReporterProperties.getFlushInterval(),
-          remoteReporterProperties.getMaxQueueSize(), metrics);
+
+      return createReporter(metrics, remoteReporterProperties, httpSender);
     }
 
-    @ConditionalOnMissingBean
-    @Bean
-    public Metrics reporterMetrics(StatsReporter statsReporter) {
-      return Metrics.fromStatsReporter(statsReporter);
-    }
+    private Reporter createReporter(Metrics metrics,
+        RemoteReporterProperties remoteReporterProperties, Sender udpSender) {
+      RemoteReporter.Builder builder =
+          new RemoteReporter.Builder()
+              .withSender(udpSender)
+              .withMetrics(metrics);
 
-    @ConditionalOnMissingBean
-    @Bean
-    public StatsReporter statsReporter(JaegerConfigurationProperties properties) {
-      if (properties.isEnableMetrics()) {
-        return new InMemoryStatsReporter();
+      if (remoteReporterProperties.getFlushInterval() != null) {
+        builder.withFlushInterval(remoteReporterProperties.getFlushInterval());
       }
-      return new NullStatsReporter();
+      if (remoteReporterProperties.getMaxQueueSize() != null) {
+        builder.withMaxQueueSize(remoteReporterProperties.getMaxQueueSize());
+      }
+
+      return builder.build();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public Metrics reporterMetrics(MetricsFactory metricsFactory) {
+      return new Metrics(metricsFactory);
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public MetricsFactory metricsFactory(JaegerConfigurationProperties properties) {
+      if (properties.isEnableMetrics()) {
+        return new InMemoryMetricsFactory();
+      }
+
+      return new NoopMetricsFactory();
     }
 
     @ConditionalOnProperty(value = "opentracing.jaeger.enableB3Propagation", havingValue = "true")
@@ -174,11 +199,12 @@ public class JaegerAutoConfiguration {
         JaegerConfigurationProperties.RemoteControlledSampler samplerProperties
             = properties.getRemoteControlledSampler();
 
-        Sampler initialSampler = new ProbabilisticSampler(samplerProperties.getSamplingRate());
-        HttpSamplingManager manager = new HttpSamplingManager(samplerProperties.getHostPort());
-
-        return new RemoteControlledSampler(properties.getServiceName(), manager, initialSampler,
-            metrics);
+        return new RemoteControlledSampler.Builder(properties.getServiceName())
+                    .withSamplingManager(new HttpSamplingManager(samplerProperties.getHostPort()))
+                    .withInitialSampler(
+                        new ProbabilisticSampler(samplerProperties.getSamplingRate()))
+                    .withMetrics(metrics)
+                    .build();
       }
 
       //fallback to sampling every trace

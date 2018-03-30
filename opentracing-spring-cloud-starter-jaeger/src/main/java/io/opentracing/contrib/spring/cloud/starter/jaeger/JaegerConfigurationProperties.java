@@ -136,33 +136,32 @@ public class JaegerConfigurationProperties {
 
   public static class RemoteReporterProperties {
 
-    private int flushInterval = 1000;
+    private Integer flushInterval;
 
-    private int maxQueueSize = 100;
+    private Integer maxQueueSize;
 
-    public int getFlushInterval() {
+    public Integer getFlushInterval() {
       return flushInterval;
     }
 
-    public void setFlushInterval(int flushInterval) {
+    public void setFlushInterval(Integer flushInterval) {
       this.flushInterval = flushInterval;
     }
 
-    public int getMaxQueueSize() {
+    public Integer getMaxQueueSize() {
       return maxQueueSize;
     }
 
-    public void setMaxQueueSize(int maxQueueSize) {
+    public void setMaxQueueSize(Integer maxQueueSize) {
       this.maxQueueSize = maxQueueSize;
     }
-
   }
 
   public static class HttpSender {
 
     private String url;
 
-    private int maxPayload = 1048576;
+    private Integer maxPayload;
 
     private boolean disable = false;
 
@@ -174,11 +173,11 @@ public class JaegerConfigurationProperties {
       this.url = url;
     }
 
-    public int getMaxPayload() {
+    public Integer getMaxPayload() {
       return maxPayload;
     }
 
-    public void setMaxPayload(int maxPayload) {
+    public void setMaxPayload(Integer maxPayload) {
       this.maxPayload = maxPayload;
     }
 
