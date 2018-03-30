@@ -11,20 +11,16 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.starter.jaeger.customizers;
+package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
 import com.uber.jaeger.Tracer;
-import com.uber.jaeger.propagation.B3TextMapCodec;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerTracerCustomizer;
-import io.opentracing.propagation.Format;
 
-public class B3CodecJaegerTracerCustomizer implements JaegerTracerCustomizer {
+@FunctionalInterface
+public interface TracerBuilderCustomizer {
 
-  @Override
-  public void customize(Tracer.Builder builder) {
-    B3TextMapCodec injector = new B3TextMapCodec();
-
-    builder.registerInjector(Format.Builtin.HTTP_HEADERS, injector)
-        .registerExtractor(Format.Builtin.HTTP_HEADERS, injector);
-  }
+  /**
+   * Provides the ability to execute arbitrary operations on the builder The customizer should NOT
+   * call the build method
+   */
+  void customize(Tracer.Builder builder);
 }

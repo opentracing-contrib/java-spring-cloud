@@ -31,7 +31,7 @@ import com.uber.jaeger.samplers.Sampler;
 import com.uber.jaeger.senders.Sender;
 import com.uber.jaeger.tracerresolver.JaegerTracerResolver;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties.RemoteReporterProperties;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecJaegerTracerCustomizer;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public class JaegerAutoConfiguration {
   public static class ExplicitConfiguration {
 
     @Autowired(required = false)
-    private List<JaegerTracerCustomizer> tracerCustomizers = Collections.emptyList();
+    private List<TracerBuilderCustomizer> tracerCustomizers = Collections.emptyList();
 
     @Bean
     public io.opentracing.Tracer tracer(JaegerConfigurationProperties jaegerConfigurationProperties,
@@ -172,8 +172,8 @@ public class JaegerAutoConfiguration {
 
     @ConditionalOnProperty(value = "opentracing.jaeger.enableB3Propagation", havingValue = "true")
     @Bean
-    public JaegerTracerCustomizer b3CodecJaegerTracerCustomizer() {
-      return new B3CodecJaegerTracerCustomizer();
+    public TracerBuilderCustomizer b3CodecJaegerTracerCustomizer() {
+      return new B3CodecTracerBuilderCustomizer();
     }
 
     /**

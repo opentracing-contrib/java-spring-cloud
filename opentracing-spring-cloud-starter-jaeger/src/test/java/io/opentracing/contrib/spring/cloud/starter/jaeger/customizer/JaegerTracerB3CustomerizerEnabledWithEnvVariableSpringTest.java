@@ -17,8 +17,8 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger.customizer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentracing.contrib.spring.cloud.starter.jaeger.AbstractTracerSpringTest;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerTracerCustomizer;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecJaegerTracerCustomizer;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.TracerBuilderCustomizer;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ public class JaegerTracerB3CustomerizerEnabledWithEnvVariableSpringTest extends
   public static final EnvironmentVariables environmentVariables = new EnvironmentVariables();
   private static final String B3_ENV_VAR_NAME = "OPENTRACING_JAEGER_ENABLE_B3_PROPAGATION";
   @Autowired
-  private List<JaegerTracerCustomizer> customizers;
+  private List<TracerBuilderCustomizer> customizers;
 
   @BeforeClass
   public static void beforeClass() {
@@ -56,6 +56,6 @@ public class JaegerTracerB3CustomerizerEnabledWithEnvVariableSpringTest extends
   public void testCustomizersShouldContainB3Customizer() {
     assertThat(customizers)
         .isNotEmpty()
-        .extracting("class").contains(B3CodecJaegerTracerCustomizer.class);
+        .extracting("class").contains(B3CodecTracerBuilderCustomizer.class);
   }
 }

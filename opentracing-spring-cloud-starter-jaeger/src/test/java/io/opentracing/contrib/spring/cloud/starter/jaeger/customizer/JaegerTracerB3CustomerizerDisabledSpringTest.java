@@ -17,8 +17,8 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger.customizer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentracing.contrib.spring.cloud.starter.jaeger.AbstractTracerSpringTest;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerTracerCustomizer;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecJaegerTracerCustomizer;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.TracerBuilderCustomizer;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import org.springframework.test.context.TestPropertySource;
 public class JaegerTracerB3CustomerizerDisabledSpringTest extends AbstractTracerSpringTest {
 
   @Autowired(required = false)
-  private List<JaegerTracerCustomizer> customizers;
+  private List<TracerBuilderCustomizer> customizers;
 
   @Test
   public void testCustomizersShouldContainB3Customizer() {
@@ -42,6 +42,6 @@ public class JaegerTracerB3CustomerizerDisabledSpringTest extends AbstractTracer
     }
 
     assertThat(customizers)
-        .extracting("class").doesNotContain(B3CodecJaegerTracerCustomizer.class);
+        .extracting("class").doesNotContain(B3CodecTracerBuilderCustomizer.class);
   }
 }
