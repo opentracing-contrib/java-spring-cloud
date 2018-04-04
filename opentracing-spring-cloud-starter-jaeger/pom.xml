@@ -36,7 +36,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>opentracing-spring-cloud</artifactId>
+      <artifactId>opentracing-spring-cloud-starter</artifactId>
     </dependency>
     <dependency>
       <groupId>com.uber.jaeger</groupId>
