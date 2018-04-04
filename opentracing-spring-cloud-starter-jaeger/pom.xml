@@ -43,11 +43,6 @@
       <artifactId>jaeger-core</artifactId>
       <version>${jaeger.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.uber.jaeger</groupId>
-      <artifactId>jaeger-tracerresolver</artifactId>
-      <version>${jaeger.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

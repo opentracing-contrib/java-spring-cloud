@@ -30,14 +30,7 @@ public class JaegerConfigurationProperties {
    * Enable Jaeger Tracer
    */
   private boolean enabled = true;
-  /**
-   * If this options is enabled, then the instantiation of the Tracer will be handed off to the
-   * {@link com.uber.jaeger.tracerresolver.JaegerTracerResolver} Enabling this option means that
-   * none of the autoconfigured beans apply. Furthermore the mere setting of this option to true is
-   * not enough for it to take effect, {@link com.uber.jaeger.tracerresolver.JaegerTracerResolver}
-   * also needs to be on the classpath
-   */
-  private boolean useTracerResolver = false;
+
   /**
    * The serviceName that the tracer will use
    */
@@ -63,14 +56,6 @@ public class JaegerConfigurationProperties {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-  }
-
-  public boolean isUseTracerResolver() {
-    return useTracerResolver;
-  }
-
-  public void setUseTracerResolver(boolean useTracerResolver) {
-    this.useTracerResolver = useTracerResolver;
   }
 
   public String getServiceName() {
