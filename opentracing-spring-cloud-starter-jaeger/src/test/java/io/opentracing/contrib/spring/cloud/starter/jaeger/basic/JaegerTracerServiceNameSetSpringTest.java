@@ -34,6 +34,6 @@ public class JaegerTracerServiceNameSetSpringTest extends AbstractTracerSpringTe
     assertThat(tracer).isNotNull();
     assertThat(tracer).isInstanceOf(com.uber.jaeger.Tracer.class);
 
-    assertThat(((com.uber.jaeger.Tracer) tracer).getServiceName()).isEqualTo("foo");
+    assertThat((getTracer()).getServiceName()).isEqualTo("foo");
   }
 }

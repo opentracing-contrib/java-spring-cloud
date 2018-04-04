@@ -33,6 +33,6 @@ public class JaegerTracerServiceNameNotSetSpringTest extends AbstractTracerSprin
     assertThat(tracer).isNotNull();
     assertThat(tracer).isInstanceOf(com.uber.jaeger.Tracer.class);
 
-    assertThat(((com.uber.jaeger.Tracer) tracer).getServiceName()).isEqualTo("unknown-spring-boot");
+    assertThat((getTracer()).getServiceName()).isEqualTo("unknown-spring-boot");
   }
 }
