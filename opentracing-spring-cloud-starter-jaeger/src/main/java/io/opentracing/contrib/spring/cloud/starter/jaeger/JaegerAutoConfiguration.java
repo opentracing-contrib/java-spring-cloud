@@ -151,11 +151,7 @@ public class JaegerAutoConfiguration {
 
   @ConditionalOnMissingBean
   @Bean
-  public MetricsFactory metricsFactory(JaegerConfigurationProperties properties) {
-    if (properties.isEnableMetrics()) {
-      return new InMemoryMetricsFactory();
-    }
-
+  public MetricsFactory metricsFactory() {
     return new NoopMetricsFactory();
   }
 
