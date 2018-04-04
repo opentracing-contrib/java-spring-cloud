@@ -19,7 +19,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("opentracing.jaeger")
 public class JaegerConfigurationProperties {
 
-  private final RemoteReporterProperties remoteReporterProperties = new RemoteReporterProperties();
+  private final RemoteReporter remoteReporter = new RemoteReporter();
   private final HttpSender httpSender = new HttpSender();
   private final UdpSender udpSender = new UdpSender();
   private final ConstSampler constSampler = new ConstSampler();
@@ -94,8 +94,8 @@ public class JaegerConfigurationProperties {
     return httpSender;
   }
 
-  public RemoteReporterProperties getRemoteReporterProperties() {
-    return remoteReporterProperties;
+  public RemoteReporter getRemoteReporter() {
+    return remoteReporter;
   }
 
   public UdpSender getUdpSender() {
@@ -119,7 +119,7 @@ public class JaegerConfigurationProperties {
   }
 
 
-  public static class RemoteReporterProperties {
+  public static class RemoteReporter {
 
     private Integer flushInterval;
 

@@ -20,7 +20,6 @@ import com.uber.jaeger.metrics.MetricsFactory;
 import com.uber.jaeger.metrics.NoopMetricsFactory;
 import com.uber.jaeger.reporters.CompositeReporter;
 import com.uber.jaeger.reporters.LoggingReporter;
-import com.uber.jaeger.reporters.RemoteReporter;
 import com.uber.jaeger.reporters.Reporter;
 import com.uber.jaeger.samplers.ConstSampler;
 import com.uber.jaeger.samplers.HttpSamplingManager;
@@ -29,7 +28,7 @@ import com.uber.jaeger.samplers.RateLimitingSampler;
 import com.uber.jaeger.samplers.RemoteControlledSampler;
 import com.uber.jaeger.samplers.Sampler;
 import com.uber.jaeger.senders.Sender;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties.RemoteReporterProperties;
+import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties.RemoteReporter;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -80,17 +79,17 @@ public class JaegerAutoConfiguration {
       @Autowired(required = false) ReporterAppender reporterAppender) {
     List<Reporter> reporters = new LinkedList<>();
 
-    JaegerConfigurationProperties.RemoteReporterProperties remoteReporterProperties =
-        properties.getRemoteReporterProperties();
+    RemoteReporter remoteReporter =
+        properties.getRemoteReporter();
 
     JaegerConfigurationProperties.HttpSender httpSender = properties.getHttpSender();
     if (!StringUtils.isEmpty(httpSender.getUrl()) && !httpSender.isDisable()) {
-      reporters.add(getHttpReporter(metrics, remoteReporterProperties, httpSender));
+      reporters.add(getHttpReporter(metrics, remoteReporter, httpSender));
     }
 
     JaegerConfigurationProperties.UdpSender udpSender = properties.getUdpSender();
     if (!StringUtils.isEmpty(udpSender.getHost()) && !udpSender.isDisable()) {
-      reporters.add(getUdpReporter(metrics, remoteReporterProperties, udpSender));
+      reporters.add(getUdpReporter(metrics, remoteReporter, udpSender));
     }
 
     if (properties.isLogSpans()) {
@@ -105,17 +104,17 @@ public class JaegerAutoConfiguration {
   }
 
   private Reporter getUdpReporter(Metrics metrics,
-      JaegerConfigurationProperties.RemoteReporterProperties remoteReporterProperties,
+      RemoteReporter remoteReporter,
       JaegerConfigurationProperties.UdpSender udpSenderProperties) {
     com.uber.jaeger.senders.UdpSender udpSender = new com.uber.jaeger.senders.UdpSender(
         udpSenderProperties.getHost(), udpSenderProperties.getPort(),
         udpSenderProperties.getMaxPacketSize());
 
-    return createReporter(metrics, remoteReporterProperties, udpSender);
+    return createReporter(metrics, remoteReporter, udpSender);
   }
 
   private Reporter getHttpReporter(Metrics metrics,
-      JaegerConfigurationProperties.RemoteReporterProperties remoteReporterProperties,
+      RemoteReporter remoteReporter,
       JaegerConfigurationProperties.HttpSender httpSenderProperties) {
     /*
      * this would have been changed to use HttpSender.Builder,
@@ -124,21 +123,21 @@ public class JaegerAutoConfiguration {
     com.uber.jaeger.senders.HttpSender httpSender = new com.uber.jaeger.senders.HttpSender(
         httpSenderProperties.getUrl(), httpSenderProperties.getMaxPayload());
 
-    return createReporter(metrics, remoteReporterProperties, httpSender);
+    return createReporter(metrics, remoteReporter, httpSender);
   }
 
   private Reporter createReporter(Metrics metrics,
-      RemoteReporterProperties remoteReporterProperties, Sender udpSender) {
-    RemoteReporter.Builder builder =
-        new RemoteReporter.Builder()
+      RemoteReporter remoteReporter, Sender udpSender) {
+    com.uber.jaeger.reporters.RemoteReporter.Builder builder =
+        new com.uber.jaeger.reporters.RemoteReporter.Builder()
             .withSender(udpSender)
             .withMetrics(metrics);
 
-    if (remoteReporterProperties.getFlushInterval() != null) {
-      builder.withFlushInterval(remoteReporterProperties.getFlushInterval());
+    if (remoteReporter.getFlushInterval() != null) {
+      builder.withFlushInterval(remoteReporter.getFlushInterval());
     }
-    if (remoteReporterProperties.getMaxQueueSize() != null) {
-      builder.withMaxQueueSize(remoteReporterProperties.getMaxQueueSize());
+    if (remoteReporter.getMaxQueueSize() != null) {
+      builder.withMaxQueueSize(remoteReporter.getMaxQueueSize());
     }
 
     return builder.build();
