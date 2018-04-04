@@ -29,7 +29,7 @@ import org.springframework.test.context.TestPropertySource;
 public class JaegerTracerServiceNameNotSetSpringTest extends AbstractTracerSpringTest {
 
   @Test
-  public void testIfTracerIsJaegerTracer() {
+  public void testNameIsAsExpected() {
     assertThat(tracer).isNotNull();
     assertThat(tracer).isInstanceOf(com.uber.jaeger.Tracer.class);
 
