@@ -32,10 +32,6 @@ public class JaegerConfigurationProperties {
   private boolean enabled = true;
 
   /**
-   * The serviceName that the tracer will use
-   */
-  private String serviceName = "spring-boot";
-  /**
    * Whether spans should be logged to the console
    */
   private boolean logSpans = false;
@@ -56,14 +52,6 @@ public class JaegerConfigurationProperties {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-  }
-
-  public String getServiceName() {
-    return serviceName;
-  }
-
-  public void setServiceName(String serviceName) {
-    this.serviceName = serviceName;
   }
 
   public boolean isLogSpans() {

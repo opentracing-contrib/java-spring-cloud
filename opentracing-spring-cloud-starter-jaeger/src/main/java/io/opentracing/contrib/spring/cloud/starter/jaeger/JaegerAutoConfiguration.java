@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -57,13 +58,16 @@ public class JaegerAutoConfiguration {
   @Autowired(required = false)
   private List<TracerBuilderCustomizer> tracerCustomizers = Collections.emptyList();
 
+  @Value("${spring.application.name:unknown-spring-boot}")
+  private String serviceName;
+
   @Bean
   public io.opentracing.Tracer tracer(JaegerConfigurationProperties jaegerConfigurationProperties,
-      Sampler sampler,
-      Reporter reporter) {
+        Sampler sampler,
+        Reporter reporter) {
 
     final Builder builder =
-        new Builder(jaegerConfigurationProperties.getServiceName())
+        new Builder(serviceName)
             .withReporter(reporter)
             .withSampler(sampler);
 
@@ -188,7 +192,7 @@ public class JaegerAutoConfiguration {
       JaegerConfigurationProperties.RemoteControlledSampler samplerProperties
           = properties.getRemoteControlledSampler();
 
-      return new RemoteControlledSampler.Builder(properties.getServiceName())
+      return new RemoteControlledSampler.Builder(serviceName)
           .withSamplingManager(new HttpSamplingManager(samplerProperties.getHostPort()))
           .withInitialSampler(
               new ProbabilisticSampler(samplerProperties.getSamplingRate()))
