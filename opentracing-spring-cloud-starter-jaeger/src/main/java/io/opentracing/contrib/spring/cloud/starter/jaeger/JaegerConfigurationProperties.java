@@ -181,7 +181,7 @@ public class JaegerConfigurationProperties {
 
     private int port;
 
-    private int maxPacketSize = 65000;
+    private int maxPacketSize = 0;
 
     private boolean disable = false;
 
