@@ -81,19 +81,15 @@ public class JaegerAutoConfiguration {
   public Reporter reporter(JaegerConfigurationProperties properties,
       Metrics metrics,
       @Autowired(required = false) ReporterAppender reporterAppender) {
-    List<Reporter> reporters = new LinkedList<>();
 
-    RemoteReporter remoteReporter =
-        properties.getRemoteReporter();
+    List<Reporter> reporters = new LinkedList<>();
+    RemoteReporter remoteReporter = properties.getRemoteReporter();
 
     JaegerConfigurationProperties.HttpSender httpSender = properties.getHttpSender();
-    if (!StringUtils.isEmpty(httpSender.getUrl()) && !httpSender.isDisable()) {
+    if (!StringUtils.isEmpty(httpSender.getUrl())) {
       reporters.add(getHttpReporter(metrics, remoteReporter, httpSender));
-    }
-
-    JaegerConfigurationProperties.UdpSender udpSender = properties.getUdpSender();
-    if (!StringUtils.isEmpty(udpSender.getHost()) && !udpSender.isDisable()) {
-      reporters.add(getUdpReporter(metrics, remoteReporter, udpSender));
+    } else {
+      reporters.add(getUdpReporter(metrics, remoteReporter, properties.getUdpSender()));
     }
 
     if (properties.isLogSpans()) {

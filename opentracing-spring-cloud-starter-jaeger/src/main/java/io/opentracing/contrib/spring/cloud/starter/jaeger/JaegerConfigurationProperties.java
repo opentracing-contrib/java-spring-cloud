@@ -130,13 +130,15 @@ public class JaegerConfigurationProperties {
     }
   }
 
+  /**
+   * If the URL is set, then HttpSender is used regardless
+   * of the configuration in UdpSender
+   */
   public static class HttpSender {
 
     private String url;
 
-    private Integer maxPayload;
-
-    private boolean disable = false;
+    private Integer maxPayload = 0;
 
     public String getUrl() {
       return url;
@@ -153,25 +155,15 @@ public class JaegerConfigurationProperties {
     public void setMaxPayload(Integer maxPayload) {
       this.maxPayload = maxPayload;
     }
-
-    public boolean isDisable() {
-      return disable;
-    }
-
-    public void setDisable(boolean disable) {
-      this.disable = disable;
-    }
   }
 
   public static class UdpSender {
 
-    private String host;
+    private String host = "localhost";
 
-    private int port;
+    private int port = 6831;
 
     private int maxPacketSize = 0;
-
-    private boolean disable = false;
 
     public String getHost() {
       return host;
@@ -195,14 +187,6 @@ public class JaegerConfigurationProperties {
 
     public void setMaxPacketSize(int maxPacketSize) {
       this.maxPacketSize = maxPacketSize;
-    }
-
-    public boolean isDisable() {
-      return disable;
-    }
-
-    public void setDisable(boolean disable) {
-      this.disable = disable;
     }
   }
 
