@@ -23,13 +23,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupport;
 
 @Configuration
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
-@ConditionalOnClass(ChannelInterceptor.class)
+@ConditionalOnClass(WebSocketMessageBrokerConfigurationSupport.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.websocket.enabled", havingValue = "true", matchIfMissing = true)
 public class WebsocketAutoConfiguration {
 
