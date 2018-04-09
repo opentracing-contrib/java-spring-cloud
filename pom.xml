@@ -73,7 +73,7 @@
     <version.io.github.openfeign.opentracing>0.1.0</version.io.github.openfeign.opentracing>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
         https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/spring-boot-starter-parent/pom.xml -->
-    <version.org.springframework.boot>1.5.8.RELEASE</version.org.springframework.boot>
+    <version.org.springframework.boot>1.5.11.RELEASE</version.org.springframework.boot>
     <version.org.springframework.cloud-spring-cloud-dependencies>Dalston.SR4</version.org.springframework.cloud-spring-cloud-dependencies>
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
 
