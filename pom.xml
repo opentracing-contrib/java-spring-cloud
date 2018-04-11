@@ -24,6 +24,7 @@
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
     <module>opentracing-spring-cloud-starter-jaeger</module>
+    <module>opentracing-spring-cloud-starter-jaeger-it</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -103,6 +104,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>opentracing-spring-cloud-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-starter-jaeger</artifactId>
         <version>${project.version}</version>
       </dependency>
 
