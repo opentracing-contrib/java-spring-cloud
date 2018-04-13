@@ -16,11 +16,7 @@ package org.example;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +28,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.LogMessageWaitStrategy;
 
@@ -56,16 +53,16 @@ public class SpringWebApplicationTracesCollectedTest {
       .waitingFor(new LogMessageWaitStrategy().withRegEx(".*jaeger-query.*HTTP server.*\n"));
 
   @Autowired
-  private TestRestTemplate restTemplate;
+  private TestRestTemplate testRestTemplate;
 
-  private OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
+  private RestTemplate restTemplate = new RestTemplate();
 
   @Test
   public void testJaegerCollectsTraces() {
     ensureThatJaegerCollectorHasInitialized();
 
     final String operation = "hello";
-    assertThat(restTemplate.getForObject("/" + operation, String.class)).isNotBlank();
+    assertThat(testRestTemplate.getForObject("/" + operation, String.class)).isNotBlank();
 
     waitJaegerQueryContains(SERVICE_NAME, operation);
   }
@@ -78,9 +75,10 @@ public class SpringWebApplicationTracesCollectedTest {
     }
   }
 
-  private void waitJaegerQueryContains(String serviceName, String operation) {
-    final Request request = new Request.Builder()
-        .url(
+  private void waitJaegerQueryContains(String serviceName, String str) {
+    await().atMost(30, TimeUnit.SECONDS).until(() -> {
+      try {
+        final String output = restTemplate.getForObject(
             String.format(
                 "%s/api/traces?service=%s",
                 String.format(
@@ -88,17 +86,11 @@ public class SpringWebApplicationTracesCollectedTest {
                     jaeger.getMappedPort(QUERY_PORT)
                 ),
                 serviceName
-            )
-        )
-        .get()
-        .build();
-
-    await().atMost(30, TimeUnit.SECONDS).until(() -> {
-      try {
-        Response response = okHttpClient.newCall(request).execute();
-        final String output = response.body().string();
-        return output.contains(operation);
-      } catch (IOException e) {
+            ),
+            String.class
+        );
+        return output.contains(str);
+      } catch (Exception e) {
         return false;
       }
     });

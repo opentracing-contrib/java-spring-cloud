@@ -27,12 +27,6 @@
 
   <artifactId>opentracing-spring-cloud-starter-jaeger-it</artifactId>
 
-  <properties>
-    <main.basedir>${project.basedir}/..</main.basedir>
-
-    <jaeger.version>0.26.0</jaeger.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -54,19 +48,13 @@
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
-      <version>3.0.0</version>
+      <version>${version.org.awaitility-awaitility}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>1.6.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>3.9.0</version>
       <scope>test</scope>
     </dependency>
 
