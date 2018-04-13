@@ -1,7 +1,20 @@
+## Configuration
+
+```xml
+<dependency>
+  <groupId>io.opentracing.contrib</groupId>
+  <artifactId>opentracing-spring-cloud-starter-jaeger</artifactId>
+</dependency>
+```
+
+Simply adding the dependency to the application will ensure that all required OpenTracing and Jaeger dependencies are transitively resolved.
+Furthermore the dependency will ensure that Spring Boot will auto configure all the necessary OpenTracing beans when the application starts.  
+
 ## Configuration options
 
-All the available configuration options can be seen in `io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties`.
+All the available configuration options can be seen in [JaegerConfigurationProperties](src/main/java/io/opentracing/contrib/spring/cloud/starter/jaeger/JaegerAutoConfiguration.java).
 The prefix to be used for these properties is `opentracing.jaeger`.
+Furthermore, the service name is configured via the standard Spring Cloud `spring.application.name` property.
 
 Beware to use the correct syntax for properties that are camel-case in `JaegerConfigurationProperties`.
 
@@ -14,11 +27,70 @@ If no configuration options are changed and the user does not manually provide a
 auto-configuration process provides, the following defaults are used:
 
 * `unknown-spring-boot` Will be used as the service-name if no value has been specified to the property `spring.application.name`. 
-* A `CompositeReporter` is provided which does not contain any delegates - effectively functioning as a Noop `Reporter`
-* A `ConstSampler` with the value of `true`. This means that every trace will be sampled
-* A `NoopMetricsFactory` is used - effectively meaning that no metrics will be collected
+* `CompositeReporter` is provided which contains the following delegates:
+  - `LoggingReporter` for reporting spans to the console
+  - `RemoteReporter` that contains a `UdpSender` that sends spans to `localhost:6831` 
+* `ConstSampler` with the value of `true`. This means that every trace will be sampled
+* `NoopMetricsFactory` is used - effectively meaning that no metrics will be collected
 
-## Manual bean provisioning
+## Common cases
+
+### Set service name 
+
+Set `spring.application.name` to the desired name
+
+### HTTP Sender
+
+`opentracing.jaeger.http-sender.url = http://jaegerhost:portNumber` 
+
+Note that when an HTTP Sender is defined, the UDP sender is not used, even if it has been configured
+
+### UDP Sender
+
+`opentracing.jaeger.udp-sender.host=jaegerhost`
+`opentracing.jaeger.udp-sender.port=portNumber`
+
+### Log Spans
+
+Be default spans are logged to the console. This can be disabled by setting:
+
+`opentracing.jaeger.log-spans = false`
+
+### Additional reporters
+
+By defining a bean of type `ReporterAppender`, the code has the chance to add any Reporter without 
+having to forgo what the auto-configuration provides  
+
+### Sampling
+
+* Const sampler
+
+  `opentracing.jaeger.const-sampler.decision = true | false` 
+
+* Probabilistic sampler
+
+  `opentracing.jaeger.probabilistic-sampler.sampling-rate = value` 
+  
+  Where `value` is between `0.0` (no sampling) and `1.0` (sampling of every request)
+
+* Rate-limiting sampler
+
+  `opentracing.jaeger.rate-limiting-max-traces-per-second = value` 
+  
+  Where `value` is between `0.0` (no sampling) and `1.0` (sampling of every request)
+  
+  
+The samplers above are mutually exclusive.
+
+A custom sampler could of course be provided by declaring a bean of type `com.uber.jaeger.samplers.Sampler`
+
+### Propagate headers in B3 format (for compatibility with Zipkin collectors)
+
+`opentracing.jaeger.enable-b3-propagation = true`
+
+## Advanced cases
+
+### Manual bean provisioning
 
 Any of the following beans can be provided by the application (by adding configuring them as bean with `@Bean` for example)
 and will be used to by the Tracer instead of the auto-configured beans.
@@ -28,44 +100,10 @@ and will be used to by the Tracer instead of the auto-configured beans.
 * `com.uber.jaeger.metrics.Metrics`  
 * `com.uber.jaeger.reporters.Reporter`
 
-## Common cases
-
-### Set service name 
-
-Set `spring.application.name` to the desired name
-
-### Define an HTTP collector
-
-Set `opentracing.jaeger.http-sender.url` to the URL of the Jaeger collector
-
-### Define a UDP collector
-
-Set `opentracing.jaeger.udp-sender.host` to the host of the Jaeger collector
-and `opentracing.jaeger.udp-sender.port` to the end of the Jaeger collector
-
-### Enable logging of spans
-
-Set `opentracing.jaeger.log-spans` to `true`
-
-### Use a probabilistic sampler 
-
-Set `opentracing.jaeger.probabilistic-sampler.sampling-rate` to a value between `0.0` (no sampling) and `1.0` (sampling of every request)
-
-### Propagate headers in B3 format (for compatibility with Zipkin collectors)
-
-Set `opentracing.jaeger.enable-b3-propagation` to `true`
-
-## Advanced cases
-
 ### com.uber.jaeger.Tracer.Builder customization
 
-Before creating the `Tracer` it is possible to provide arbitrary customizations to `Tracer.Builder` by providing a bean
+Right before the `Tracer` is created, it is possible to provide arbitrary customizations to `Tracer.Builder` by providing a bean
 of type `JaegerTracerCustomizer`
-
-### Add custom reporter while maintaining the ability to autoconfigure standard ones with properties
-
-By supplying a bean of `ReporterAppender` the user can add custom as many custom `Reporter` as needed without
-having the forgo the ability to configure the standard reporters via auto-configuration
 
 ## Caution
 
@@ -73,14 +111,3 @@ having the forgo the ability to configure the standard reporters via auto-config
 
 In a high traffic environment, the default sampler that is configured is very unsafe since it samples every request.
 It is therefore highly recommended to explicitly configure on of the other options in a production environment
-
-
-## Development
-
-### Executing tests
-
-In order for all tests to run correctly, the docker daemon need to be running on the system
-
-Run the tests be executing
-
-`mvn clean test` 
