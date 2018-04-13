@@ -48,7 +48,7 @@ public io.opentracing.Tracer tracer() {
 
 ## Using the Jaeger auto-configuration module
 
-See the `README.md` file in the `opentracing-spring-cloud-starter-jaeger` module
+See the [README.md](opentracing-spring-cloud-starter-jaeger/README.md) file
 
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)

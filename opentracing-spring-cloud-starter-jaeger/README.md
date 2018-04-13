@@ -12,7 +12,20 @@ This starter provides a single entry point for Spring Boot application to use in
 ```
 
 Simply adding the dependency to the application will ensure that all required OpenTracing and Jaeger dependencies are transitively resolved.
-Furthermore the dependency will ensure that Spring Boot will auto configure all the necessary OpenTracing beans when the application starts.  
+Furthermore the dependency will ensure that Spring Boot will auto configure all the necessary OpenTracing beans when the application starts.
+
+If no settings are changed, spans will be reported to the UDP port `6831` of `localhost`.
+The simplest way to change this behavior is to set the following properties:
+
+```
+opentracing.jaeger.udp-sender.host=jaegerhost
+opentracing.jaeger.udp-sender.port=portNumber
+```
+
+for the UDP sender, or use an HTTP sender by setting the following property:
+ 
+`opentracing.jaeger.http-sender.url = http://jaegerhost:portNumber` 
+   
 
 ## Configuration options
 
@@ -37,11 +50,9 @@ auto-configuration process provides, the following defaults are used:
 * `ConstSampler` with the value of `true`. This means that every trace will be sampled
 * `NoopMetricsFactory` is used - effectively meaning that no metrics will be collected
 
-## Common cases
+## Senders
 
-### Set service name 
-
-Set `spring.application.name` to the desired name
+Configuring senders is as simple as setting a couple necessary properties
 
 ### HTTP Sender
 
@@ -53,6 +64,12 @@ Note that when an HTTP Sender is defined, the UDP sender is not used, even if it
 
 `opentracing.jaeger.udp-sender.host=jaegerhost`
 `opentracing.jaeger.udp-sender.port=portNumber`
+
+## Common cases
+
+### Set service name 
+
+Set `spring.application.name` to the desired name
 
 ### Log Spans
 
@@ -99,10 +116,8 @@ A custom sampler could of course be provided by declaring a bean of type `com.ub
 Any of the following beans can be provided by the application (by adding configuring them as bean with `@Bean` for example)
 and will be used to by the Tracer instead of the auto-configured beans.
 
-* `com.uber.jaeger.samplers.Sampler`  
+* `com.uber.jaeger.samplers.Sampler`
 * `com.uber.jaeger.metrics.MetricsFactory`  
-* `com.uber.jaeger.metrics.Metrics`  
-* `com.uber.jaeger.reporters.Reporter`
 
 ### com.uber.jaeger.Tracer.Builder customization
 
