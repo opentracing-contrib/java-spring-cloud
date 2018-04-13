@@ -1,3 +1,7 @@
+# Jaeger OpenTracing Spring Boot starter
+
+This starter provides a single entry point for Spring Boot application to use in order to setup OpenTracing instrumentation 
+
 ## Configuration
 
 ```xml
