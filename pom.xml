@@ -79,6 +79,8 @@
 
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
+    <version.org.apache.qpid>7.0.3</version.org.apache.qpid>
+
     <!-- plugins -->
     <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
@@ -292,6 +294,18 @@
             <phase>compile</phase>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <property>
+              <name>derby.stream.error.file</name>
+              <value>target/derby.log</value>
+            </property>
+          </systemProperties>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -41,6 +41,11 @@ public class NoDepsTest {
   }
 
   @Test(expected = ClassNotFoundException.class)
+  public void testNoRabbitTemplate() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("org.springframework.amqp.rabbit.core.RabbitTemplate");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
   public void testNoZuulFilter() throws ClassNotFoundException {
     this.getClass().getClassLoader().loadClass("com.netflix.zuul.ZuulFilter");
   }

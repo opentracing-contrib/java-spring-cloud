@@ -58,6 +58,12 @@
       "type": "java.lang.Boolean",
       "description": "Add standard logging output to tracing system.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.rabbitmq.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable RabbitMQ tracing.",
+      "defaultValue": true
     }
   ]
 }
