@@ -24,7 +24,7 @@ public class ZipkinConfigurationProperties {
    */
   private boolean enabled = true;
 
-  private HttpSenderProperties httpSenderProperties = new HttpSenderProperties();
+  private HttpSender httpSender = new HttpSender();
 
   public boolean isEnabled() {
     return enabled;
@@ -34,15 +34,15 @@ public class ZipkinConfigurationProperties {
     this.enabled = enabled;
   }
 
-  public HttpSenderProperties getHttpSenderProperties() {
-    return httpSenderProperties;
+  public HttpSender getHttpSender() {
+    return httpSender;
   }
 
-  public void setHttpSenderProperties(HttpSenderProperties httpSenderProperties) {
-    this.httpSenderProperties = httpSenderProperties;
+  public void setHttpSender(HttpSender httpSender) {
+    this.httpSender = httpSender;
   }
 
-  public static class HttpSenderProperties {
+  public static class HttpSender {
 
     private String url;
 

@@ -70,7 +70,7 @@ public class ZipkinAutoConfiguration {
   @ConditionalOnClass(OkHttpSender.class)
   @ConditionalOnExpression("'${opentracing.zipkin.httpSenderProperties.url:null}' != 'null'")
   public Sender sender(ZipkinConfigurationProperties properties) {
-    return OkHttpSender.create(properties.getHttpSenderProperties().getUrl());
+    return OkHttpSender.create(properties.getHttpSender().getUrl());
   }
 
 
