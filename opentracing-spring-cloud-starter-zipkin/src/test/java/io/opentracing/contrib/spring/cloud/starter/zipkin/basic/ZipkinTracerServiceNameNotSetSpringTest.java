@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -17,7 +17,6 @@ package io.opentracing.contrib.spring.cloud.starter.zipkin.basic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentracing.contrib.spring.cloud.starter.zipkin.AbstractZipkinTracerServiceNameTest;
-import io.opentracing.contrib.spring.cloud.starter.zipkin.AbstractZipkinTracerSpringTest;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 
