@@ -24,7 +24,7 @@ import org.springframework.test.context.TestPropertySource;
     properties = {
         "spring.main.banner-mode=off",
         "opentracing.zipkin.enabled=true",
-        "opentracing.zipkin.httpSenderProperties.url=http://test.com"
+        "opentracing.zipkin.http-sender.url=http://test.com"
     }
 )
 public class ZipkinTracerWithSenderSpringTest extends AbstractZipkinTracerSenderSpringTest {

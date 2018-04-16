@@ -16,6 +16,8 @@ package io.opentracing.contrib.spring.cloud.starter.zipkin;
 
 import brave.Tracing;
 import brave.opentracing.BraveTracer;
+import brave.sampler.BoundarySampler;
+import brave.sampler.CountingSampler;
 import brave.sampler.Sampler;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +70,7 @@ public class ZipkinAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   @ConditionalOnClass(OkHttpSender.class)
-  @ConditionalOnExpression("'${opentracing.zipkin.httpSenderProperties.url:null}' != 'null'")
+  @ConditionalOnExpression("'${opentracing.zipkin.http-sender.url:null}' != 'null'")
   public Sender sender(ZipkinConfigurationProperties properties) {
     return OkHttpSender.create(properties.getHttpSender().getUrl());
   }
@@ -87,7 +89,15 @@ public class ZipkinAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public Sampler sampler() {
+  public Sampler sampler(ZipkinConfigurationProperties properties) {
+    if (properties.getBoundarySampler().getRate() != null) {
+      return BoundarySampler.create(properties.getBoundarySampler().getRate());
+    }
+
+    if (properties.getCountingSampler().getRate() != null) {
+      return CountingSampler.create(properties.getCountingSampler().getRate());
+    }
+
     return Sampler.ALWAYS_SAMPLE;
   }
 }

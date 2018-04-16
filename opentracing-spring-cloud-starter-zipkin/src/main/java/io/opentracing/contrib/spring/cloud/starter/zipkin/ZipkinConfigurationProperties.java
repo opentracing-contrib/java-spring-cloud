@@ -19,12 +19,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("opentracing.zipkin")
 public class ZipkinConfigurationProperties {
 
+  private final HttpSender httpSender = new HttpSender();
+  private final BoundarySampler boundarySampler = new BoundarySampler();
+  private final CountingSampler countingSampler = new CountingSampler();
+
   /**
    * Enable Zipkin/Brave Tracer
    */
   private boolean enabled = true;
 
-  private HttpSender httpSender = new HttpSender();
+
 
   public boolean isEnabled() {
     return enabled;
@@ -38,8 +42,12 @@ public class ZipkinConfigurationProperties {
     return httpSender;
   }
 
-  public void setHttpSender(HttpSender httpSender) {
-    this.httpSender = httpSender;
+  public BoundarySampler getBoundarySampler() {
+    return boundarySampler;
+  }
+
+  public CountingSampler getCountingSampler() {
+    return countingSampler;
   }
 
   public static class HttpSender {
@@ -52,6 +60,32 @@ public class ZipkinConfigurationProperties {
 
     public void setUrl(String url) {
       this.url = url;
+    }
+  }
+
+  public static class BoundarySampler {
+
+    private Float rate;
+
+    public Float getRate() {
+      return rate;
+    }
+
+    public void setRate(Float rate) {
+      this.rate = rate;
+    }
+  }
+
+  public static class CountingSampler {
+
+    private Float rate;
+
+    public Float getRate() {
+      return rate;
+    }
+
+    public void setRate(Float rate) {
+      this.rate = rate;
     }
   }
 }
