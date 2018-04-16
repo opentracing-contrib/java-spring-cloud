@@ -20,6 +20,7 @@ import brave.sampler.Sampler;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -47,15 +48,16 @@ public class ZipkinAutoConfiguration {
   @Autowired(required = false)
   private List<ZipkinTracerCustomizer> tracerCustomizers = Collections.emptyList();
 
+  @Value("${spring.application.name:unknown-spring-boot}")
+  private String serviceName;
+
   @Bean
   @ConditionalOnMissingBean
-  public io.opentracing.Tracer tracer(ZipkinConfigurationProperties properties,
-      Reporter<Span> reporter,
-      Sampler sampler) {
+  public io.opentracing.Tracer tracer(Reporter<Span> reporter, Sampler sampler) {
 
     final Tracing.Builder builder = Tracing.newBuilder()
         .sampler(sampler)
-        .localServiceName(properties.getServiceName())
+        .localServiceName(serviceName)
         .spanReporter(reporter);
 
     tracerCustomizers.forEach(c -> c.customize(builder));

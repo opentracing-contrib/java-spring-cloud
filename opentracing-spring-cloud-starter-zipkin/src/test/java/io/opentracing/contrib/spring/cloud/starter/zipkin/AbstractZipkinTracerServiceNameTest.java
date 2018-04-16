@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -11,25 +11,20 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package io.opentracing.contrib.spring.cloud.starter.zipkin;
 
-import io.opentracing.Tracer;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {
-    ZipkinAutoConfiguration.class
-})
-public abstract class AbstractZipkinTracerSpringTest {
+public abstract class AbstractZipkinTracerServiceNameTest extends AbstractZipkinTracerSpringTest {
 
-  @Autowired(required = false)
-  protected Tracer tracer;
-
-  protected brave.opentracing.BraveTracer getTracer() {
-    return (brave.opentracing.BraveTracer) tracer;
+  protected void assertServiceName(String expected) {
+    assertThat(getTracer())
+        .extracting("brave4")
+        .extracting("recorder")
+        .extracting("spanMap")
+        .extracting("endpoint")
+        .extracting("serviceName")
+        .containsOnly(expected);
   }
+
 }

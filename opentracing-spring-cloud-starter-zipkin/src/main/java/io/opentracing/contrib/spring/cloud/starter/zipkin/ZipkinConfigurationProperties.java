@@ -24,11 +24,6 @@ public class ZipkinConfigurationProperties {
    */
   private boolean enabled = true;
 
-  /**
-   * The serviceName that the tracer will use
-   */
-  private String serviceName = "spring-boot";
-
   private HttpSenderProperties httpSenderProperties = new HttpSenderProperties();
 
   public boolean isEnabled() {
@@ -37,14 +32,6 @@ public class ZipkinConfigurationProperties {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-  }
-
-  public String getServiceName() {
-    return serviceName;
-  }
-
-  public void setServiceName(String serviceName) {
-    this.serviceName = serviceName;
   }
 
   public HttpSenderProperties getHttpSenderProperties() {
