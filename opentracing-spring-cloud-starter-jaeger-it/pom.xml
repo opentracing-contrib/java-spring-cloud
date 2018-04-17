@@ -27,6 +27,10 @@
 
   <artifactId>opentracing-spring-cloud-starter-jaeger-it</artifactId>
 
+  <properties>
+    <main.basedir>${project.basedir}/..</main.basedir>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

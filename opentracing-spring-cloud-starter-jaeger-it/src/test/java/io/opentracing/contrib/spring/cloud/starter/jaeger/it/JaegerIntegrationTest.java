@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.example;
+package io.opentracing.contrib.spring.cloud.starter.jaeger.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -37,8 +37,8 @@ import org.testcontainers.containers.wait.LogMessageWaitStrategy;
     classes = DemoSpringBootWebApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@ContextConfiguration(initializers = SpringWebApplicationTracesCollectedTest.Initializer.class)
-public class SpringWebApplicationTracesCollectedTest {
+@ContextConfiguration(initializers = JaegerIntegrationTest.Initializer.class)
+public class JaegerIntegrationTest {
 
 
   private static final int QUERY_PORT = 16686;
@@ -59,20 +59,10 @@ public class SpringWebApplicationTracesCollectedTest {
 
   @Test
   public void testJaegerCollectsTraces() {
-    ensureThatJaegerCollectorHasInitialized();
-
     final String operation = "hello";
     assertThat(testRestTemplate.getForObject("/" + operation, String.class)).isNotBlank();
 
     waitJaegerQueryContains(SERVICE_NAME, operation);
-  }
-
-  private void ensureThatJaegerCollectorHasInitialized() {
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException ignored) {
-      //comment to keep linter happy
-    }
   }
 
   private void waitJaegerQueryContains(String serviceName, String str) {

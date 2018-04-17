@@ -49,6 +49,10 @@ public io.opentracing.Tracer tracer() {
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)
 
+### Note on tests
+
+A running docker daemon needs to be present on the system before running the tests
+
 ```shell
 ./mvnw clean install
 make // to run tests including dependency tests, a specific profile can be specified by make PROFILES=nodeps
