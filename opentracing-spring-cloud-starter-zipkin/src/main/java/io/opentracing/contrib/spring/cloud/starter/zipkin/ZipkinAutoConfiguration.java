@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -69,8 +68,6 @@ public class ZipkinAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  @ConditionalOnClass(OkHttpSender.class)
-  @ConditionalOnExpression("'${opentracing.zipkin.http-sender.url:null}' != 'null'")
   public Sender sender(ZipkinConfigurationProperties properties) {
     return OkHttpSender.create(properties.getHttpSender().getUrl());
   }
@@ -78,12 +75,8 @@ public class ZipkinAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public Reporter<Span> reporter(@Autowired(required = false) Sender sender) {
-    if (sender != null) {
-      return AsyncReporter.create(sender);
-    }
-
-    return Reporter.NOOP;
+  public Reporter<Span> reporter(Sender sender) {
+    return AsyncReporter.create(sender);
   }
 
 

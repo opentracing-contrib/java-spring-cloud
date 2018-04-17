@@ -14,8 +14,6 @@
 
 package io.opentracing.contrib.spring.cloud.starter.zipkin.sender;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.opentracing.contrib.spring.cloud.starter.zipkin.AbstractZipkinTracerSenderSpringTest;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
@@ -23,14 +21,14 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(
     properties = {
         "spring.main.banner-mode=off",
-        "opentracing.zipkin.enabled=true",
-        "opentracing.zipkin.http-sender.url=http://test.com"
+        "opentracing.zipkin.enabled=true"
     }
 )
-public class ZipkinTracerWithSenderSpringTest extends AbstractZipkinTracerSenderSpringTest {
+public class ZipkinTracerWithDefaultSenderSpringTest extends AbstractZipkinTracerSenderSpringTest {
 
   @Test
   public void testIfTracerIsZipkinTracer() {
-    assertThat(isSenderBeanConfigured()).isTrue();
+    assertSenderUrl("http://localhost:9411/api/v2/spans");
   }
+
 }

@@ -14,22 +14,17 @@
 
 package io.opentracing.contrib.spring.cloud.starter.zipkin;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionEvaluationReport;
-import org.springframework.context.ConfigurableApplicationContext;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractZipkinTracerSenderSpringTest extends AbstractZipkinTracerSpringTest {
 
-  @Autowired
-  private ConfigurableApplicationContext applicationContext;
-
-  protected boolean isSenderBeanConfigured() {
-    final ConditionEvaluationReport conditionEvaluationReport =
-        ConditionEvaluationReport.get(this.applicationContext.getBeanFactory());
-
-    return conditionEvaluationReport
-        .getConditionAndOutcomesBySource()
-        .get("io.opentracing.contrib.spring.cloud.starter.zipkin.ZipkinAutoConfiguration#sender")
-        .isFullMatch();
+  protected void assertSenderUrl(String expected) {
+    assertThat(getTracer())
+        .extracting("brave4")
+        .extracting("reporter")
+        .extracting("sender")
+        .extracting("endpoint")
+        .extracting("url")
+        .containsOnly(expected);
   }
 }

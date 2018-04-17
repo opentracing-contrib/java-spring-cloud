@@ -15,11 +15,14 @@ Simply adding the dependency to the application will ensure that all required Op
 Furthermore the dependency will ensure that Spring Boot will auto configure all the necessary OpenTracing beans when the application starts.
 
 
-The only required property that needs to be set is the Zipkin collector URL:
+By default, the Zipkin server is expected to collect traces at `http://localhost:9411/api/v2/spans`.
+To change the default simply set the following the property 
 
 ```
-opentracing.zipkin.http-sender.url=http://somehost:someport/somepath
+opentracing.zipkin.http-sender.url=http://somehost:someport/api/v2/spans
 ```
+
+**Note** : The module reports spans using Zipkin's v2 model 
 
 
 ## Configuration options
@@ -40,7 +43,7 @@ auto-configuration process provides, the following defaults are used:
 
 * `unknown-spring-boot` Will be used as the service-name if no value has been specified to the property `spring.application.name`. 
 * `Sampler.ALWAYS_SAMPLE`
-* `Reporter.NOOP`
+* `AsyncReporter` (using an `OkHttpSender`)
 
 
 ## Common cases

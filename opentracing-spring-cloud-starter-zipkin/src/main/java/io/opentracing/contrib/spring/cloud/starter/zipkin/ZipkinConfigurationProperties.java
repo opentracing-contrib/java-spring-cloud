@@ -52,7 +52,7 @@ public class ZipkinConfigurationProperties {
 
   public static class HttpSender {
 
-    private String url;
+    private String url = "http://localhost:9411/api/v2/spans";
 
     public String getUrl() {
       return url;
