@@ -27,7 +27,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(
     properties = {
         "spring.main.banner-mode=off",
-        "opentracing.jaeger.enableB3Propagation=false"
+        "opentracing.jaeger.enable-b3-propagation=false"
     }
 )
 public class JaegerTracerB3CustomerizerDisabledSpringTest extends AbstractTracerSpringTest {
