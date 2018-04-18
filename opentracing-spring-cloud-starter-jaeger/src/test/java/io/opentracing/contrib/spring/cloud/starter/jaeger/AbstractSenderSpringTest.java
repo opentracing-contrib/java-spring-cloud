@@ -16,6 +16,8 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.uber.jaeger.reporters.CompositeReporter;
+import com.uber.jaeger.reporters.RemoteReporter;
+import org.assertj.core.api.Condition;
 
 public abstract class AbstractSenderSpringTest extends AbstractTracerSpringTest {
 
@@ -28,6 +30,12 @@ public abstract class AbstractSenderSpringTest extends AbstractTracerSpringTest 
     assertThat(getTracer())
         .extracting("reporter")
         .flatExtracting("reporters")
+        .filteredOn(new Condition<Object>() {
+          @Override
+          public boolean matches(Object value) {
+            return value.getClass().equals(RemoteReporter.class);
+          }
+        })
         .extracting("sender")
         .extracting("class")
         .containsExactly(senderClass);
