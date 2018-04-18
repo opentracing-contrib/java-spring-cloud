@@ -155,7 +155,7 @@ public class JaegerAutoConfiguration {
     return new NoopMetricsFactory();
   }
 
-  @ConditionalOnProperty(value = "opentracing.jaeger.enableB3Propagation", havingValue = "true")
+  @ConditionalOnProperty(value = "opentracing.jaeger.enable-b3-propagation", havingValue = "true")
   @Bean
   public TracerBuilderCustomizer b3CodecJaegerTracerCustomizer() {
     return new B3CodecTracerBuilderCustomizer();
