@@ -32,6 +32,7 @@
 
     <brave-opentracing.version>0.30.1</brave-opentracing.version>
     <zipkin-sender-okhttp.version>2.5.0</zipkin-sender-okhttp.version>
+    <zipkin.version>2.7.1</zipkin.version>
   </properties>
 
   <dependencies>
@@ -65,6 +66,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
       <scope>test</scope>
     </dependency>
@@ -72,6 +78,24 @@
       <groupId>io.opentracing</groupId>
       <artifactId>opentracing-mock</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>${version.org.awaitility-awaitility}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.java</groupId>
+      <artifactId>zipkin-junit</artifactId>
+      <scope>test</scope>
+      <version>${zipkin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.java</groupId>
+      <artifactId>zipkin</artifactId>
+      <scope>test</scope>
+      <version>${zipkin.version}</version>
     </dependency>
 
   </dependencies>
