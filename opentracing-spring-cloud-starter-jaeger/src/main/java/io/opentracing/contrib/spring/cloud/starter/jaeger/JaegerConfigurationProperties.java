@@ -34,7 +34,7 @@ public class JaegerConfigurationProperties {
   /**
    * Whether spans should be logged to the console
    */
-  private boolean logSpans = false;
+  private boolean logSpans = true;
   /**
    * Enable the handling of B3 headers like "X-B3-TraceId" This setting should be used when it is
    * desired for Jaeger to be able to join traces started by other Zipkin instrumented applications
