@@ -34,7 +34,7 @@ final class RabbitMqTracingUtils {
   private RabbitMqTracingUtils() {}
 
   static Optional<Scope> buildReceiveSpan(MessageProperties messageProperties, Tracer tracer) {
-    Optional<SpanContext> context = extract(messageProperties, tracer);
+    Optional<SpanContext> context = findParent(messageProperties, tracer);
     if (context.isPresent()) {
       Tracer.SpanBuilder spanBuilder =
           tracer
@@ -62,7 +62,7 @@ final class RabbitMqTracingUtils {
     Optional<SpanContext> spanContext = Optional.empty();
 
     if (messageProperties.getHeaders() != null) {
-      spanContext = extract(messageProperties, tracer);
+      spanContext = findParent(messageProperties, tracer);
     }
 
     spanContext.ifPresent(spanBuilder::asChildOf);
@@ -70,7 +70,7 @@ final class RabbitMqTracingUtils {
     return spanBuilder.startActive(true);
   }
 
-  private static Optional<SpanContext> extract(MessageProperties messageProperties, Tracer tracer) {
+  private static Optional<SpanContext> findParent(MessageProperties messageProperties, Tracer tracer) {
     final Map<String, Object> headers = messageProperties.getHeaders();
     SpanContext spanContext =
         tracer.extract(

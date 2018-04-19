@@ -1,3 +1,4 @@
+package io.opentracing.contrib.spring.cloud.rabbitmq;
 /**
  * Copyright 2017-2018 The OpenTracing Authors
  *
@@ -11,15 +12,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.rabbitmq;
-
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import io.opentracing.Tracer;
 import java.lang.reflect.Field;
 import org.aopalliance.aop.Advice;
 import org.junit.Test;
@@ -31,49 +30,45 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ReflectionUtils;
 
-
 /**
  * @author Gilles Robert
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-        classes = {RabbitMqTracingAutoConfigurationTest.TestConfig.class, RabbitMqTracingAutoConfiguration.class})
-public class RabbitMqTracingAutoConfigurationTest {
+@SpringBootTest(classes = {RabbitMqTracingAutoConfigurationDisabledTest.TestConfig.class,
+    RabbitMqTracingAutoConfiguration.class}, properties = {"opentracing.spring.cloud.rabbitmq.enabled:false"}
+)
+public class RabbitMqTracingAutoConfigurationDisabledTest {
 
-  @MockBean
-  private Tracer tracer;
-  @Autowired
+  @Autowired(required = false)
   private RabbitMqSendTracingAspect tracingAspect;
-  @Autowired
+
+  @Autowired(required = false)
   private RabbitMqReceiveTracingInterceptor tracingInterceptor;
-  @Autowired
-  private SimpleMessageListenerContainer simpleMessageListenerContainer;
-  @Autowired
-  private SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory;
+
+  @Autowired private SimpleMessageListenerContainer simpleMessageListenerContainer;
+  @Autowired private SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory;
 
   @Test
-  public void testRabbitMqTracingEnabled() {
-    assertNotNull(tracingAspect);
-    assertNotNull(tracingInterceptor);
+  public void testRabbitMqTracingDisabled() {
+    assertNull(tracingAspect);
+    assertNull(tracingInterceptor);
 
     assertNotNull(simpleMessageListenerContainer);
     Field adviceChainField =
-              ReflectionUtils.findField(SimpleMessageListenerContainer.class, "adviceChain");
+        ReflectionUtils.findField(SimpleMessageListenerContainer.class, "adviceChain");
     ReflectionUtils.makeAccessible(adviceChainField);
-    Advice[] chain = (Advice[]) ReflectionUtils.getField(adviceChainField, simpleMessageListenerContainer);
-    assertThat(chain.length, is(1));
-    assertThat(chain[0], instanceOf(RabbitMqReceiveTracingInterceptor.class));
+    Advice[] chain =
+        (Advice[]) ReflectionUtils.getField(adviceChainField, simpleMessageListenerContainer);
+    assertThat(chain.length, is(0));
 
     assertNotNull(simpleRabbitListenerContainerFactory);
     Advice[] adviceChain = simpleRabbitListenerContainerFactory.getAdviceChain();
-    assertThat(adviceChain.length, is(1));
-    assertThat(adviceChain[0], instanceOf(RabbitMqReceiveTracingInterceptor.class));
+    assertThat(adviceChain, nullValue());
   }
 
   @Configuration
@@ -92,7 +87,7 @@ public class RabbitMqTracingAutoConfigurationTest {
     @Bean
     public SimpleMessageListenerContainer messageListenerContainer() {
       SimpleMessageListenerContainer container =
-              new SimpleMessageListenerContainer(connectionFactory);
+          new SimpleMessageListenerContainer(connectionFactory);
       container.setMessageConverter(messageConverter);
       return container;
     }

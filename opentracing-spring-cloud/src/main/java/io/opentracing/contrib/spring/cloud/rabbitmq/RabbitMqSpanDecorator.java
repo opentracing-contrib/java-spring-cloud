@@ -35,7 +35,7 @@ interface RabbitMqSpanDecorator {
     @Override
     public void onSend(
         MessageProperties messageProperties, String exchange, String routingKey, Span span) {
-      Tags.COMPONENT.set(span, RabbitMqTracingTags.MESSAGE_PRODUCER);
+      Tags.COMPONENT.set(span, RabbitMqTracingTags.RABBITMQ);
       RabbitMqTracingTags.EXCHANGE.set(span, exchange);
       RabbitMqTracingTags.MESSAGE_ID.set(span, messageProperties.getMessageId());
       RabbitMqTracingTags.ROUTING_KEY.set(span, routingKey);
@@ -43,7 +43,7 @@ interface RabbitMqSpanDecorator {
 
     @Override
     public void onReceive(MessageProperties messageProperties, Span span) {
-      Tags.COMPONENT.set(span, RabbitMqTracingTags.MESSAGE_LISTENER);
+      Tags.COMPONENT.set(span, RabbitMqTracingTags.RABBITMQ);
       RabbitMqTracingTags.EXCHANGE.set(span, messageProperties.getReceivedExchange());
       RabbitMqTracingTags.MESSAGE_ID.set(span, messageProperties.getMessageId());
       RabbitMqTracingTags.ROUTING_KEY.set(span, messageProperties.getReceivedRoutingKey());

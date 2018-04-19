@@ -20,16 +20,13 @@ import io.opentracing.tag.StringTag;
  */
 final class RabbitMqTracingTags {
 
-  private static final String RABBITMQ = "rabbitMQ";
-
-  static final String MESSAGE_PRODUCER = "message-producer";
-  static final String MESSAGE_LISTENER = "message-listener";
-  static final StringTag MESSAGE_ID = new StringTag("messageId");
-  static final StringTag ROUTING_KEY = new StringTag("routingKey");
-  static final StringTag CONSUMER_QUEUE = new StringTag("consumerQueue");
+  static final StringTag RABBITMQ = new StringTag("rabbitmq");
+  static final StringTag MESSAGE_ID = new StringTag("messageid");
+  static final StringTag ROUTING_KEY = new StringTag("routingkey");
+  static final StringTag CONSUMER_QUEUE = new StringTag("consumerqueue");
   static final StringTag EXCHANGE = new StringTag("exchange");
-  static final String SPAN_KIND_PRODUCER = RABBITMQ + "-send";
-  static final String SPAN_KIND_CONSUMER = RABBITMQ + "-receive";
+  static final String SPAN_KIND_PRODUCER = RABBITMQ.getKey() + "-send";
+  static final String SPAN_KIND_CONSUMER = RABBITMQ.getKey() + "-receive";
 
   private RabbitMqTracingTags() {}
 }

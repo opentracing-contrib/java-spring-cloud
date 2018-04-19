@@ -55,7 +55,7 @@ class RabbitMqSendTracingAspect {
     tracer.inject(
         scope.span().context(),
         Format.Builtin.TEXT_MAP,
-        new RabbitMqMessagePropertiesCarrier(messageProperties));
+        new RabbitMqInjectAdapter(messageProperties));
 
     RabbitMqSpanDecorator.StandardTags spanDecorator = new RabbitMqSpanDecorator.StandardTags();
     spanDecorator.onSend(messageProperties, exchange, routingKey, scope.span());

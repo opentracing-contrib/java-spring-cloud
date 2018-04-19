@@ -13,16 +13,29 @@
  */
 package io.opentracing.contrib.spring.cloud.rabbitmq;
 
-import io.opentracing.contrib.spring.cloud.TestUtils;
-import org.junit.Test;
+import io.opentracing.propagation.TextMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.springframework.amqp.core.MessageProperties;
 
 /**
  * @author Gilles Robert
  */
-public class RabbitMqTracingUtilsTest {
+class RabbitMqInjectAdapter implements TextMap {
 
-  @Test
-  public void testConstructor() {
-    TestUtils.invokePrivateConstructor(RabbitMqTracingUtils.class);
+  private final MessageProperties messageProperties;
+
+  RabbitMqInjectAdapter(MessageProperties messageProperties) {
+    this.messageProperties = messageProperties;
+  }
+
+  @Override
+  public void put(String key, String value) {
+    messageProperties.getHeaders().put(key, value);
+  }
+
+  @Override
+  public Iterator<Map.Entry<String, String>> iterator() {
+    throw new UnsupportedOperationException("iterator should never be used with Tracer.inject()");
   }
 }

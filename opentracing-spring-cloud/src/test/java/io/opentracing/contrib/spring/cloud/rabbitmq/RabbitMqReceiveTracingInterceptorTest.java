@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.core.Message;
@@ -40,6 +41,11 @@ public class RabbitMqReceiveTracingInterceptorTest {
   @Autowired
   private MockTracer mockTracer;
 
+  @Before
+  public void setup() {
+    mockTracer.reset();
+  }
+
   @Test
   public void testInvoke_whenContextAndActiveSpan() throws Throwable {
     // given
@@ -57,7 +63,6 @@ public class RabbitMqReceiveTracingInterceptorTest {
   @Test
   public void testInvoke_whenContextAndNoActiveSpan() throws Throwable {
     // given
-    mockTracer.reset();
     RabbitMqReceiveTracingInterceptor interceptor =
         new RabbitMqReceiveTracingInterceptor(mockTracer);
     MethodInvocation methodInvocation = new TestMethodInvocation();

@@ -14,8 +14,6 @@
 package io.opentracing.contrib.spring.cloud;
 
 import io.opentracing.mock.MockSpan;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Assert;
@@ -39,19 +37,6 @@ public class TestUtils {
       for (MockSpan span : spans) {
         Assert.assertEquals(traceId, span.context().traceId());
       }
-    }
-  }
-
-  public static <T> void invokePrivateConstructor(Class<T> clazz) {
-    try {
-      Constructor<T> constructor = clazz.getDeclaredConstructor();
-      constructor.setAccessible(true);
-      constructor.newInstance();
-    } catch (NoSuchMethodException
-        | InstantiationException
-        | IllegalAccessException
-        | InvocationTargetException e) {
-      throw new RuntimeException("Error invoking private constructor!", e); // NOPMD
     }
   }
 

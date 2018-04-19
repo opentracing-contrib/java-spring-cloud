@@ -63,9 +63,9 @@ public class RabbitMqSendAndReceiveTracingItTest {
 
   private final EmbeddedQpidBroker broker = new EmbeddedQpidBroker();
   @Autowired private RabbitTemplate rabbitTemplate;
-  @Autowired protected MockTracer tracer;
-  @Autowired protected RabbitConnectionFactoryBean rabbitConnectionFactoryBean;
-  @Autowired protected Queue queue;
+  @Autowired private MockTracer tracer;
+  @Autowired private RabbitConnectionFactoryBean rabbitConnectionFactoryBean;
+  @Autowired private Queue queue;
 
   @Before
   public void setup() throws Exception {
@@ -110,25 +110,25 @@ public class RabbitMqSendAndReceiveTracingItTest {
     List<MockSpan> spans = tracer.finishedSpans();
     assertEquals(2, spans.size());
     MockSpan mockSentSpan = spans.get(0);
-    assertThat(mockSentSpan.operationName(), equalTo("rabbitMQ-send"));
+    assertThat(mockSentSpan.operationName(), equalTo(RabbitMqTracingTags.SPAN_KIND_PRODUCER));
     assertThat(mockSentSpan.tags(), notNullValue());
     assertThat(mockSentSpan.tags().size(), is(5));
-    assertThat(mockSentSpan.tags().get("messageId"), notNullValue());
-    assertThat(mockSentSpan.tags().get("component"), equalTo("message-producer"));
+    assertThat(mockSentSpan.tags().get("messageid"), notNullValue());
+    assertThat(mockSentSpan.tags().get("component"), equalTo(RabbitMqTracingTags.RABBITMQ.getKey()));
     assertThat(mockSentSpan.tags().get("exchange"), equalTo("myExchange"));
-    assertThat(mockSentSpan.tags().get("span.kind"), equalTo("rabbitMQ-send"));
-    assertThat(mockSentSpan.tags().get("routingKey"), equalTo("#"));
+    assertThat(mockSentSpan.tags().get("span.kind"), equalTo(RabbitMqTracingTags.SPAN_KIND_PRODUCER));
+    assertThat(mockSentSpan.tags().get("routingkey"), equalTo("#"));
 
     MockSpan mockReceivedSpan = spans.get(1);
-    assertThat(mockReceivedSpan.operationName(), equalTo("rabbitMQ-receive"));
+    assertThat(mockReceivedSpan.operationName(), equalTo(RabbitMqTracingTags.SPAN_KIND_CONSUMER));
     assertThat(mockReceivedSpan.tags(), notNullValue());
     assertThat(mockReceivedSpan.tags().size(), is(6));
-    assertThat(mockReceivedSpan.tags().get("messageId"), notNullValue());
-    assertThat(mockReceivedSpan.tags().get("component"), equalTo("message-listener"));
+    assertThat(mockReceivedSpan.tags().get("messageid"), notNullValue());
+    assertThat(mockReceivedSpan.tags().get("component"), equalTo(RabbitMqTracingTags.RABBITMQ.getKey()));
     assertThat(mockReceivedSpan.tags().get("exchange"), equalTo("myExchange"));
-    assertThat(mockReceivedSpan.tags().get("span.kind"), equalTo("rabbitMQ-receive"));
-    assertThat(mockReceivedSpan.tags().get("routingKey"), equalTo("#"));
-    assertThat(mockReceivedSpan.tags().get("consumerQueue"), equalTo("myQueue"));
+    assertThat(mockReceivedSpan.tags().get("span.kind"), equalTo(RabbitMqTracingTags.SPAN_KIND_CONSUMER));
+    assertThat(mockReceivedSpan.tags().get("routingkey"), equalTo("#"));
+    assertThat(mockReceivedSpan.tags().get("consumerqueue"), equalTo("myQueue"));
     assertThat(mockReceivedSpan.generatedErrors().size(), is(0));
     TestUtils.assertSameTraceId(spans);
   }

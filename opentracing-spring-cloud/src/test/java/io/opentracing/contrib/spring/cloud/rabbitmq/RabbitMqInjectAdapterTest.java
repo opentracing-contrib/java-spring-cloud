@@ -23,14 +23,14 @@ import org.springframework.amqp.core.MessageProperties;
 /**
  * @author Gilles Robert
  */
-public class RabbitMqMessagePropertiesCarrierTest {
+public class RabbitMqInjectAdapterTest {
 
   @Test
   public void testPut() {
     // given
     MessageProperties messageProperties = new MessageProperties();
-    RabbitMqMessagePropertiesCarrier carrier =
-        new RabbitMqMessagePropertiesCarrier(messageProperties);
+    RabbitMqInjectAdapter carrier =
+        new RabbitMqInjectAdapter(messageProperties);
     String key = "myKey";
     String value = "myValue";
 
@@ -45,8 +45,8 @@ public class RabbitMqMessagePropertiesCarrierTest {
   public void testIterator() {
     // given
     MessageProperties messageProperties = new MessageProperties();
-    RabbitMqMessagePropertiesCarrier carrier =
-        new RabbitMqMessagePropertiesCarrier(messageProperties);
+    RabbitMqInjectAdapter carrier =
+        new RabbitMqInjectAdapter(messageProperties);
 
     // when
     carrier.iterator();
