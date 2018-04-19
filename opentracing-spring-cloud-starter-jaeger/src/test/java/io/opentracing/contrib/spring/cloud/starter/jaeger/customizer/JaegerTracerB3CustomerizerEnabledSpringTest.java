@@ -16,12 +16,17 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger.customizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.AbstractTracerSpringTest;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.TracerBuilderCustomizer;
-import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
-import java.util.List;
+import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMapExtractAdapter;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 
 @TestPropertySource(
@@ -30,15 +35,32 @@ import org.springframework.test.context.TestPropertySource;
         "opentracing.jaeger.enable-b3-propagation=true"
     }
 )
+@Import(JaegerTracerB3CustomerizerEnabledSpringTest.TestConfiguration.class)
 public class JaegerTracerB3CustomerizerEnabledSpringTest extends AbstractTracerSpringTest {
 
   @Autowired
-  private List<TracerBuilderCustomizer> customizers;
+  private Tracer tracer;
+
+  public static class TestConfiguration {
+    @Bean
+    public TracerBuilderCustomizer myCustomizer() {
+      // Noop
+      return builder -> {
+      };
+    }
+  }
 
   @Test
   public void testCustomizersShouldContainB3Customizer() {
-    assertThat(customizers)
-        .isNotEmpty()
-        .extracting("class").contains(B3CodecTracerBuilderCustomizer.class);
+    Map<String, String> carrier = new HashMap<>();
+    carrier.put("X-B3-TraceId", "abc");
+    carrier.put("X-B3-SpanId", "def");
+
+    com.uber.jaeger.SpanContext context =
+        (com.uber.jaeger.SpanContext) tracer.extract(Format.Builtin.HTTP_HEADERS, new TextMapExtractAdapter(carrier));
+
+    assertThat(context).isNotNull();
+    assertThat(context.getTraceId()).isEqualTo(0xabc);
+    assertThat(context.getSpanId()).isEqualTo(0xdef);
   }
 }
