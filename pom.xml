@@ -358,6 +358,7 @@
             <exclude>Makefile</exclude>
             <exclude>mvnw</exclude>
             <exclude>mvnw.cmd</exclude>
+            <exclude>.editorconfig</exclude>
             <exclude>travis/publish.sh</exclude>
             <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
             <exclude>**/*.factories</exclude>
