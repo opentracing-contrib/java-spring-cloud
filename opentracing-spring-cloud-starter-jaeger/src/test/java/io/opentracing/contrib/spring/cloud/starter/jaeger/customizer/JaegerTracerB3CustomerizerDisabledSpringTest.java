@@ -16,6 +16,7 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger.customizer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.AbstractTracerSpringTest;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.TracerBuilderCustomizer;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
@@ -34,9 +35,13 @@ public class JaegerTracerB3CustomerizerDisabledSpringTest extends AbstractTracer
 
   @Autowired(required = false)
   private List<TracerBuilderCustomizer> customizers;
+  @Autowired
+  private Tracer tracer;
 
   @Test
   public void testCustomizersShouldContainB3Customizer() {
+    assertThat(tracer).isNotNull();
+
     if (customizers == null) {
       return;
     }

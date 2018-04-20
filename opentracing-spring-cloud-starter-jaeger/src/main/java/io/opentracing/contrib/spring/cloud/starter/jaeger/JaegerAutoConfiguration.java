@@ -14,7 +14,6 @@
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
 import com.uber.jaeger.Tracer.Builder;
-import com.uber.jaeger.metrics.InMemoryMetricsFactory;
 import com.uber.jaeger.metrics.Metrics;
 import com.uber.jaeger.metrics.MetricsFactory;
 import com.uber.jaeger.metrics.NoopMetricsFactory;
@@ -30,9 +29,9 @@ import com.uber.jaeger.samplers.Sampler;
 import com.uber.jaeger.senders.Sender;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.JaegerConfigurationProperties.RemoteReporter;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.customizers.B3CodecTracerBuilderCustomizer;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -55,23 +54,23 @@ import org.springframework.util.StringUtils;
 @EnableConfigurationProperties(JaegerConfigurationProperties.class)
 public class JaegerAutoConfiguration {
 
-  @Autowired(required = false)
-  private List<TracerBuilderCustomizer> tracerCustomizers = Collections.emptyList();
-
   @Value("${spring.application.name:unknown-spring-boot}")
   private String serviceName;
 
   @Bean
-  public io.opentracing.Tracer tracer(JaegerConfigurationProperties jaegerConfigurationProperties,
-        Sampler sampler,
-        Reporter reporter) {
+  public io.opentracing.Tracer tracer(Sampler sampler,
+                                      Reporter reporter,
+                                      ObjectProvider<List<TracerBuilderCustomizer>> tracerCustomizersProvider) {
 
     final Builder builder =
         new Builder(serviceName)
             .withReporter(reporter)
             .withSampler(sampler);
 
-    tracerCustomizers.forEach(c -> c.customize(builder));
+    List<TracerBuilderCustomizer> tracerCustomizers = tracerCustomizersProvider.getIfAvailable();
+    if (tracerCustomizers != null) {
+      tracerCustomizers.forEach(c -> c.customize(builder));
+    }
 
     return builder.build();
   }
