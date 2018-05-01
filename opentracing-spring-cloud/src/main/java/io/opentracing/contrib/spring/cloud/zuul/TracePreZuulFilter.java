@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -55,7 +55,7 @@ class TracePreZuulFilter extends ZuulFilter {
     // span is a child of one created in servlet-filter
     Span span = tracer.buildSpan(ctx.getRequest().getMethod())
         .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
-        .startManual();
+        .start();
 
     tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS,
         new TextMapInjectAdapter(ctx.getZuulRequestHeaders()));

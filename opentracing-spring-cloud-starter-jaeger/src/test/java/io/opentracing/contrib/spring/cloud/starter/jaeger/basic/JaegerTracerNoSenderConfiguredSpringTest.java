@@ -16,7 +16,7 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger.basic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.uber.jaeger.reporters.CompositeReporter;
+import io.jaegertracing.reporters.CompositeReporter;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.AbstractSenderSpringTest;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
@@ -31,9 +31,9 @@ public class JaegerTracerNoSenderConfiguredSpringTest extends AbstractSenderSpri
   @Test
   public void testExpectedReporter() {
     assertThat(tracer).isNotNull();
-    assertThat(tracer).isInstanceOf(com.uber.jaeger.Tracer.class);
+    assertThat(tracer).isInstanceOf(io.jaegertracing.Tracer.class);
 
-    assertSenderClass(com.uber.jaeger.senders.UdpSender.class);
+    assertSenderClass(io.jaegertracing.senders.UdpSender.class);
   }
 
 }

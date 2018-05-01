@@ -13,7 +13,6 @@
  */
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
-import com.uber.jaeger.Configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("opentracing.jaeger")
@@ -223,7 +222,8 @@ public class JaegerConfigurationProperties {
      */
     private String hostPort;
 
-    private Double samplingRate = Configuration.DEFAULT_SAMPLING_PROBABILITY;
+    private Double samplingRate =
+        io.jaegertracing.samplers.ProbabilisticSampler.DEFAULT_SAMPLING_PROBABILITY;
 
 
     public String getHostPort() {

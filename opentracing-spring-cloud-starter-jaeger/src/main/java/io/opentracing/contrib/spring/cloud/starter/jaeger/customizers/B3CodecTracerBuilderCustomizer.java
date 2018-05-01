@@ -13,8 +13,8 @@
  */
 package io.opentracing.contrib.spring.cloud.starter.jaeger.customizers;
 
-import com.uber.jaeger.Tracer;
-import com.uber.jaeger.propagation.B3TextMapCodec;
+import io.jaegertracing.Tracer;
+import io.jaegertracing.propagation.B3TextMapCodec;
 import io.opentracing.contrib.spring.cloud.starter.jaeger.TracerBuilderCustomizer;
 import io.opentracing.propagation.Format;
 

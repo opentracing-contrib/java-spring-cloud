@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -46,13 +46,12 @@ public class TraceAsyncAspect {
     /**
      * We create a span because parent span might be missing. E.g. method is invoked
      */
-    Span span = null;
+    Span span = this.tracer.buildSpan(operationName(pjp))
+        .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
+        .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
+        .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
+        .start();
     try {
-      span = this.tracer.buildSpan(operationName(pjp))
-          .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
-          .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
-          .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-          .startManual();
       return pjp.proceed();
     } catch (Exception ex) {
       SpanUtils.captureException(span, ex);

@@ -13,7 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
-import com.uber.jaeger.reporters.Reporter;
+import io.jaegertracing.reporters.Reporter;
 import java.util.Collection;
 
 @FunctionalInterface
