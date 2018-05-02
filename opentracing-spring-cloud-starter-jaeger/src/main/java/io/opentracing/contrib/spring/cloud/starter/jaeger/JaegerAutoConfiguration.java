@@ -14,7 +14,6 @@
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
 import io.jaegertracing.Tracer.Builder;
-import io.jaegertracing.metrics.InMemoryMetricsFactory;
 import io.jaegertracing.metrics.Metrics;
 import io.jaegertracing.metrics.MetricsFactory;
 import io.jaegertracing.metrics.NoopMetricsFactory;
@@ -120,6 +119,12 @@ public class JaegerAutoConfiguration {
     HttpSender.Builder builder = new HttpSender.Builder(httpSenderProperties.getUrl());
     if (httpSenderProperties.getMaxPayload() != null) {
       builder = builder.withMaxPacketSize(httpSenderProperties.getMaxPayload());
+    }
+    if (!StringUtils.isEmpty(httpSenderProperties.getUsername())
+        && !StringUtils.isEmpty(httpSenderProperties.getPassword())) {
+      builder.withAuth(httpSenderProperties.getUsername(), httpSenderProperties.getPassword());
+    } else if (!StringUtils.isEmpty(httpSenderProperties.getAuthToken())) {
+      builder.withAuth(httpSenderProperties.getAuthToken());
     }
 
     return createReporter(metrics, remoteReporter, builder.build());
