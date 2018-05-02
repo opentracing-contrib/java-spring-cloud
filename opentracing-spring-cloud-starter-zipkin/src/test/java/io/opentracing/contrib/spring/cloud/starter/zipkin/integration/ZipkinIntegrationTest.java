@@ -77,7 +77,7 @@ public class ZipkinIntegrationTest {
                   zipkin.httpUrl()
               ),
               String.format("spring.application.name=%s", SERVICE_NAME)
-          );
+      );
     }
   }
 
