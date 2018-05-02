@@ -30,10 +30,25 @@
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
 
-    <brave-opentracing.version>0.30.1</brave-opentracing.version>
-    <zipkin-sender-okhttp.version>2.5.0</zipkin-sender-okhttp.version>
-    <zipkin.version>2.7.1</zipkin.version>
+    <brave-opentracing.version>0.30.3</brave-opentracing.version>
+    <zipkin-sender-okhttp.version>2.6.0</zipkin-sender-okhttp.version>
+    <zipkin.version>2.8.1</zipkin.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.zipkin.java</groupId>
+        <artifactId>zipkin</artifactId>
+        <version>${zipkin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.zipkin.zipkin2</groupId>
+        <artifactId>zipkin</artifactId>
+        <version>${zipkin.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -88,12 +103,6 @@
     <dependency>
       <groupId>io.zipkin.java</groupId>
       <artifactId>zipkin-junit</artifactId>
-      <scope>test</scope>
-      <version>${zipkin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.java</groupId>
-      <artifactId>zipkin</artifactId>
       <scope>test</scope>
       <version>${zipkin.version}</version>
     </dependency>
