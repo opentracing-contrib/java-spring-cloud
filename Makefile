@@ -14,7 +14,7 @@ dalston:
 	@./mvnw clean test -Dversion.org.springframework.boot=1.5.9.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Dalston.SR5
 
 edgware:
-	@./mvnw clean test -Dversion.org.springframework.boot=1.5.9.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Edgware.RELEASE
+	@./mvnw clean test -Dversion.org.springframework.boot=1.5.9.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Edgware.SR3
 
 classpath:
 	@for profile in $(PROFILES) ; do \
