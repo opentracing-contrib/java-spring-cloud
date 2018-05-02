@@ -31,6 +31,6 @@ public class JaegerTracerExplicitlyEnabledSpringTest extends AbstractTracerSprin
   @Test
   public void testIfTracerIsJaegerTracer() {
     assertThat(tracer).isNotNull();
-    assertThat(tracer).isInstanceOf(com.uber.jaeger.Tracer.class);
+    assertThat(tracer).isInstanceOf(io.jaegertracing.Tracer.class);
   }
 }

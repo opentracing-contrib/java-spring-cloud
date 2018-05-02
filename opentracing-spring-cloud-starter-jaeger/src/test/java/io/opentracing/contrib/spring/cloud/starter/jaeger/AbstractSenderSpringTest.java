@@ -15,8 +15,8 @@ package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.uber.jaeger.reporters.CompositeReporter;
-import com.uber.jaeger.reporters.RemoteReporter;
+import io.jaegertracing.reporters.CompositeReporter;
+import io.jaegertracing.reporters.RemoteReporter;
 import org.assertj.core.api.Condition;
 
 public abstract class AbstractSenderSpringTest extends AbstractTracerSpringTest {

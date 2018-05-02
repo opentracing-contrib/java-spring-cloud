@@ -103,7 +103,7 @@ having to forgo what the auto-configuration provides
   
 The samplers above are mutually exclusive.
 
-A custom sampler could of course be provided by declaring a bean of type `com.uber.jaeger.samplers.Sampler`
+A custom sampler could of course be provided by declaring a bean of type `io.jaegertracing.samplers.Sampler`
 
 ### Propagate headers in B3 format (for compatibility with Zipkin collectors)
 
@@ -116,10 +116,10 @@ A custom sampler could of course be provided by declaring a bean of type `com.ub
 Any of the following beans can be provided by the application (by adding configuring them as bean with `@Bean` for example)
 and will be used to by the Tracer instead of the auto-configured beans.
 
-* `com.uber.jaeger.samplers.Sampler`
-* `com.uber.jaeger.metrics.MetricsFactory`  
+* `io.jaegertracing.samplers.Sampler`
+* `io.jaegertracing.metrics.MetricsFactory`  
 
-### com.uber.jaeger.Tracer.Builder customization
+### io.jaegertracing.Tracer.Builder customization
 
 Right before the `Tracer` is created, it is possible to provide arbitrary customizations to `Tracer.Builder` by providing a bean
 of type `JaegerTracerCustomizer`

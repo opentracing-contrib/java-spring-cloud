@@ -13,7 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.starter.jaeger;
 
-import com.uber.jaeger.Tracer;
+import io.jaegertracing.Tracer;
 
 @FunctionalInterface
 public interface TracerBuilderCustomizer {

@@ -28,7 +28,7 @@
   <properties>
     <main.basedir>${project.basedir}/..</main.basedir>
 
-    <jaeger.version>0.26.0</jaeger.version>
+    <jaeger.version>0.27.0</jaeger.version>
   </properties>
 
   <dependencies>
@@ -37,7 +37,7 @@
       <artifactId>opentracing-spring-cloud-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.uber.jaeger</groupId>
+      <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
       <version>${jaeger.version}</version>
     </dependency>
