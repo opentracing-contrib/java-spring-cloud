@@ -10,8 +10,8 @@ default:
 angel:
 	@./mvnw clean test -Dversion.org.springframework.boot=1.2.8.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Angel.SR6
 
-edgware:
-	@./mvnw clean test -Dversion.org.springframework.boot=1.5.9.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Edgware.RELEASE
+dalston:
+	@./mvnw clean test -Dversion.org.springframework.boot=1.5.12.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Dalston.SR5
 
 classpath:
 	@for profile in $(PROFILES) ; do \
