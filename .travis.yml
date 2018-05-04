@@ -29,10 +29,10 @@ jobs:
   include:
     - stage: test
       env: [ NAME=dalston ]
-      script: make default
+      script: make dalston
 
     - env: [ NAME=edgware ]
-      script: make edgware
+      script: make default
 
     - env: [ NAME=classpath-no-dependencies ]
       script: PROFILES=nodeps make classpath
