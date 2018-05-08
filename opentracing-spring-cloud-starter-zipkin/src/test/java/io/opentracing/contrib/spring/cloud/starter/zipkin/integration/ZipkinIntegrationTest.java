@@ -72,10 +72,7 @@ public class ZipkinIntegrationTest {
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
       EnvironmentTestUtils
           .addEnvironment("zipkinrule", configurableApplicationContext.getEnvironment(),
-              String.format(
-                  "opentracing.zipkin.http-sender.url=%s/api/v2/spans",
-                  zipkin.httpUrl()
-              ),
+              String.format("opentracing.zipkin.http-sender.baseUrl=%s", zipkin.httpUrl()),
               String.format("spring.application.name=%s", SERVICE_NAME)
       );
     }

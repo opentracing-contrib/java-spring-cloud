@@ -1,6 +1,7 @@
 # Zipkin OpenTracing Spring Boot starter
 
-This starter provides a single entry point for Spring Boot application to use in order to setup OpenTracing instrumentation 
+This starter provides a single entry point for Spring Boot application to use in order to setup 
+OpenTracing instrumentation reporting tracing data to Zipkin server.
 
 ## Configuration
 
@@ -15,15 +16,13 @@ Simply adding the dependency to the application will ensure that all required Op
 Furthermore the dependency will ensure that Spring Boot will auto configure all the necessary OpenTracing beans when the application starts.
 
 
-By default, the Zipkin server is expected to collect traces at `http://localhost:9411/api/v2/spans`.
-To change the default simply set the following the property 
+By default, the Zipkin server is expected to collect traces at `http://localhost:9411/api/v2/spans`
+encoded with `JSON_V2`. 
+To change the default simply set the following the property:
 
 ```
-opentracing.zipkin.http-sender.url=http://somehost:someport/api/v2/spans
+opentracing.zipkin.http-sender.baseUrl=http://<host>:<port>
 ```
-
-**Note** : The module reports spans using Zipkin's v2 model 
-
 
 ## Configuration options
 
@@ -71,6 +70,14 @@ Set `spring.application.name` to the desired name
 The samplers above are mutually exclusive.
 
 A custom sampler could of course be provided by declaring a bean of type `brave.sampler.Sampler`
+
+### Reporter
+
+By default starter configures `AsyncRepoter` using `OkHttpSender` with `JSON_V2` encoding.
+Following properties can be changed to configure the reporter.
+
+* `opentracing.zipkin.http-sender.encoder` - encoding of spans e.g. `JSON_V1`, `JSON_V2`, `PROTO3`
+* `opentracing.zipkin.http-sernder.baseUrl` - set base url e.g. `http://zipkin:9411/`
 
 ## Advanced cases
 

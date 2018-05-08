@@ -11,23 +11,39 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package io.opentracing.contrib.spring.cloud.starter.zipkin.sender;
 
+import static org.junit.Assert.assertEquals;
+
 import io.opentracing.contrib.spring.cloud.starter.zipkin.AbstractZipkinTracerSenderSpringTest;
+import java.io.IOException;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 
+/**
+ * @author Pavol Loffay
+ */
 @TestPropertySource(
     properties = {
-        "opentracing.zipkin.http-sender.baseUrl=http://zipkin:1234"
+        "opentracing.zipkin.http-sender.encoder=PROTO3"
     }
 )
-public class ZipkinTracerWithSenderSetSpringTest extends AbstractZipkinTracerSenderSpringTest {
-
+public class ZipkinSenderProto3Test extends AbstractZipkinTracerSenderSpringTest {
   @Test
-  public void testIfTracerIsZipkinTracer() {
-    assertSenderUrl("http://zipkin:1234/api/v2/spans");
+  public void testUrl() {
+    assertSenderUrl("http://localhost:9411/api/v2/spans");
   }
 
+  @Test
+  public void testEncoding() throws InterruptedException, IOException {
+    MockWebServer server = new MockWebServer();
+    server.start(9411);
+
+    tracer.buildSpan("foo").start().finish();
+    RecordedRequest recordedRequest = server.takeRequest();
+    assertEquals("application/x-protobuf", recordedRequest.getHeader("Content-Type"));
+    server.shutdown();
+  }
 }

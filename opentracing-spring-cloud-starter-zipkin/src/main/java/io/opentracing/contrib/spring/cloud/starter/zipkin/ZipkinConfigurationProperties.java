@@ -15,6 +15,7 @@
 package io.opentracing.contrib.spring.cloud.starter.zipkin;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import zipkin2.codec.SpanBytesEncoder;
 
 @ConfigurationProperties("opentracing.zipkin")
 public class ZipkinConfigurationProperties {
@@ -27,7 +28,6 @@ public class ZipkinConfigurationProperties {
    * Enable Zipkin/Brave Tracer
    */
   private boolean enabled = true;
-
 
 
   public boolean isEnabled() {
@@ -51,15 +51,31 @@ public class ZipkinConfigurationProperties {
   }
 
   public static class HttpSender {
+    /**
+     * Zipkin base URL without endpoint e.g. /api/v2/spans
+     */
+    private String baseUrl = "http://localhost:9411/";
 
-    private String url = "http://localhost:9411/api/v2/spans";
-
-    public String getUrl() {
-      return url;
+    public String getBaseUrl() {
+      return baseUrl;
     }
 
-    public void setUrl(String url) {
-      this.url = url;
+    public void setBaseUrl(String url) {
+      this.baseUrl = url;
+    }
+
+    /**
+     * Encoding of spans sent to Zipkin server. Use {@link SpanBytesEncoder#JSON_V1} if you are using
+     * older server.
+     */
+    private SpanBytesEncoder encoder = SpanBytesEncoder.JSON_V2;
+
+    public SpanBytesEncoder getEncoder() {
+      return encoder;
+    }
+
+    public void setEncoder(SpanBytesEncoder encoder) {
+      this.encoder = encoder;
     }
   }
 
