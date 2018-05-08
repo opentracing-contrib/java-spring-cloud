@@ -20,7 +20,7 @@
   <parent>
     <groupId>io.opentracing.contrib</groupId>
     <artifactId>opentracing-spring-cloud-parent</artifactId>
-    <version>0.1.10-SNAPSHOT</version>
+    <version>0.1.11-SNAPSHOT</version>
   </parent>
 
   <artifactId>opentracing-spring-cloud-starter-jaeger</artifactId>
@@ -67,11 +67,6 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-rules</artifactId>
-      <version>1.17.1</version>
     </dependency>
   </dependencies>
 
