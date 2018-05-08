@@ -25,6 +25,7 @@
     <module>opentracing-spring-cloud-starter</module>
     <module>opentracing-spring-cloud-starter-jaeger</module>
     <module>opentracing-spring-cloud-starter-jaeger-it</module>
+    <module>opentracing-spring-cloud-starter-zipkin</module>
   </modules>
   <packaging>pom</packaging>
 
