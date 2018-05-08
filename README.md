@@ -33,7 +33,7 @@ However there are a couple of differences:
 ## Note on dependencies
 
 It's worth noting that the although OpenTracing Spring Cloud contains code for instrumenting a wealth of Spring projects, 
-it however does not pull those dependencies automatically, having dependencies as optional dependencies instead.
+it however does not pull those dependencies automatically, marking them as optional dependencies instead.
 
 That means that for example a simple Spring Boot REST API application can include OpenTracing Spring Cloud without the fear
 of polluting the classpath with Spring Cloud dependencies that are otherwise unneeded   
