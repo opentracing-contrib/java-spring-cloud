@@ -58,7 +58,7 @@ public class ZipkinIntegrationTest {
   }
 
   private void assertSpanIsCorrect() {
-    await().atMost(10, TimeUnit.SECONDS).until(() -> zipkin.httpRequestCount() == 1);
+    await().atMost(10, TimeUnit.SECONDS).until(() -> zipkin.getTraces().size() == 1);
     final List<List<Span>> traces = zipkin.getTraces();
     final List<Span> spans = traces.get(0);
     assertThat(spans.get(0).serviceNames()).containsExactly(SERVICE_NAME);
