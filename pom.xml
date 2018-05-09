@@ -19,7 +19,7 @@
 
   <groupId>io.opentracing.contrib</groupId>
   <artifactId>opentracing-spring-cloud-parent</artifactId>
-  <version>0.1.11</version>
+  <version>0.1.12-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
@@ -37,7 +37,7 @@
     <url>https://github.com/opentracing-contrib/java-spring-cloud</url>
     <connection>scm:git:https://github.com/opentracing-contrib/java-spring-cloud.git</connection>
     <developerConnection>scm:git:https://github.com/opentracing-contrib/java-spring-cloud.git</developerConnection>
-    <tag>0.1.11</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
