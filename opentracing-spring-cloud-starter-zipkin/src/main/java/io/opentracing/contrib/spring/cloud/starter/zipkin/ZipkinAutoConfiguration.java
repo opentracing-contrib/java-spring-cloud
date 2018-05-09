@@ -14,11 +14,16 @@
 
 package io.opentracing.contrib.spring.cloud.starter.zipkin;
 
+import static zipkin2.codec.SpanBytesEncoder.JSON_V1;
+import static zipkin2.codec.SpanBytesEncoder.JSON_V2;
+import static zipkin2.codec.SpanBytesEncoder.PROTO3;
+
 import brave.Tracing;
 import brave.opentracing.BraveTracer;
 import brave.sampler.BoundarySampler;
 import brave.sampler.CountingSampler;
 import brave.sampler.Sampler;
+import io.opentracing.contrib.spring.cloud.starter.zipkin.ZipkinConfigurationProperties.HttpSender;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +39,12 @@ import org.springframework.context.annotation.Configuration;
 import zipkin2.Span;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.Reporter;
-import zipkin2.reporter.Sender;
 import zipkin2.reporter.okhttp3.OkHttpSender;
 
 @Configuration
 @ConditionalOnClass(brave.opentracing.BraveTracer.class)
 @ConditionalOnMissingBean(io.opentracing.Tracer.class)
 @ConditionalOnProperty(value = "opentracing.zipkin.enabled", havingValue = "true", matchIfMissing = true)
-@AutoConfigureAfter(name = "me.snowdrop.opentracing.tracer.jaeger.JaegerAutoConfiguration")
 @AutoConfigureBefore(name = "io.opentracing.contrib.spring.web.autoconfig.TracerAutoConfiguration")
 @EnableConfigurationProperties(ZipkinConfigurationProperties.class)
 public class ZipkinAutoConfiguration {
@@ -68,15 +71,19 @@ public class ZipkinAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public Sender sender(ZipkinConfigurationProperties properties) {
-    return OkHttpSender.create(properties.getHttpSender().getUrl());
-  }
+  public Reporter<Span> reporter(ZipkinConfigurationProperties properties) {
+    String url = properties.getHttpSender().getBaseUrl();
+    if (properties.getHttpSender().getEncoder().equals(JSON_V2) || properties.getHttpSender().getEncoder().equals(PROTO3)) {
+      url += (url.endsWith("/") ? "" : "/") + "api/v2/spans";
+    } else if (properties.getHttpSender().getEncoder().equals(JSON_V1)) {
+      url += (url.endsWith("/") ? "" : "/") + "api/v1/spans";
+    }
+    OkHttpSender sender = OkHttpSender.newBuilder()
+        .endpoint(url)
+        .encoding(properties.getHttpSender().getEncoder().encoding())
+        .build();
 
-
-  @Bean
-  @ConditionalOnMissingBean
-  public Reporter<Span> reporter(Sender sender) {
-    return AsyncReporter.create(sender);
+    return AsyncReporter.builder(sender).build(properties.getHttpSender().getEncoder());
   }
 
 

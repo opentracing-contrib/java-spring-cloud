@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import zipkin2.reporter.AsyncReporter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
@@ -28,6 +29,10 @@ public abstract class AbstractZipkinTracerSpringTest {
 
   @Autowired(required = false)
   protected Tracer tracer;
+
+  @Autowired(required = false)
+  protected AsyncReporter<zipkin2.Span> reporter;
+
 
   protected brave.opentracing.BraveTracer getTracer() {
     return (brave.opentracing.BraveTracer) tracer;
