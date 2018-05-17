@@ -15,6 +15,7 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 
 import io.opentracing.contrib.jdbc.TracingConnection;
 import java.sql.Connection;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,6 +29,14 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class JdbcAspect {
+
+  private final boolean withActiveSpanOnly;
+  private final Set<String> ignoredStatements;
+
+  public JdbcAspect(boolean withActiveSpanOnly, Set<String> ignoredStatements) {
+    this.withActiveSpanOnly = withActiveSpanOnly;
+    this.ignoredStatements = ignoredStatements;
+  }
 
   /**
    * Intercepts calls to {@link DataSource#getConnection()} (and related), wrapping the outcome in a
@@ -43,13 +52,12 @@ public class JdbcAspect {
     String url = conn.getMetaData().getURL();
     String user = conn.getMetaData().getUserName();
     String dbType;
-    boolean withActiveSpanOnly = false;
     try {
       dbType = url.split(":")[1];
     } catch (Throwable t) {
       throw new IllegalArgumentException(
           "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
     }
-    return new TracingConnection(conn, dbType, user, withActiveSpanOnly);
+    return new TracingConnection(conn, dbType, user, withActiveSpanOnly, ignoredStatements);
   }
 }
