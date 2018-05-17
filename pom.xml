@@ -71,6 +71,7 @@
     <version.io.opentracing.contrib-java-jdbc>0.0.6</version.io.opentracing.contrib-java-jdbc>
     <version.io.opentracing.contrib-java-concurrent>0.1.0</version.io.opentracing.contrib-java-concurrent>
     <version.io.opentracing.contrib-opentracing-rxjava-1>0.0.7</version.io.opentracing.contrib-opentracing-rxjava-1>
+    <version.io.opentracing.contrib-opentracing-spring-mongo>0.0.4</version.io.opentracing.contrib-opentracing-spring-mongo>
     <version.io.github.openfeign-feign-okhttp>9.5.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.1.0</version.io.github.openfeign.opentracing>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
@@ -78,6 +79,8 @@
     <version.org.springframework.boot>1.5.12.RELEASE</version.org.springframework.boot>
     <version.org.springframework.cloud-spring-cloud-dependencies>Edgware.SR3</version.org.springframework.cloud-spring-cloud-dependencies>
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
+    <version.de.flapdoodle-embed.mongo>2.0.3</version.de.flapdoodle-embed.mongo>
+    <version.cz.jirutka.spring-embedmongo-spring>1.3.1</version.cz.jirutka.spring-embedmongo-spring>
 
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
@@ -165,6 +168,12 @@
         <groupId>io.opentracing.contrib</groupId>
         <artifactId>opentracing-spring-messaging-starter</artifactId>
         <version>${version.io.opentracing.contrib-opentracing-spring-messaging}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-mongo-driver</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-mongo}</version>
       </dependency>
 
       <dependency>

@@ -74,6 +74,11 @@
     </dependency>
 
     <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-mongo-driver</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>io.github.openfeign.opentracing</groupId>
       <artifactId>feign-hystrix-opentracing</artifactId>
       <version>${version.io.github.openfeign.opentracing}</version>
@@ -196,6 +201,23 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-rest</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <version>${version.de.flapdoodle-embed.mongo}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>cz.jirutka.spring</groupId>
+      <artifactId>embedmongo-spring</artifactId>
+      <version>${version.cz.jirutka.spring-embedmongo-spring}</version>
       <scope>test</scope>
     </dependency>
 
