@@ -60,8 +60,10 @@ public class AsyncAnnotationTest {
 
     @Async
     public Future<String> fooAsync() {
-      tracer.buildSpan("foo").start().finish();
-      return new AsyncResult<>("whatever");
+      try (Scope fooScope = tracer.buildSpan("fooInner").startActive(true)) {
+        return new AsyncResult<>("whatever");
+      }
+
     }
 
     @Async
@@ -83,7 +85,7 @@ public class AsyncAnnotationTest {
 
   @Test
   public void testAsyncTraceAndSpans() throws Exception {
-    try (Scope scope = mockTracer.buildSpan("bar")
+    try (Scope scope = mockTracer.buildSpan("outer")
         .startActive(true)) {
       Future<String> fut = asyncService.fooAsync();
       await().until(() -> fut.isDone());
@@ -94,7 +96,21 @@ public class AsyncAnnotationTest {
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     // parent span from test, span modelling @Async, span inside @Async
     assertEquals(3, mockSpans.size());
+
     TestUtils.assertSameTraceId(mockSpans);
+
+    MockSpan outerSpan = mockSpans.get(2);
+    MockSpan fooAsyncSpan = mockSpans.get(1);
+    MockSpan fooInnerSpan = mockSpans.get(0);
+
+    assertEquals(
+            "Expected the outer span to be a child of the root span",
+            outerSpan.context().spanId(), fooAsyncSpan.parentId());
+    assertEquals(
+            "Expected the inner span to be a child of the outer span",
+            fooAsyncSpan.context().spanId(), fooInnerSpan.parentId());
+
+
     MockSpan asyncSpan = mockSpans.get(1);
     assertEquals(3, asyncSpan.tags().size());
     assertEquals(TraceAsyncAspect.TAG_COMPONENT, asyncSpan.tags().get(Tags.COMPONENT.getKey()));
