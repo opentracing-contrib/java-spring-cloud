@@ -21,6 +21,7 @@ import java.net.UnknownHostException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -32,6 +33,7 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @AutoConfigureBefore(MongoAutoConfiguration.class)
+@ConditionalOnClass(MongoClient.class)
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.mongo.enabled", havingValue = "true", matchIfMissing = true)
 public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
