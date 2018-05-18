@@ -104,10 +104,10 @@ public class AsyncAnnotationTest {
     MockSpan fooInnerSpan = mockSpans.get(0);
 
     assertEquals(
-            "Expected the outer span to be a child of the root span",
+            "Expected the async method span to be a child of the outer span",
             outerSpan.context().spanId(), fooAsyncSpan.parentId());
     assertEquals(
-            "Expected the inner span to be a child of the outer span",
+            "Expected the inner span to be a child of the async method span",
             fooAsyncSpan.context().spanId(), fooInnerSpan.parentId());
 
 
