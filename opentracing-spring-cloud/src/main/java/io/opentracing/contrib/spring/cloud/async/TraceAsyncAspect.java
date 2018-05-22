@@ -50,7 +50,8 @@ public class TraceAsyncAspect {
         .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
         .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
         .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-        .start();
+        .startActive(false)
+        .span();
     try {
       return pjp.proceed();
     } catch (Exception ex) {
