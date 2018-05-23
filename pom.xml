@@ -19,7 +19,7 @@
 
   <groupId>io.opentracing.contrib</groupId>
   <artifactId>opentracing-spring-cloud-parent</artifactId>
-  <version>0.1.12-SNAPSHOT</version>
+  <version>0.1.13-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
