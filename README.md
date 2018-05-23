@@ -12,6 +12,7 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Hystrix
 * JMS
 * JDBC
+* Mongo
 * Zuul
 * RxJava
 * Standard logging - logs are added to active span

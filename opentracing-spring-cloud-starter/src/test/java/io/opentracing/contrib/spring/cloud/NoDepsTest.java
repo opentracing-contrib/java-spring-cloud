@@ -55,4 +55,9 @@ public class NoDepsTest {
     this.getClass().getClassLoader().loadClass(
         "org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer");
   }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoMongoClient() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("com.mongodb.MongoClient");
+  }
 }
