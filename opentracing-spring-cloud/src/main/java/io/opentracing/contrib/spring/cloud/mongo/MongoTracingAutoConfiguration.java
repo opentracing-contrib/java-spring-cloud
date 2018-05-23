@@ -19,6 +19,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.mongo.TracingMongoClient;
 import java.net.UnknownHostException;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -40,7 +41,7 @@ public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
 
   private Tracer tracer;
 
-  public MongoTracingAutoConfiguration(MongoProperties properties,
+  public MongoTracingAutoConfiguration(@Autowired(required = false) MongoProperties properties,
       ObjectProvider<MongoClientOptions> options, Environment environment, Tracer tracer) {
     super(properties, options, environment);
     this.tracer = tracer;
