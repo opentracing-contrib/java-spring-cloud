@@ -14,9 +14,7 @@
 package io.opentracing.contrib.spring.cloud;
 
 import io.opentracing.mock.MockTracer;
-import io.opentracing.noop.NoopTracerFactory;
-import io.opentracing.util.GlobalTracer;
-import java.lang.reflect.Field;
+import io.opentracing.util.GlobalTracerTestUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +31,7 @@ public class MockTracingConfiguration {
 
   @Bean
   public MockTracer mockTracer() {
-    resetGlobalTracer();
+    GlobalTracerTestUtil.resetGlobalTracer();
     return new MockTracer();
   }
 
@@ -46,16 +44,4 @@ public class MockTracingConfiguration {
   public AsyncRestTemplate asyncRestTemplate() {
     return new AsyncRestTemplate();
   }
-
-  private static void resetGlobalTracer() {
-    try {
-      Field globalTracerField = GlobalTracer.class.getDeclaredField("tracer");
-      globalTracerField.setAccessible(true);
-      globalTracerField.set(null, NoopTracerFactory.create());
-      globalTracerField.setAccessible(false);
-    } catch (Exception e) {
-      throw new RuntimeException("Error reflecting globalTracer: " + e.getMessage(), e);
-    }
-  }
-
 }
