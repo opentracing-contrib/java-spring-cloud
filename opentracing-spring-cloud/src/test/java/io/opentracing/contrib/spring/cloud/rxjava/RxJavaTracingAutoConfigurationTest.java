@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -68,8 +69,8 @@ public class RxJavaTracingAutoConfigurationTest {
   @Autowired
   private MockTracer mockTracer;
 
-  @Autowired
-  private TestRestTemplate testRestTemplate;
+  @LocalServerPort
+  private int port;
 
   @Before
   public void before() {
@@ -78,7 +79,7 @@ public class RxJavaTracingAutoConfigurationTest {
 
   @Test
   public void testControllerTracing() throws Exception {
-    ResponseEntity<Integer> responseEntity = testRestTemplate
+    ResponseEntity<Integer> responseEntity = MockTracingConfiguration.createNotTracedRestTemplate(port)
         .getForEntity("/single", Integer.class);
 
     // span is created in spring-web

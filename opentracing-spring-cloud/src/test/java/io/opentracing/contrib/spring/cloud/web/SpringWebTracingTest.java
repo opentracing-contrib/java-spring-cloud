@@ -53,9 +53,6 @@ public class SpringWebTracingTest {
   protected MockTracer mockTracer;
 
   @Autowired
-  private TestRestTemplate testRestTemplate;
-
-  @Autowired
   private RestTemplate restTemplate;
 
   @Autowired
@@ -68,7 +65,8 @@ public class SpringWebTracingTest {
 
   @Test
   public void testControllerTracing() {
-    ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/hello", String.class);
+    ResponseEntity<String> responseEntity = MockTracingConfiguration.createNotTracedRestTemplate(port)
+        .getForEntity("/hello", String.class);
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     assertEquals(200, responseEntity.getStatusCode().value());
     assertEquals(1, mockTracer.finishedSpans().size());

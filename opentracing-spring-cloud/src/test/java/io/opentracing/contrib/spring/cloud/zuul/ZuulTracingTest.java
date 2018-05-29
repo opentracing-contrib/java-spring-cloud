@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -29,8 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -49,8 +49,8 @@ public class ZuulTracingTest {
   @Autowired
   protected MockTracer mockTracer;
 
-  @Autowired
-  private TestRestTemplate restTemplate;
+  @LocalServerPort
+  private int port;
 
   @Configuration
   @EnableZuulProxy
@@ -65,7 +65,7 @@ public class ZuulTracingTest {
 
   @Test
   public void testZuulTracing() {
-    restTemplate.getForEntity("/test", String.class);
+    MockTracingConfiguration.createNotTracedRestTemplate(port).getForEntity("/test", String.class);
 
     await().until(() -> mockTracer.finishedSpans().size() == 3);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
@@ -87,7 +87,7 @@ public class ZuulTracingTest {
 
   @Test
   public void testWrongZuulRoute() {
-    restTemplate.getForEntity("/wrong", String.class);
+    MockTracingConfiguration.createNotTracedRestTemplate(port).getForEntity("/wrong", String.class);
 
     // 2 spans from servlet filter, 1 from zuul, 1 from error handler
     await().until(() -> mockTracer.finishedSpans().size() == 4);
@@ -102,7 +102,7 @@ public class ZuulTracingTest {
 
   @Test
   public void testWrongZuulRoutePort() {
-    restTemplate.getForEntity("/wrong-port", String.class);
+    MockTracingConfiguration.createNotTracedRestTemplate(port).getForEntity("/wrong-port", String.class);
 
     // 1 span from servlet filter, 1 from zuul
     await().until(() -> mockTracer.finishedSpans().size() == 2);
@@ -120,7 +120,7 @@ public class ZuulTracingTest {
 
   @Test
   public void testNoZuulTracing() {
-    restTemplate.getForEntity("/hello", String.class);
+    MockTracingConfiguration.createNotTracedRestTemplate(port).getForEntity("/hello", String.class);
 
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();

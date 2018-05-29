@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,8 +68,9 @@ public class WebAsyncTaskTest {
 
   @Autowired
   private MockTracer mockTracer;
-  @Autowired
-  private TestRestTemplate restTemplate;
+
+  @LocalServerPort
+  private int port;
 
   @Before
   public void before() {
@@ -78,7 +79,7 @@ public class WebAsyncTaskTest {
 
   @Test
   public void testWebAsyncTaskTraceAndSpans() throws Exception {
-    String response = restTemplate.getForObject("/webAsyncTask", String.class);
+    String response = MockTracingConfiguration.createNotTracedRestTemplate(port).getForObject("/webAsyncTask", String.class);
     assertThat(response).isNotNull();
     await().until(() -> mockTracer.finishedSpans().size() == 2);
 
@@ -89,7 +90,7 @@ public class WebAsyncTaskTest {
 
   @Test
   public void testCallableTraceAndSpans() throws Exception {
-    String response = restTemplate.getForObject("/callable", String.class);
+    String response = MockTracingConfiguration.createNotTracedRestTemplate(port).getForObject("/callable", String.class);
     assertThat(response).isNotNull();
     await().until(() -> mockTracer.finishedSpans().size() == 2);
 
