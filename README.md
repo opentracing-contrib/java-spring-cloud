@@ -40,6 +40,16 @@ That means that for example a simple Spring Boot REST API application can includ
 of polluting the classpath with Spring Cloud dependencies that are otherwise unneeded   
 
 ## Configuration
+
+The preferred way to use this library is via vendored starters. These starters use 
+instrumentations from this library and expose specific tracer configuration in Spring
+native way:
+
+* [Jaeger](https://github.com/opentracing-contrib/java-spring-jaeger)
+* [Zipkin](https://github.com/opentracing-contrib/java-spring-zipkin)
+
+### Explicitly tracer configuration
+
 Just add the following dependency in your pom.xml:
 ```xml
 <dependency>
@@ -55,20 +65,8 @@ public io.opentracing.Tracer tracer() {
 }
 ```
 
-## Using the Jaeger auto-configuration module
-
-See the [README.md](opentracing-spring-cloud-starter-jaeger/README.md) file
-
-## Using the Zipkin auto-configuration module
-
-See the [README.md](opentracing-spring-cloud-starter-zipkin/README.md) file
-
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)
-
-### Note on tests
-
-A running docker daemon needs to be present on the system before running the tests
 
 ```shell
 ./mvnw clean install
