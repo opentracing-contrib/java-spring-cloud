@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 The OpenTracing Authors
+ * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
@@ -126,8 +127,9 @@ public class JmsArtemisManualServerTest {
   @Autowired
   private JmsTestConfiguration.MsgListener msgListener;
 
-  @Autowired
-  private TestRestTemplate restTemplate;
+  @LocalServerPort
+  private int port;
+
 
   @Before
   public void before() {
@@ -136,7 +138,8 @@ public class JmsArtemisManualServerTest {
 
   @Test
   public void testListenerSpans() {
-    ResponseEntity<String> responseEntity = restTemplate.getForEntity("/hello", String.class);
+    ResponseEntity<String> responseEntity = MockTracingConfiguration.createNotTracedRestTemplate(port)
+        .getForEntity("/hello", String.class);
 
     await().until(() -> {
       List<MockSpan> mockSpans = tracer.finishedSpans();

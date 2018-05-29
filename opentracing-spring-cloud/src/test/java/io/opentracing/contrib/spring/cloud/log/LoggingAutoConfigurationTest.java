@@ -45,7 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
-    classes = {MockTracingConfiguration.class, LoggingAutoConfigurationTest.Controller.class})
+    classes = {MockTracingConfiguration.class, LoggingAutoConfigurationTest.Controller.class},
+    properties = {"opentracing.spring.web.client.enabled=false"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class LoggingAutoConfigurationTest {
   private static final String LOG = "log message";

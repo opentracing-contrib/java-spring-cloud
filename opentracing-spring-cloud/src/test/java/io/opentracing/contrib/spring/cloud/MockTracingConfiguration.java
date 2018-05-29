@@ -16,6 +16,8 @@ package io.opentracing.contrib.spring.cloud;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracerTestUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,5 +45,9 @@ public class MockTracingConfiguration {
   @Bean
   public AsyncRestTemplate asyncRestTemplate() {
     return new AsyncRestTemplate();
+  }
+
+  public static TestRestTemplate createNotTracedRestTemplate(int port) {
+    return new TestRestTemplate(new RestTemplateBuilder().rootUri("http://localhost:" + port));
   }
 }
