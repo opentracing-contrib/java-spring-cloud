@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.log;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -150,6 +151,7 @@ public class LoggingAutoConfigurationTest {
   }
 
   private void assertLogging(ContextData contextData) {
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(1, mockSpans.size());
     MockSpan mockSpan = mockSpans.get(0);
