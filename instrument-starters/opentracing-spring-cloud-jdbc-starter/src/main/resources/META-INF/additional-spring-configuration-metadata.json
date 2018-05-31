@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.jdbc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable JDBC tracing.",
+      "defaultValue": true
+    }
+  ]
+}

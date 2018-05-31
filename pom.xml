@@ -21,8 +21,16 @@
   <artifactId>opentracing-spring-cloud-parent</artifactId>
   <version>0.1.14-SNAPSHOT</version>
   <modules>
-    <module>opentracing-spring-cloud</module>
     <module>opentracing-spring-cloud-starter</module>
+    <module>/instrument-starters/opentracing-spring-cloud-core</module>
+    <module>instrument-starters/opentracing-spring-cloud-jdbc-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-jms-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-feign-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-mongo-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-websocket-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-zuul-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-hystrix-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-rxjava-starter</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -62,6 +70,7 @@
     <main.basedir>${project.basedir}</main.basedir>
 
     <version.io.opentracing>0.31.0</version.io.opentracing>
+    <version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>0.1.0</version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>
     <version.io.opentracing.contrib-opentracing-spring-web>0.3.2</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.5</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-opentracing-spring-messaging>0.0.5</version.io.opentracing.contrib-opentracing-spring-messaging>
@@ -99,12 +108,52 @@
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>opentracing-spring-cloud</artifactId>
+        <artifactId>opentracing-spring-cloud-core</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>opentracing-spring-cloud-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-jdbc-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-jms-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-feign-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-hystrix-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-rxjava-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-mongo-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-websocket-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-zuul-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -145,6 +194,12 @@
         <version>${version.io.opentracing.contrib-opentracing-spring-jms}</version>
       </dependency>
       <dependency>
+        <groupId>io.opentracing.contrib</groupId>
+        <artifactId>opentracing-spring-tracer-configuration-starter</artifactId>
+        <version>${version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter}</version>
+      </dependency>
+
+      <dependency>
         <groupId>javax.jms</groupId>
         <artifactId>jms-api</artifactId>
         <version>${version.javax.jms}</version>
@@ -184,6 +239,32 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-mock</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing</groupId>
+      <artifactId>opentracing-util</artifactId>
+      <version>${version.io.opentracing}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>${version.org.awaitility-awaitility}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <distributionManagement>
     <repository>

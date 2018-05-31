@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.websocket.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Websocket tracing.",
+      "defaultValue": true
+    }
+  ]
+}

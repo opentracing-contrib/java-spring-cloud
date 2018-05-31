@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.zuul.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Zuul tracing.",
+      "defaultValue": true
+    }
+  ]
+}
