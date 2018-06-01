@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.rxjava.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable RxJava tracing.",
+      "defaultValue": true
+    }
+  ]
+}
