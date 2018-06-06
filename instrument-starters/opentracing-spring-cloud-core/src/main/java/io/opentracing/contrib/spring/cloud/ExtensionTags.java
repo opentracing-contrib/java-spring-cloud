@@ -26,10 +26,10 @@ public class ExtensionTags {
   /**
    * Tag for {@link Class#getSimpleName()}
    */
-  public static StringTag CLASS_TAG = new StringTag("class");
+  public static final StringTag CLASS_TAG = new StringTag("class");
 
   /**
    * Tag for method name
    */
-  public static StringTag METHOD_TAG = new StringTag("method");
+  public static final StringTag METHOD_TAG = new StringTag("method");
 }
