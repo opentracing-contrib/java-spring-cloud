@@ -1,10 +1,10 @@
 [![Build Status][ci-img]][ci] [![Released Version][maven-img]][maven]
 
 # OpenTracing Spring Cloud
-This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
+This repository provides OpenTracing instrumentation for Spring Boot and its various extensions. It can be used with any OpenTracing
 compatible implementation.
 
-It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud and other integrations:
+It contains auto-configurations which instruments and trace following Spring Boot projects:
 * Spring Web (RestControllers, RestTemplates, WebAsyncTask)
 * @Async, @Scheduled, Executors
 * WebSocket STOMP
@@ -27,7 +27,7 @@ both provide out of the box tracing solution for Spring Boot/Cloud. Some of the 
 package are based on original `sleuth` work.
 
 However there are a couple of differences:
-* OpenTracing support in `sleuth` is limited to one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
+* OpenTracing support in `sleuth` is limited to only one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
 * `sleuth` might support different set of instrumentations.
 * Instrumentations in `sleuth` might add different set of tags and logs to represent the same events.
 
