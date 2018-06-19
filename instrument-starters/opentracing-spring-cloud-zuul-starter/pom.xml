@@ -39,7 +39,7 @@
 
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-spring-web-autoconfigure</artifactId>
+      <artifactId>opentracing-spring-web-starter</artifactId>
       <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
     </dependency>
 
