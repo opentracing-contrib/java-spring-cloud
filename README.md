@@ -17,6 +17,7 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * RxJava
 * Standard logging - logs are added to active span
 * Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
+* RabbitMQ
 
 This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
  and `Edgware.RELEASE`
