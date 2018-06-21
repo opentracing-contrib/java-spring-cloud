@@ -21,6 +21,7 @@ import io.opentracing.mock.MockTracer;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -135,7 +136,7 @@ public class JmsArtemisManualServerTest {
   public void testListenerSpans() throws JMSException {
     jmsTemplate.convertAndSend(QUEUE_NAME, "Hello!");
 
-    await().until(() -> {
+    await().atMost(10, TimeUnit.SECONDS).until(() -> {
       List<MockSpan> mockSpans = tracer.finishedSpans();
       return (mockSpans.size() == 2);
     });
@@ -143,7 +144,7 @@ public class JmsArtemisManualServerTest {
     Assert.assertEquals("Hello!", ((TextMessage)msgListener.getMessage()).getText());
 
     List<MockSpan> spans = tracer.finishedSpans();
-    // HTTP server span, jms send, jms receive
+    // jms send, jms receive
     assertEquals(2, spans.size());
     TestUtils.assertSameTraceId(spans);
   }
