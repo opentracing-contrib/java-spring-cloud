@@ -13,43 +13,50 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import static io.opentracing.contrib.spring.cloud.feign.TestUtils.verify;
-
-import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
+import com.netflix.loadbalancer.BaseLoadBalancer;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
 import io.opentracing.mock.MockTracer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Collections;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClients;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Pavol Loffay
  */
-@SpringBootTest(
-    webEnvironment = WebEnvironment.DEFINED_PORT,
-    classes = {MockTracingConfiguration.class, TestController.class,
-        FeignWithoutRibbonConfiguration.class, FeignSpanDecoratorConfiguration.class})
-@TestPropertySource(properties = {
-    "opentracing.spring.web.skipPattern=/notTraced",
-    "server.port=13598"})
-@RunWith(SpringJUnit4ClassRunner.class)
-public class FeignDefinedUrlTest {
+public class BaseFeignTest {
 
   @Configuration
   @EnableFeignClients
-  static class FeignWithoutRibbonConfiguration {
+  @RibbonClients(@RibbonClient(name = "localService", configuration = RibbonConfiguration.class))
+  static class FeignRibbonLocalConfiguration {
 
   }
 
-  @FeignClient(value = "localService", url = "localhost:13598")
+  @Configuration
+  static class RibbonConfiguration {
+
+    @LocalServerPort
+    int port;
+
+    @Bean
+    public ILoadBalancer loadBalancer() {
+      BaseLoadBalancer loadBalancer = new BaseLoadBalancer();
+      loadBalancer.setServersList(Collections.singletonList(new Server("localhost", port)));
+      return loadBalancer;
+    }
+  }
+
+  @FeignClient(value = "localService")
   interface FeignInterface {
 
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
@@ -57,14 +64,14 @@ public class FeignDefinedUrlTest {
   }
 
   @Autowired
-  MockTracer mockTracer;
+  protected MockTracer mockTracer;
 
   @Autowired
   protected FeignInterface feignInterface;
 
-  @Test
-  public void testTracedRequestDefinedUrl() throws InterruptedException {
-    feignInterface.hello();
-    verify(mockTracer);
+  @Before
+  public void before() {
+    mockTracer.reset();
   }
+
 }

@@ -13,13 +13,13 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
+import static io.opentracing.contrib.spring.cloud.feign.TestUtils.verify;
 
 import feign.Client;
 import feign.Feign;
 import feign.RequestLine;
+import io.opentracing.contrib.spring.cloud.feign.BaseFeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.contrib.spring.cloud.feign.FeignManualTest.ManualFeignConfiguration;
-import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.mock.MockTracer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
-        ManualFeignConfiguration.class, FeignRibbonLocalConfiguration.class},
+        ManualFeignConfiguration.class, FeignRibbonLocalConfiguration.class,
+    FeignSpanDecoratorConfiguration.class},
     properties = {"opentracing.spring.web.skipPattern=/notTraced"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignManualTest {

@@ -13,7 +13,9 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
+import feign.opentracing.FeignSpanDecorator;
 import io.opentracing.Tracer;
+import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -26,16 +28,19 @@ public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
   private Tracer tracer;
   private BeanFactory beanFactory;
+  private List<FeignSpanDecorator> spanDecorators;
 
-  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory) {
+  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory,
+      List<FeignSpanDecorator> spanDecorators) {
     this.tracer = tracer;
     this.beanFactory = beanFactory;
+    this.spanDecorators = spanDecorators;
   }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
     if (bean instanceof FeignContext && !(bean instanceof TraceFeignContext)) {
-      return new TraceFeignContext(tracer, (FeignContext) bean, beanFactory);
+      return new TraceFeignContext(tracer, (FeignContext) bean, beanFactory, spanDecorators);
     }
     return bean;
   }

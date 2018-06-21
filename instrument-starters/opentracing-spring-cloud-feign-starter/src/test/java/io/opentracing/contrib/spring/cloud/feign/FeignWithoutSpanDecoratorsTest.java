@@ -13,29 +13,44 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import static io.opentracing.contrib.spring.cloud.feign.TestUtils.verify;
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import io.opentracing.contrib.spring.cloud.feign.BaseFeignTest.FeignRibbonLocalConfiguration;
+import io.opentracing.contrib.spring.cloud.feign.FeignSpanDecoratorConfiguration.AnotherFeignSpanDecorator;
+import io.opentracing.contrib.spring.cloud.feign.FeignSpanDecoratorConfiguration.MyFeignSpanDecorator;
+import io.opentracing.mock.MockSpan;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.tag.Tags;
+import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * @author Pavol Loffay
- */
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
-        FeignRibbonLocalConfiguration.class, FeignSpanDecoratorConfiguration.class},
+        FeignRibbonLocalConfiguration.class},
     properties = {"opentracing.spring.web.skipPattern=/notTraced"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FeignTest extends BaseFeignTest {
+public class FeignWithoutSpanDecoratorsTest extends BaseFeignTest {
 
   @Test
   public void testTracedRequest() {
     feignInterface.hello();
-    verify(mockTracer);
+    verifyMockTracer(mockTracer);
   }
 
+  private void verifyMockTracer(MockTracer mockTracer) {
+    await().until(() -> mockTracer.finishedSpans().size() == 1);
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(1, mockSpans.size());
+    Map<String, Object> tags = mockSpans.get(0).tags();
+    assertEquals(Tags.SPAN_KIND_CLIENT, tags.get(Tags.SPAN_KIND.getKey()));
+    assertNull(tags.get(MyFeignSpanDecorator.TAG_NAME));
+    assertNull(tags.get(AnotherFeignSpanDecorator.TAG_NAME));
+  }
 }
