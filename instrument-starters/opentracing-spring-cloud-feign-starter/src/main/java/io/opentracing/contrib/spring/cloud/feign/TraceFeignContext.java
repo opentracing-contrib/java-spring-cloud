@@ -14,9 +14,11 @@
 package io.opentracing.contrib.spring.cloud.feign;
 
 import feign.Client;
+import feign.opentracing.FeignSpanDecorator;
 import feign.opentracing.TracingClient;
 import io.opentracing.Tracer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.netflix.feign.FeignContext;
@@ -32,11 +34,14 @@ public class TraceFeignContext extends FeignContext {
   private FeignContext delegate;
   private Tracer tracer;
   private BeanFactory beanFactory;
+  private List<FeignSpanDecorator> spanDecorators;
 
-  TraceFeignContext(Tracer tracer, FeignContext delegate, BeanFactory beanFactory) {
+  TraceFeignContext(Tracer tracer, FeignContext delegate, BeanFactory beanFactory,
+      List<FeignSpanDecorator> spanDecorators) {
     this.delegate = delegate;
     this.tracer = tracer;
     this.beanFactory = beanFactory;
+    this.spanDecorators = spanDecorators;
   }
 
   @Override
@@ -67,14 +72,20 @@ public class TraceFeignContext extends FeignContext {
     if (bean instanceof Client) {
       if (bean instanceof LoadBalancerFeignClient && !(bean instanceof LoadBalancedTracedFeign)) {
         return new LoadBalancedTracedFeign(
-            new TracingClient(((LoadBalancerFeignClient) bean).getDelegate(), tracer),
+            buildTracingClient(((LoadBalancerFeignClient) bean).getDelegate(), tracer),
             beanFactory.getBean(CachingSpringLoadBalancerFactory.class),
             beanFactory.getBean(SpringClientFactory.class));
       }
-      return new TracingClient((Client) bean, tracer);
+      return buildTracingClient((Client) bean, tracer);
     }
 
     return bean;
+  }
+
+  private TracingClient buildTracingClient(Client delegate, Tracer tracer) {
+    return new TracingClientBuilder(delegate, tracer)
+        .withFeignSpanDecorators(spanDecorators)
+        .build();
   }
 
   /**
