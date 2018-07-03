@@ -45,10 +45,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Pavol Loffay
  */
 @SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {MockTracingConfiguration.class, TestController.class,
-                FeignRibbonLocalConfiguration.class},
-        properties = {"opentracing.spring.web.skipPattern=/notTraced"})
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {MockTracingConfiguration.class, TestController.class,
+        FeignRibbonLocalConfiguration.class},
+    properties = {"opentracing.spring.web.skipPattern=/notTraced"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {
 

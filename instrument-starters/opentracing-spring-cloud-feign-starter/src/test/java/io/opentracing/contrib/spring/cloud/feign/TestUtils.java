@@ -24,6 +24,9 @@ import io.opentracing.tag.Tags;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Emerson Oliveira
+ */
 public class TestUtils {
 
   static void verifyWithSpanDecorators(MockTracer mockTracer) {
