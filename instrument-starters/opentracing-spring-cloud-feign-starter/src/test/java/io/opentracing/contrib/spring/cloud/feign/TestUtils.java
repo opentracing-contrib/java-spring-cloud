@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class TestUtils {
 
-  static void verify(MockTracer mockTracer) {
+  static void verifyWithSpanDecorators(MockTracer mockTracer) {
     await().until(() -> mockTracer.finishedSpans().size() == 1);
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(1, mockSpans.size());

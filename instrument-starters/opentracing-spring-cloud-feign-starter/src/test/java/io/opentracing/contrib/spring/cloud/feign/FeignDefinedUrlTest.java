@@ -13,7 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import static io.opentracing.contrib.spring.cloud.feign.TestUtils.verify;
+import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 
 import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
 import io.opentracing.mock.MockTracer;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @SpringBootTest(
     webEnvironment = WebEnvironment.DEFINED_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
-        FeignWithoutRibbonConfiguration.class, FeignSpanDecoratorConfiguration.class})
+        FeignWithoutRibbonConfiguration.class})
 @TestPropertySource(properties = {
     "opentracing.spring.web.skipPattern=/notTraced",
     "server.port=13598"})

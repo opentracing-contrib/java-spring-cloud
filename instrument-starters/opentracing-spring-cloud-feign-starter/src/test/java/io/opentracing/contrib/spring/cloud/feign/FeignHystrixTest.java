@@ -13,7 +13,6 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
-import static io.opentracing.contrib.spring.cloud.feign.TestUtils.verify;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
@@ -40,7 +39,7 @@ public class FeignHystrixTest extends FeignTest {
   }
 
   @Test
-  public void testParentSpanRequest() {
+  public void testParentSpanRequest() throws InterruptedException {
     // create parent span to verify that Hystrix is instrumented and it propagates spans to callables
     MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
     try (Scope scope = mockTracer.scopeManager().activate(parentSpan, true)) {
