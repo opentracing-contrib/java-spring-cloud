@@ -95,7 +95,7 @@ public class MongoTracingTest {
   @Test
   public void spanJoinsActiveSpan() {
     try (Scope ignored = tracer.buildSpan("parent").startActive(true)) {
-      assertTrue(this.mongoTemplate.executeCommand("{ buildInfo: 1 }").ok());
+      assertEquals("Ok", this.mongoTemplate.executeCommand("{ buildInfo: 1 }").getDouble("ok"), 1.0, 0);
       assertEquals(1, tracer.finishedSpans().size());
     }
 
