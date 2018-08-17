@@ -19,8 +19,7 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
 * RabbitMQ
 
-This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
- and `Edgware.RELEASE`
+This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) only from `Finchley.RELEASE`
 
 ## Comparison to `spring-cloud-sleuth`
 This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth), 

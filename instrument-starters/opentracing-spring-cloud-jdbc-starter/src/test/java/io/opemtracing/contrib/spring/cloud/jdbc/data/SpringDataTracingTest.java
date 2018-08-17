@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +58,7 @@ public class SpringDataTracingTest {
     assertNotNull(entity.getId());
 
     List<MockSpan> spans = mockTracer.finishedSpans();
-    assertEquals(1, spans.size());
+    assertEquals(2, spans.size());
     assertEquals("java-jdbc", spans.get(0).tags().get(Tags.COMPONENT.getKey()));
   }
 

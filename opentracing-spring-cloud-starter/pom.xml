@@ -153,12 +153,12 @@
       <dependencies>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-feign</artifactId>
+          <artifactId>spring-cloud-starter-openfeign</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-netflix-core</artifactId>
+          <artifactId>spring-cloud-openfeign-core</artifactId>
           <scope>test</scope>
         </dependency>
 

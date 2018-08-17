@@ -18,7 +18,6 @@ import com.mongodb.MongoClientOptions;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.mongo.TracingMongoClient;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
-import java.net.UnknownHostException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -51,7 +50,7 @@ public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
   }
 
   @Override
-  public MongoClient mongo() throws UnknownHostException {
+  public MongoClient mongo() {
     MongoClient mongo = super.mongo();
     return new TracingMongoClient(tracer, mongo.getAllAddress(), mongo.getCredentialsList(), mongo.getMongoClientOptions());
   }

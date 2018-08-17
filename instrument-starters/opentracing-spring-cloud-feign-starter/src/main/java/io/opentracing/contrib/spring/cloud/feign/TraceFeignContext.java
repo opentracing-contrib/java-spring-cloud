@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.netflix.feign.FeignContext;
-import org.springframework.cloud.netflix.feign.ribbon.CachingSpringLoadBalancerFactory;
-import org.springframework.cloud.netflix.feign.ribbon.LoadBalancerFeignClient;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
+import org.springframework.cloud.openfeign.FeignContext;
+import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
+import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 
 /**
  * @author Pavol Loffay
@@ -89,7 +89,7 @@ public class TraceFeignContext extends FeignContext {
   }
 
   /**
-   * Needed for cast in {@link org.springframework.cloud.netflix.feign.FeignClientFactoryBean}
+   * Needed for cast in {@link org.springframework.cloud.openfeign.FeignClientFactoryBean}
    */
   static class LoadBalancedTracedFeign extends LoadBalancerFeignClient {
 
