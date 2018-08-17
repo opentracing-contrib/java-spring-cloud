@@ -53,6 +53,6 @@ public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
   @Override
   public MongoClient mongo() throws UnknownHostException {
     MongoClient mongo = super.mongo();
-    return new TracingMongoClient(tracer, mongo.getAllAddress(), mongo.getMongoClientOptions());
+    return new TracingMongoClient(tracer, mongo.getAllAddress(), mongo.getCredentialsList(), mongo.getMongoClientOptions());
   }
 }
