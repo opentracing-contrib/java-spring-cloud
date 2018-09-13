@@ -15,6 +15,10 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 
 import io.opentracing.contrib.jdbc.TracingConnection;
 import java.sql.Connection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,6 +32,8 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 public class JdbcAspect {
+
+  private Set<String> ignoredStatements;
 
   /**
    * Intercepts calls to {@link DataSource#getConnection()} (and related), wrapping the outcome in a
@@ -50,6 +56,24 @@ public class JdbcAspect {
       throw new IllegalArgumentException(
           "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
     }
-    return new TracingConnection(conn, dbType, user, withActiveSpanOnly);
+    if (this.ignoredStatements == null) {
+      this.ignoredStatements = getIgnoredStatements(url);
+    }
+    return new TracingConnection(conn, dbType, user, withActiveSpanOnly, ignoredStatements);
+  }
+
+  private Set<String> getIgnoredStatements(String url) {
+    String queryString;
+    String[] params;
+    try {
+      queryString = url.split("\\?")[1];
+      params = queryString.split("&");
+      return Arrays.stream(params)
+                   .filter(param -> param.trim().startsWith("ignoreForTracing"))
+                   .map(param -> param.split("=")[1])
+                   .collect(Collectors.toSet());
+    } catch (Throwable t) {
+      return Collections.emptySet();
+    }
   }
 }

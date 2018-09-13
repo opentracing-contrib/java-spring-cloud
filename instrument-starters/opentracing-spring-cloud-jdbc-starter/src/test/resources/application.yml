@@ -1,0 +1,5 @@
+spring:
+  jpa:
+    database: h2
+  datasource:
+    url: jdbc:h2:mem:testdb?ignoreForTracing=select 'ignored 1'&ignoreForTracing=select 'ignored 2'
