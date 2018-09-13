@@ -81,6 +81,16 @@ public class JdbcTracingTest {
   }
 
   /**
+   * Make sure that specified statements are getting ignored from tracing.
+   */
+  @Test
+  public void ignoredStatementsAreNotTraced() throws SQLException {
+    PreparedStatement pstmt = dataSource.getConnection().prepareStatement("select 'ignored 1'");
+    assertTrue(pstmt.execute());
+    assertEquals(0, tracer.finishedSpans().size());
+  }
+
+  /**
    * Make sure that a span is created when an active span exists joins the active
    */
   @Test
