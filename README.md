@@ -15,6 +15,7 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * Mongo
 * Zuul
 * RxJava
+* Redis
 * Standard logging - logs are added to active span
 * Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
 * RabbitMQ

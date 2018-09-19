@@ -51,6 +51,11 @@ public class NoDepsTest {
   }
 
   @Test(expected = ClassNotFoundException.class)
+  public void testNoRedisJavaHooks() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("org.springframework.data.redis.core.RedisTemplate");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
   public void testNoWebsocketMessageBroker() throws ClassNotFoundException {
     this.getClass().getClassLoader().loadClass(
         "org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer");
