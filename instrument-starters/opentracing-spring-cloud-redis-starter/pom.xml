@@ -27,7 +27,6 @@
 
   <properties>
     <main.basedir>${project.basedir}/../..</main.basedir>
-    <opentracing.redis.spring.version>0.0.7</opentracing.redis.spring.version>
   </properties>
 
   <dependencies>
@@ -38,7 +37,8 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-redis-spring</artifactId>
-      <version>${opentracing.redis.spring.version}</version>
+      <version>${version.io.opentracing.contrib-opentracing-spring-redis}</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
