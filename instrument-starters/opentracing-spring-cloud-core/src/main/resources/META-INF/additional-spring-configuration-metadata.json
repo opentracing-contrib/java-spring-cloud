@@ -1,0 +1,27 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.async.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable tracing for @Async, Executor and WebAsyncTask/Callable."
+    },
+    {
+      "name": "opentracing.spring.cloud.hystrix.strategy.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Propagation of spans across threads using in Hystrix command tracing.",
+      "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.scheduled.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable @Scheduled tracing.",
+      "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.log.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Add standard logging output to tracing system.",
+      "defaultValue": true
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 [![Build Status][ci-img]][ci] [![Released Version][maven-img]][maven]
 
 # OpenTracing Spring Cloud
-This repository provides OpenTracing instrumentation for Spring Cloud. It can be used with any OpenTracing
+This repository provides OpenTracing instrumentation for Spring Boot and its various extensions. It can be used with any OpenTracing
 compatible implementation.
 
-It contains auto-configurations for Spring Boot which will instrument and trace several Spring Cloud and other integrations:
+It contains auto-configurations which instruments and trace following Spring Boot projects:
 * Spring Web (RestControllers, RestTemplates, WebAsyncTask)
 * @Async, @Scheduled, Executors
 * WebSocket STOMP
@@ -12,13 +12,14 @@ It contains auto-configurations for Spring Boot which will instrument and trace 
 * Hystrix
 * JMS
 * JDBC
+* Mongo
 * Zuul
 * RxJava
 * Standard logging - logs are added to active span
 * Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
+* RabbitMQ
 
-This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Camden.SR7`, `Dalston.SR3`
- and `Edgware.RELEASE`
+This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Finchley` (version `0.2.x`) and `Dalston` and `Edgware`(version `0.1.x` in branch [SB-1.x](https://github.com/opentracing-contrib/java-spring-cloud/tree/SB-1.x))
 
 ## Comparison to `spring-cloud-sleuth`
 This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth), 
@@ -26,7 +27,7 @@ both provide out of the box tracing solution for Spring Boot/Cloud. Some of the 
 package are based on original `sleuth` work.
 
 However there are a couple of differences:
-* OpenTracing support in `sleuth` is limited to one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
+* OpenTracing support in `sleuth` is limited to only one tracer implementation - [brave-opentracing](https://github.com/openzipkin-contrib/brave-opentracing). In other words it's not possible to use arbitrary OpenTracing tracer with `sleuth`.
 * `sleuth` might support different set of instrumentations.
 * Instrumentations in `sleuth` might add different set of tags and logs to represent the same events.
 
@@ -39,6 +40,16 @@ That means that for example a simple Spring Boot REST API application can includ
 of polluting the classpath with Spring Cloud dependencies that are otherwise unneeded   
 
 ## Configuration
+
+The preferred way to use this library is via vendored starters. These starters use 
+instrumentations from this library and expose specific tracer configuration in Spring
+native way:
+
+* [Jaeger](https://github.com/opentracing-contrib/java-spring-jaeger)
+* [Zipkin](https://github.com/opentracing-contrib/java-spring-zipkin)
+
+### Explicitly tracer configuration
+
 Just add the following dependency in your pom.xml:
 ```xml
 <dependency>
@@ -54,20 +65,8 @@ public io.opentracing.Tracer tracer() {
 }
 ```
 
-## Using the Jaeger auto-configuration module
-
-See the [README.md](opentracing-spring-cloud-starter-jaeger/README.md) file
-
-## Using the Zipkin auto-configuration module
-
-See the [README.md](opentracing-spring-cloud-starter-zipkin/README.md) file
-
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)
-
-### Note on tests
-
-A running docker daemon needs to be present on the system before running the tests
 
 ```shell
 ./mvnw clean install

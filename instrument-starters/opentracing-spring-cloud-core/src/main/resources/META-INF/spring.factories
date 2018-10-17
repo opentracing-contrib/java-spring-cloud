@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.opentracing.contrib.spring.cloud.async.CustomAsyncConfigurerAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.async.DefaultAsyncAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.scheduled.ScheduledAutoConfiguration,\
+io.opentracing.contrib.spring.cloud.log.LoggingAutoConfiguration
+
+# Environment Post Processor
+org.springframework.boot.env.EnvironmentPostProcessor=\
+io.opentracing.contrib.spring.cloud.async.TraceEnvironmentPostProcessor

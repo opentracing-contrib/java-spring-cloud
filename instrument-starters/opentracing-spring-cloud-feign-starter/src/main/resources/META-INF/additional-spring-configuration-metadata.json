@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.feign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Feign tracing.",
+      "defaultValue": true
+    }
+  ]
+}

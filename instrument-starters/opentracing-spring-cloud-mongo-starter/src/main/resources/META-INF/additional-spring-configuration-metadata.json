@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.mongo.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Mongo tracing.",
+      "defaultValue": true
+    }
+  ]
+}

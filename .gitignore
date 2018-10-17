@@ -29,7 +29,6 @@ hs_err_pid*
 .settings
 
 .gitkeep
-.editorconfig
 
 # Intellij Idea
 *.iml

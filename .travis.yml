@@ -11,9 +11,6 @@ language: java
 jdk:
   - oraclejdk8
 
-services:
-- docker
-
 cache:
   directories:
   - $HOME/.m2/repository
@@ -33,10 +30,7 @@ install:
 jobs:
   include:
     - stage: test
-      env: [ NAME=dalston ]
-      script: make dalston
-
-    - env: [ NAME=edgware ]
+      env: [ NAME=finchley ]
       script: make default
 
     - env: [ NAME=classpath-no-dependencies ]

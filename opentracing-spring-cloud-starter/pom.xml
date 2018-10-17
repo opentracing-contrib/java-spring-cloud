@@ -19,7 +19,7 @@
   <parent>
     <groupId>io.opentracing.contrib</groupId>
     <artifactId>opentracing-spring-cloud-parent</artifactId>
-    <version>0.1.12-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>opentracing-spring-cloud-starter</artifactId>
@@ -31,7 +31,52 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>opentracing-spring-cloud</artifactId>
+      <artifactId>opentracing-spring-cloud-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-spring-web-starter</artifactId>
+      <version>${version.io.opentracing.contrib-opentracing-spring-web}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-spring-messaging-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-rabbitmq-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-jdbc-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-jms-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-feign-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-hystrix-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-rxjava-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-mongo-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-websocket-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-zuul-starter</artifactId>
     </dependency>
 
     <dependency>
@@ -108,12 +153,12 @@
       <dependencies>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-starter-feign</artifactId>
+          <artifactId>spring-cloud-starter-openfeign</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-netflix-core</artifactId>
+          <artifactId>spring-cloud-openfeign-core</artifactId>
           <scope>test</scope>
         </dependency>
 
