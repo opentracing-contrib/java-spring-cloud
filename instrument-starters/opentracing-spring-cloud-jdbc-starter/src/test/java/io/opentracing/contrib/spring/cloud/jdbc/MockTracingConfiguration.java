@@ -11,25 +11,24 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opemtracing.contrib.spring.cloud.jdbc.data;
+package io.opentracing.contrib.spring.cloud.jdbc;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import io.opentracing.mock.MockTracer;
+import io.opentracing.util.GlobalTracerTestUtil;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Entity
-public class TestEntity {
+/**
+ * @author Pavol Loffay
+ */
+@Configuration
+@EnableAutoConfiguration
+public class MockTracingConfiguration {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
+  @Bean
+  public MockTracer mockTracer() {
+    GlobalTracerTestUtil.resetGlobalTracer();
+    return new MockTracer();
   }
 }

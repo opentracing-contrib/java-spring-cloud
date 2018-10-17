@@ -12,19 +12,15 @@
  * the License.
  */
 
-package io.opentracing.contrib.spring.cloud.jdbc;
+package io.opentracing.contrib.spring.cloud.jdbc.jdbc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import io.opentracing.Scope;
-import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
-import io.opentracing.mock.MockSpan;
+import io.opentracing.contrib.spring.cloud.jdbc.MockTracingConfiguration;
 import io.opentracing.mock.MockTracer;
-import io.opentracing.tag.Tags;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Optional;
 import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,15 +32,15 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Test behaviour when withActiveSpanOnly is set
+ * Test behaviour when ignored statements are configured
  * @author Will Penington
  */
 @SpringBootTest(classes = {MockTracingConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
-        "opentracing.spring.cloud.jdbc.withActiveSpanOnly=true"
+        "opentracing.spring.cloud.jdbc.ignoreStatements=SELECT 1"
 })
-public class JdbcOnlyWithActiveTest {
+public class JdbcIgnoredStatements {
 
   @Autowired
   MockTracer tracer;
@@ -61,34 +57,22 @@ public class JdbcOnlyWithActiveTest {
   }
 
   /**
-   * Make sure that a span is created when an active span exists.
+   * Make sure ignored statements aren't traced
    */
   @Test
-  public void spanJoinsActiveSpan() throws SQLException {
-    try (Scope ignored = tracer.buildSpan("parent").startActive(true)) {
-      assertTrue(dataSource.getConnection().prepareStatement("select 1").execute());
-      assertEquals(1, tracer.finishedSpans().size());
-    }
-
-    assertEquals(2, tracer.finishedSpans().size());
-
-    Optional<MockSpan> jdbcSpan = tracer
-            .finishedSpans()
-            .stream()
-            .filter((s) -> "java-jdbc".equals(s.tags().get(Tags.COMPONENT.getKey())))
-            .findFirst();
-
-    assertTrue(jdbcSpan.isPresent());
-  }
-
-  /**
-   * Make sure a new span is not created when there is no active parent span.
-   */
-  @Test
-  public void spanIsCreatedForPreparedStatement() throws SQLException {
-    PreparedStatement pstmt = dataSource.getConnection().prepareStatement("select 1");
+  public void spanIsNotCreatedForIgnoredStatement() throws SQLException {
+    PreparedStatement pstmt = dataSource.getConnection().prepareStatement("SELECT 1");
     assertTrue(pstmt.execute());
     assertEquals(0, tracer.finishedSpans().size());
   }
 
+  /**
+   * Make sure statements that aren't ignored aren't affected
+   */
+  @Test
+  public void spanIsCreatedNonIgnoredStatement() throws SQLException {
+    PreparedStatement pstmt = dataSource.getConnection().prepareStatement("SELECT 2");
+    assertTrue(pstmt.execute());
+    assertEquals(1, tracer.finishedSpans().size());
+  }
 }

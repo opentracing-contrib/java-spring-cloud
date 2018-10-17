@@ -13,12 +13,10 @@
  */
 package io.opentracing.contrib.spring.cloud.jdbc;
 
-import java.util.HashSet;
-import java.util.Set;
 import io.opentracing.contrib.spring.tracer.configuration.TracerRegisterAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,30 +28,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureAfter(TracerRegisterAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.jdbc.enabled", havingValue = "true", matchIfMissing = true)
-@ConfigurationProperties(prefix = "opentracing.spring.cloud.jdbc")
+@EnableConfigurationProperties(JdbcTracingProperties.class)
 public class JdbcAutoConfiguration {
 
-  private boolean withActiveSpanOnly = false;
-  private Set<String> ignoreStatements = new HashSet<>();
-
-  public boolean isWithActiveSpanOnly() {
-    return withActiveSpanOnly;
-  }
-
-  public void setWithActiveSpanOnly(boolean withActiveSpanOnly) {
-    this.withActiveSpanOnly = withActiveSpanOnly;
-  }
-
-  public Set<String> getIgnoreStatements() {
-    return ignoreStatements;
-  }
-
-  public void setIgnoreStatements(Set<String> ignoreStatements) {
-    this.ignoreStatements = ignoreStatements;
-  }
-
   @Bean
-  public JdbcAspect jdbcAspect() {
-    return new JdbcAspect(withActiveSpanOnly, ignoreStatements);
+  public JdbcAspect jdbcAspect(JdbcTracingProperties jdbcTracingProperties) {
+    return new JdbcAspect(jdbcTracingProperties.isWithActiveSpanOnly(),
+        jdbcTracingProperties.getIgnoreStatements());
   }
 }
