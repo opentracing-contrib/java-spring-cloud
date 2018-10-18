@@ -44,7 +44,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestPropertySource(properties = {
         "opentracing.spring.cloud.jdbc.withActiveSpanOnly=true"
 })
-public class JdbcOnlyWithActiveTest {
+public class JdbcWithActiveSpanTest {
 
   @Autowired
   MockTracer tracer;
