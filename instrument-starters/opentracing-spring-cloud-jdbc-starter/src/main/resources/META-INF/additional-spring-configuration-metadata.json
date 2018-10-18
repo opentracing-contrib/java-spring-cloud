@@ -5,18 +5,6 @@
       "type": "java.lang.Boolean",
       "description": "Enable JDBC tracing.",
       "defaultValue": true
-    },
-    {
-      "name": "opentracing.spring.cloud.jdbc.withActiveSpanOnly",
-      "type": "java.lang.Boolean",
-      "description": "Only trace JDBC calls if they are part of an active Span.",
-      "defaultValue": false
-    },
-    {
-      "name": "opentracing.spring.cloud.jdbc.ignoreStatements",
-      "type": "java.util.Set<java.lang.String>",
-      "description": "Set of JDBC statements to not trace.",
-      "defaultValue": null
     }
   ]
 }
