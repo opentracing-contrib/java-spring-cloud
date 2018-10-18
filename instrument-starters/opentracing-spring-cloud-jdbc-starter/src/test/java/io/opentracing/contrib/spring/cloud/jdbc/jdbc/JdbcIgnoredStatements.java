@@ -40,7 +40,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @TestPropertySource(properties = {
         "opentracing.spring.cloud.jdbc.ignoreStatements=SELECT 1"
 })
-public class JdbcIgnoreStatementsTest {
+public class JdbcIgnoredStatements {
 
   @Autowired
   MockTracer tracer;

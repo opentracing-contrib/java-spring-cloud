@@ -21,12 +21,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class JdbcTracingProperties {
 
   /**
-   * Trace JDBC calls only if it's part of an active span.
+   * Enable tracing for {@link java.sql.Connection}
    */
   private boolean withActiveSpanOnly = false;
-  /**
-   * Set of JDBC statement calls to not trace.
-   */
   private Set<String> ignoreStatements = new HashSet<>();
 
   public boolean isWithActiveSpanOnly() {
