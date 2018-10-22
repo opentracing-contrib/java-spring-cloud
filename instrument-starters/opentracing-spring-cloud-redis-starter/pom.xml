@@ -38,7 +38,12 @@
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-redis-spring</artifactId>
       <version>${version.io.opentracing.contrib-opentracing-spring-redis}</version>
-      <optional>true</optional>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
