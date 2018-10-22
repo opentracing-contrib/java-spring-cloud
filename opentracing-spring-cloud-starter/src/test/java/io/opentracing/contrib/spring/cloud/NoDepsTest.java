@@ -56,6 +56,16 @@ public class NoDepsTest {
   }
 
   @Test(expected = ClassNotFoundException.class)
+  public void testNoJedisClient() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("redis.clients.jedis.Client");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoLettuceClient() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("io.lettuce.core.RedisClient");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
   public void testNoWebsocketMessageBroker() throws ClassNotFoundException {
     this.getClass().getClassLoader().loadClass(
         "org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer");
