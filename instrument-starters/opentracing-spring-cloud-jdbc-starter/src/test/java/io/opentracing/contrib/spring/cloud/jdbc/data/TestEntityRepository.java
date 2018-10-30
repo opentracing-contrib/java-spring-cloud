@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opemtracing.contrib.spring.cloud.jdbc.data;
+package io.opentracing.contrib.spring.cloud.jdbc.data;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
