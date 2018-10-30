@@ -11,12 +11,12 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opemtracing.contrib.spring.cloud.jdbc.data;
+package io.opentracing.contrib.spring.cloud.jdbc.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import io.opemtracing.contrib.spring.cloud.jdbc.MockTracingConfiguration;
+import io.opentracing.contrib.spring.cloud.jdbc.MockTracingConfiguration;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;

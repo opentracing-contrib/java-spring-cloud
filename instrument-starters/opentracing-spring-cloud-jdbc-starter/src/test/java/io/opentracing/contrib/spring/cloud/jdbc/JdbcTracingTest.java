@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opemtracing.contrib.spring.cloud.jdbc;
+package io.opentracing.contrib.spring.cloud.jdbc;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;

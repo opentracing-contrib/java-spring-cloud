@@ -16,6 +16,7 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 import io.opentracing.contrib.spring.tracer.configuration.TracerRegisterAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,10 +28,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureAfter(TracerRegisterAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.jdbc.enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(JdbcTracingProperties.class)
 public class JdbcAutoConfiguration {
 
   @Bean
-  public JdbcAspect jdbcAspect() {
-    return new JdbcAspect();
+  public JdbcAspect jdbcAspect(JdbcTracingProperties jdbcTracingProperties) {
+    return new JdbcAspect(jdbcTracingProperties.isWithActiveSpanOnly(),
+        jdbcTracingProperties.getIgnoreStatements());
   }
 }
