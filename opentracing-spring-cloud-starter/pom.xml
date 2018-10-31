@@ -68,6 +68,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-redis-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>opentracing-spring-cloud-mongo-starter</artifactId>
     </dependency>
     <dependency>
