@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2017-2018 The OpenTracing Authors
+    Copyright 2017-2019 The OpenTracing Authors
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
     in compliance with the License. You may obtain a copy of the License at
@@ -31,6 +31,7 @@
     <module>instrument-starters/opentracing-spring-cloud-zuul-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-hystrix-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-rxjava-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-redis-starter</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -75,7 +76,8 @@
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.8</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-opentracing-spring-messaging>0.0.5</version.io.opentracing.contrib-opentracing-spring-messaging>
     <version.io.opentracing.contrib-opentracing-spring-rabbitmq>0.1.0</version.io.opentracing.contrib-opentracing-spring-rabbitmq>
-    <version.io.opentracing.contrib-java-jdbc>0.0.7</version.io.opentracing.contrib-java-jdbc>
+    <version.io.opentracing.contrib-java-jdbc>0.0.9</version.io.opentracing.contrib-java-jdbc>
+    <version.io.opentracing.contrib-opentracing-spring-redis>0.0.10</version.io.opentracing.contrib-opentracing-spring-redis>
     <version.io.opentracing.contrib-java-concurrent>0.1.0</version.io.opentracing.contrib-java-concurrent>
     <version.io.opentracing.contrib-opentracing-rxjava-1>0.0.7</version.io.opentracing.contrib-opentracing-rxjava-1>
     <version.io.opentracing.contrib-opentracing-spring-mongo>0.0.4</version.io.opentracing.contrib-opentracing-spring-mongo>
@@ -140,6 +142,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>opentracing-spring-cloud-rxjava-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-redis-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

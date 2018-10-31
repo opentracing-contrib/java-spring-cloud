@@ -33,3 +33,6 @@ hs_err_pid*
 # Intellij Idea
 *.iml
 .idea/
+
+# VS Code
+.vscode/
