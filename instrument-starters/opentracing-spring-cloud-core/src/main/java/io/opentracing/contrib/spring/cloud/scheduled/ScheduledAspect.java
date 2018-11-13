@@ -17,17 +17,22 @@ import io.opentracing.Scope;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import io.opentracing.contrib.spring.cloud.SpanUtils;
+import io.opentracing.contrib.spring.cloud.aop.BaseTracingAspect;
+import io.opentracing.contrib.spring.cloud.aop.MethodInterceptorSpanDecorator;
+import io.opentracing.contrib.spring.cloud.aop.Traced;
 import io.opentracing.tag.Tags;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * @author Pavol Loffay
  */
 @Aspect
-public class ScheduledAspect {
+public class ScheduledAspect extends BaseTracingAspect {
 
   static final String COMPONENT_NAME = "scheduled";
 
@@ -35,29 +40,23 @@ public class ScheduledAspect {
   private Pattern skipPattern;
 
   public ScheduledAspect(Tracer tracer, ScheduledTracingProperties scheduledTracingProperties) {
+    super(tracer, null, Scheduled.class);
+    this.tracer = tracer;
+    this.skipPattern = Pattern.compile(scheduledTracingProperties.getSkipPattern());
+  }
+
+  public ScheduledAspect(Tracer tracer, List<MethodInterceptorSpanDecorator> decorators, ScheduledTracingProperties scheduledTracingProperties) {
+    super(tracer, decorators, Scheduled.class);
     this.tracer = tracer;
     this.skipPattern = Pattern.compile(scheduledTracingProperties.getSkipPattern());
   }
 
   @Around("execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))")
-  public Object traceBackgroundThread(final ProceedingJoinPoint pjp) throws Throwable {
+  public Object trace(final ProceedingJoinPoint pjp) throws Throwable {
     if (skipPattern.matcher(pjp.getTarget().getClass().getName()).matches()) {
       return pjp.proceed();
     }
 
-    // operation name is method name
-    Scope scope = tracer.buildSpan(pjp.getSignature().getName())
-        .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
-        .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
-        .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-        .startActive(true);
-    try {
-      return pjp.proceed();
-    } catch (Exception ex) {
-      SpanUtils.captureException(scope.span(), ex);
-      throw ex;
-    } finally {
-      scope.close();
-    }
+    return super.internalTrace(pjp);
   }
 }

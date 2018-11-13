@@ -11,52 +11,59 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.scheduled;
+package io.opentracing.contrib.spring.cloud.traced;
 
 import io.opentracing.Tracer;
-
 import io.opentracing.contrib.spring.cloud.aop.MethodInterceptorSpanDecorator;
+import io.opentracing.contrib.spring.cloud.aop.MethodInterceptorSpanDecoratorAutoconfiguration;
+import io.opentracing.contrib.spring.cloud.traced.TracedAspect;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import java.util.ArrayList;
 import java.util.List;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.CollectionUtils;
 
-/**
- * @author Pavol Loffay
- */
 @Configuration
 @ConditionalOnBean(Tracer.class)
-@AutoConfigureAfter(TracerAutoConfiguration.class)
-@ConditionalOnProperty(name = "opentracing.spring.cloud.scheduled.enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties(ScheduledTracingProperties.class)
-public class ScheduledAutoConfiguration {
+@AutoConfigureAfter({TracerAutoConfiguration.class,
+    MethodInterceptorSpanDecoratorAutoconfiguration.class})
+@ConditionalOnProperty(name = "tm.opentracing.aop.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnWebApplication
+@ConditionalOnClass({ProceedingJoinPoint.class})
+public class AopTracedAutoConfiguration {
 
   private final ObjectProvider<List<MethodInterceptorSpanDecorator>> methodInterceptorSpanDecorators;
 
-  public ScheduledAutoConfiguration(ObjectProvider<List<MethodInterceptorSpanDecorator>> methodInterceptorSpanDecorators) {
+  public AopTracedAutoConfiguration(
+      ObjectProvider<List<MethodInterceptorSpanDecorator>> methodInterceptorSpanDecorators) {
     this.methodInterceptorSpanDecorators = methodInterceptorSpanDecorators;
   }
 
   @Bean
-  public ScheduledAspect scheduledAspect(Tracer tracer, ScheduledTracingProperties scheduledTracingProperties) {
+  @ConditionalOnMissingBean
+  public TracedAspect tracingMethodAspect(Tracer tracer) {
     List<MethodInterceptorSpanDecorator> spanDecorators = new ArrayList<>();
     spanDecorators.add(new MethodInterceptorSpanDecorator.StandardTags());
 
-    List<MethodInterceptorSpanDecorator> providedDecorators = this.methodInterceptorSpanDecorators.getIfAvailable();
-    if (!CollectionUtils.isEmpty(providedDecorators)) {
-      providedDecorators = new ArrayList<>(providedDecorators);
-      AnnotationAwareOrderComparator.sort(providedDecorators);
-      spanDecorators.addAll(providedDecorators);
+    List<MethodInterceptorSpanDecorator> decorators = this.methodInterceptorSpanDecorators
+        .getIfAvailable();
+    if (!CollectionUtils.isEmpty(decorators)) {
+      decorators = new ArrayList<>(decorators);
+      AnnotationAwareOrderComparator.sort(decorators);
+      spanDecorators.addAll(decorators);
     }
 
-    return new ScheduledAspect(tracer, spanDecorators, scheduledTracingProperties);
+    return new TracedAspect(tracer, spanDecorators);
   }
+
 }

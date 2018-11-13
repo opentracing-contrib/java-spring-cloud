@@ -11,25 +11,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.scheduled;
+package io.opentracing.contrib.spring.cloud.aop;
 
 import io.opentracing.contrib.spring.web.starter.properties.MDCProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * @author Pavol Loffay
- */
-@ConfigurationProperties("opentracing.spring.cloud.scheduled")
-public class ScheduledTracingProperties {
+@ConfigurationProperties("opentracing.spring.cloud.aop")
+public class AopTracingProperties {
 
   /**
    * Enable tracing for {@link org.springframework.scheduling.annotation.Scheduled}
    */
   private boolean enabled = true;
-  /**
-   * Regex of fully qualified class name annotated with {@link org.springframework.scheduling.annotation.Scheduled}
-   */
-  private String skipPattern = "";
+  private MDCProperties mdc = new MDCProperties();
 
   public boolean isEnabled() {
     return enabled;
@@ -39,11 +33,11 @@ public class ScheduledTracingProperties {
     this.enabled = enabled;
   }
 
-  public String getSkipPattern() {
-    return skipPattern;
+  public MDCProperties getMdc() {
+    return mdc;
   }
 
-  public void setSkipPattern(String skipPattern) {
-    this.skipPattern = skipPattern;
+  public void setMdc(MDCProperties mdc) {
+    this.mdc = mdc;
   }
 }
