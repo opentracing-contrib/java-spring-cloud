@@ -102,7 +102,7 @@ public class ScheduledTest {
     assertEquals("scheduledFoo", scheduledSpan.operationName());
     assertEquals(3, scheduledSpan.tags().size());
     assertEquals(0, scheduledSpan.logEntries().size());
-    assertEquals(ScheduledAspect.COMPONENT_NAME, scheduledSpan.tags().get(Tags.COMPONENT.getKey()));
+    assertEquals("scheduled", scheduledSpan.tags().get(Tags.COMPONENT.getKey()));
     assertEquals(ScheduledComponent.class.getSimpleName(),
         scheduledSpan.tags().get(ExtensionTags.CLASS_TAG.getKey()));
     assertEquals("scheduledFoo", scheduledSpan.tags().get(ExtensionTags.METHOD_TAG.getKey()));

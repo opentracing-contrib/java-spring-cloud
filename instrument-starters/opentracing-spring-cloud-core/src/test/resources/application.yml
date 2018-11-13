@@ -1,0 +1,2 @@
+opentracing.spring.cloud.traced:
+  skipPattern: .*IgnoredTracedClass
