@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
@@ -50,9 +51,8 @@ public class TraceAsyncAspect {
         .withTag(Tags.COMPONENT.getKey(), TAG_COMPONENT)
         .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
         .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-        .startActive(false)
-        .span();
-    try {
+        .start();
+    try (Scope scope = this.tracer.scopeManager().activate(span, false)) {
       return pjp.proceed();
     } catch (Exception ex) {
       SpanUtils.captureException(span, ex);
