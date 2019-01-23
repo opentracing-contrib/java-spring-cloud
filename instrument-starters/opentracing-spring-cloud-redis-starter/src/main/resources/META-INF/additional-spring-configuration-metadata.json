@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Redis tracing.",
+      "defaultValue": true
+    }
+  ]
+}

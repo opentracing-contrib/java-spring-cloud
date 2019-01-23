@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -48,6 +48,21 @@ public class NoDepsTest {
   @Test(expected = ClassNotFoundException.class)
   public void testNoRxJavaHooks() throws ClassNotFoundException {
     this.getClass().getClassLoader().loadClass("rx.plugins.RxJavaHooks");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoRedisJavaHooks() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("org.springframework.data.redis.core.RedisTemplate");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoJedisClient() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("redis.clients.jedis.Client");
+  }
+
+  @Test(expected = ClassNotFoundException.class)
+  public void testNoLettuceClient() throws ClassNotFoundException {
+    this.getClass().getClassLoader().loadClass("io.lettuce.core.RedisClient");
   }
 
   @Test(expected = ClassNotFoundException.class)

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -11,29 +11,30 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.opentracing.contrib.spring.cloud.jdbc;
+package io.opentracing.contrib.spring.cloud.redis;
 
 import io.opentracing.contrib.spring.tracer.configuration.TracerRegisterAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 /**
- * Loads the integration with OpenTracing JDBC if it's included in the classpath.
+ * Loads the integration with OpenTracing Redis if it's included in the classpath.
  *
- * @author Juraci Paixão Kröhling
+ * @author Daniel del Castillo
  */
 @Configuration
 @AutoConfigureAfter(TracerRegisterAutoConfiguration.class)
-@ConditionalOnProperty(name = "opentracing.spring.cloud.jdbc.enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties(JdbcTracingProperties.class)
-public class JdbcAutoConfiguration {
+@ConditionalOnBean(RedisConnectionFactory.class)
+@ConditionalOnProperty(name = "opentracing.spring.cloud.redis.enabled", havingValue = "true", matchIfMissing = true)
+public class RedisAutoConfiguration {
 
   @Bean
-  public JdbcAspect jdbcAspect(JdbcTracingProperties jdbcTracingProperties) {
-    return new JdbcAspect(jdbcTracingProperties.isWithActiveSpanOnly(),
-        jdbcTracingProperties.getIgnoreStatements());
+  public RedisAspect openTracingRedisAspect() {
+    return new RedisAspect();
   }
+
 }
