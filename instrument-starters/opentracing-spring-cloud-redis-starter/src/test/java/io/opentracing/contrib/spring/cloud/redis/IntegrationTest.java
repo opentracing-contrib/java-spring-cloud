@@ -89,11 +89,9 @@ public class IntegrationTest {
 
   @Test
   public void commandCreatesNewSpan() {
-    // TODO this fails on SB 1.5
     redisTemplate.opsForValue().set(100L, "Some value here");
     assertEquals(1, tracer.finishedSpans().size());
-    // TODO it's null here, but in SB 2.x it works
-    // assertEquals("SET", tracer.finishedSpans().get(0).tags().get("command"));
+    assertEquals("SET", tracer.finishedSpans().get(0).operationName());
   }
 
   @Test
@@ -101,8 +99,7 @@ public class IntegrationTest {
     try (Scope ignored = tracer.buildSpan("parent").startActive(true)) {
       redisTemplate.opsForList().leftPushAll("test-list", 1, 2, 3);
       assertEquals(1, tracer.finishedSpans().size());
-      // TODO it's null here, but in SB 2.x it works
-      // assertEquals("LPUSH", tracer.finishedSpans().get(0).tags().get("command"));
+      assertEquals("LPUSH", tracer.finishedSpans().get(0).operationName());
     }
 
     assertEquals(2, tracer.finishedSpans().size());
