@@ -13,10 +13,13 @@
  */
 package io.opentracing.contrib.spring.cloud.jdbc;
 
+import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import java.sql.Connection;
 import java.util.Set;
 import javax.sql.DataSource;
+
+import io.opentracing.contrib.jdbc.parser.URLParser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -50,14 +53,7 @@ public class JdbcAspect {
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
     String url = conn.getMetaData().getURL();
-    String user = conn.getMetaData().getUserName();
-    String dbType;
-    try {
-      dbType = url.split(":")[1];
-    } catch (Throwable t) {
-      throw new IllegalArgumentException(
-          "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
-    }
-    return new TracingConnection(conn, dbType, user, withActiveSpanOnly, ignoredStatements);
+    ConnectionInfo connectionInfo = URLParser.parser(url);
+    return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements);
   }
 }
