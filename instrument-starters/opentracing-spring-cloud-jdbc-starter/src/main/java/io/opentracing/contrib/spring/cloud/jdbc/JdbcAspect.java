@@ -15,11 +15,11 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 
 import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
+import io.opentracing.contrib.jdbc.parser.URLParser;
 import java.sql.Connection;
 import java.util.Set;
 import javax.sql.DataSource;
 
-import io.opentracing.contrib.jdbc.parser.URLParser;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
