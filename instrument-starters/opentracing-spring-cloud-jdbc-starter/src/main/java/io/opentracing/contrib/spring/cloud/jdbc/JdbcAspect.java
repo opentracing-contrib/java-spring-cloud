@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,10 +13,13 @@
  */
 package io.opentracing.contrib.spring.cloud.jdbc;
 
+import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
+import io.opentracing.contrib.jdbc.parser.URLParser;
 import java.sql.Connection;
 import java.util.Set;
 import javax.sql.DataSource;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -50,14 +53,7 @@ public class JdbcAspect {
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
     String url = conn.getMetaData().getURL();
-    String user = conn.getMetaData().getUserName();
-    String dbType;
-    try {
-      dbType = url.split(":")[1];
-    } catch (Throwable t) {
-      throw new IllegalArgumentException(
-          "Invalid JDBC URL. Expected to find the database type after the first ':'. URL: " + url);
-    }
-    return new TracingConnection(conn, dbType, user, withActiveSpanOnly, ignoredStatements);
+    ConnectionInfo connectionInfo = URLParser.parser(url);
+    return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements);
   }
 }
