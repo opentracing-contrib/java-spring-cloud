@@ -49,12 +49,12 @@ public abstract class TracedHystrixCommand<R> extends HystrixCommand<R> {
         .withTag(TAG_COMMAND_GROUP, commandGroup.name())
         .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
         .startActive(true);
-    try{
+    try {
       return doRun();
-    }catch (Exception e){
+    } catch (Exception e) {
       onError(e,scope.span());
       throw e;
-    }finally {
+    } finally {
       scope.close();
     }
   }
