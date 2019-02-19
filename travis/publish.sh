@@ -35,8 +35,9 @@ is_pull_request() {
   fi
 }
 
-is_travis_branch_master() {
-  if [ "${TRAVIS_BRANCH}" = master ]; then
+is_travis_branch_master_or_release() {
+  # release to bintray si done from master or release-X.Y maintenance branches
+  if [[ "${TRAVIS_BRANCH}" = master || "${TRAVIS_BRANCH}" =~ ^release-[0-9]+\.[0-9]+$ ]]; then
     echo "[Publishing] Travis branch is master"
     return 0
   else
@@ -86,15 +87,20 @@ release_version() {
 }
 
 safe_checkout_master() {
-  # We need to be on a branch for release:perform to be able to create commits, and we want that branch to be master.
+  # We need to be on a branch for release:perform to be able to create commits,
+  # and we want that branch to be master or release-X.Y, which has been checked before.
   # But we also want to make sure that we build and release exactly the tagged version, so we verify that the remote
-  # master is where our tag is.
-  git checkout -B master
-  git fetch origin master:origin/master
-  commit_local_master="$(git show --pretty='format:%H' master)"
-  commit_remote_master="$(git show --pretty='format:%H' origin/master)"
+  # branch is where our tag is.
+  checkoutBranch=release-`release_version | sed 's/.[[:digit:]]\+$//'`
+  if ! git ls-remote --exit-code --heads origin "$checkoutBranch" ; then
+    checkoutBranch=master
+  fi
+  git checkout -B "${checkoutBranch}"
+  git fetch origin "${checkoutBranch}":origin/"${checkoutBranch}"
+  commit_local_master="$(git show --pretty='format:%H' ${checkoutBranch})"
+  commit_remote_master="$(git show --pretty='format:%H' origin/${checkoutBranch})"
   if [ "$commit_local_master" != "$commit_remote_master" ]; then
-    echo "Master on remote 'origin' has commits since the version under release, aborting"
+    echo "${checkoutBranch} on remote 'origin' has commits since the version under release, aborting"
     exit 1
   fi
 }
@@ -115,7 +121,7 @@ if is_pull_request; then
   true
 # If we are on master, we will deploy the latest snapshot or release version
 #   - If a release commit fails to deploy for a transient reason, delete the broken version from bintray and click rebuild
-elif is_travis_branch_master; then
+elif is_travis_branch_master_or_release; then
   ./mvnw --batch-mode -s ./.settings.xml -Prelease -nsu -DskipTests deploy
 
   # If the deployment succeeded, sync it to Maven Central. Note: this needs to be done once per project, not module, hence -N
