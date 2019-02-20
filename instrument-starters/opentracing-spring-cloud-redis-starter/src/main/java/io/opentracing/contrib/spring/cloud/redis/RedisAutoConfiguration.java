@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -27,7 +27,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * @author Daniel del Castillo
  */
 @Configuration
-@AutoConfigureAfter(TracerRegisterAutoConfiguration.class)
+@AutoConfigureAfter({TracerRegisterAutoConfiguration.class, org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class})
 @ConditionalOnBean(RedisConnectionFactory.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.redis.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisAutoConfiguration {
