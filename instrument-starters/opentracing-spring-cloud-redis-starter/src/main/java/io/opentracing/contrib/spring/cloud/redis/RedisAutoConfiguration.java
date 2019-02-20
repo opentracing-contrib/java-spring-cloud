@@ -27,7 +27,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * @author Daniel del Castillo
  */
 @Configuration
-@AutoConfigureAfter(TracerRegisterAutoConfiguration.class)
+@AutoConfigureAfter({TracerRegisterAutoConfiguration.class, org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class})
 @ConditionalOnBean(RedisConnectionFactory.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.redis.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisAutoConfiguration {
