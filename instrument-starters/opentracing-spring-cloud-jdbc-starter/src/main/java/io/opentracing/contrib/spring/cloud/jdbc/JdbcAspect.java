@@ -53,7 +53,7 @@ public class JdbcAspect {
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
     if (conn instanceof TracingConnection) {
-            return conn;
+        return conn;
     }
     String url = conn.getMetaData().getURL();
     ConnectionInfo connectionInfo = URLParser.parser(url);
