@@ -64,6 +64,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-reactor-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>opentracing-spring-cloud-rxjava-starter</artifactId>
     </dependency>
     <dependency>

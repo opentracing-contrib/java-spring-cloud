@@ -5,7 +5,7 @@ This repository provides OpenTracing instrumentation for Spring Boot and its var
 compatible implementation.
 
 It contains auto-configurations which instruments and trace following Spring Boot projects:
-* Spring Web (RestControllers, RestTemplates, WebAsyncTask)
+* Spring Web (RestControllers, RestTemplates, WebAsyncTask, WebClient, WebFlux)
 * @Async, @Scheduled, Executors
 * WebSocket STOMP
 * Feign, HystrixFeign
@@ -14,6 +14,7 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * JDBC
 * Mongo
 * Zuul
+* Reactor
 * RxJava
 * Redis
 * Standard logging - logs are added to active span
