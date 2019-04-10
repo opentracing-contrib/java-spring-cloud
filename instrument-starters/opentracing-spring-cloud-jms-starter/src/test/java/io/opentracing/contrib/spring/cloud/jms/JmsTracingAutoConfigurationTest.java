@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.jms.spring.TracingJmsTemplate;
 import org.junit.Test;
-import org.springframework.boot.test.util.EnvironmentTestUtils;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +44,7 @@ public class JmsTracingAutoConfigurationTest {
   public void disableJmsTracing() {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
     context.register(TracerConfig.class, JmsAutoConfiguration.class);
-    EnvironmentTestUtils.addEnvironment(context, "opentracing.spring.cloud.jms.enabled:false");
+    TestPropertyValues.of("opentracing.spring.cloud.jms.enabled:false").applyTo(context);
     context.refresh();
     String[] tracingJmsTemplateBeans = context.getBeanNamesForType(TracingJmsTemplate.class);
     assertThat(tracingJmsTemplateBeans.length, is(0));

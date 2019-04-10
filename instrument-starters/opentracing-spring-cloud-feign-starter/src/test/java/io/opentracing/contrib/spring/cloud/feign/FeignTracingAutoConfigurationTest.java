@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 
 import io.opentracing.Tracer;
 import org.junit.Test;
-import org.springframework.boot.test.util.EnvironmentTestUtils;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.openfeign.FeignContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Eddú Meléndez
+ * @author Gilles Robert
  */
 public class FeignTracingAutoConfigurationTest {
 
@@ -45,7 +46,7 @@ public class FeignTracingAutoConfigurationTest {
   public void disableFeignTracing() {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
     context.register(TracerConfig.class, FeignTracingAutoConfiguration.class);
-    EnvironmentTestUtils.addEnvironment(context, "opentracing.spring.cloud.feign.enabled:false");
+    TestPropertyValues.of("opentracing.spring.cloud.feign.enabled:false").applyTo(context);
     context.refresh();
     String[] feignContextBeans = context.getBeanNamesForType(TraceFeignContext.class);
     assertThat(feignContextBeans.length, is(0));
