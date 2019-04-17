@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "opentracing.spring.cloud.reactor.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable Reactor tracing.",
+      "defaultValue": true
+    }
+  ]
+}
