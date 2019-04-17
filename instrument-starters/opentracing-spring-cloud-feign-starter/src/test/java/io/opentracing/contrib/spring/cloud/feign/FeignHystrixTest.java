@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -26,6 +26,7 @@ import org.springframework.test.context.TestPropertySource;
 
 /**
  * @author Pavol Loffay
+ * @author Gilles Robert
  */
 @TestPropertySource(properties = {
     "feign.hystrix.enabled=true",
@@ -39,7 +40,7 @@ public class FeignHystrixTest extends FeignTest {
   }
 
   @Test
-  public void testParentSpanRequest() throws InterruptedException {
+  public void testParentSpanRequest() {
     // create parent span to verify that Hystrix is instrumented and it propagates spans to callables
     MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
     try (Scope scope = mockTracer.scopeManager().activate(parentSpan, true)) {

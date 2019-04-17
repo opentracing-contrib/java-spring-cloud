@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Pavol Loffay
+ * @author Gilles Robert
  */
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -92,7 +93,7 @@ public class FeignTest {
   }
 
   @Test
-  public void testTracedRequest() throws InterruptedException {
+  public void testTracedRequest() {
     feignInterface.hello();
     verify(mockTracer);
   }

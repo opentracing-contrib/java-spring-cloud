@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Emerson Oliveira
+ * @author Gilles Robert
  */
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -35,8 +36,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignManualWithSpanDecoratorsTest extends FeignManualTest {
 
+  @Override
   @Test
-  public void testTracedRequestDefinedUrl() throws InterruptedException {
+  public void testTracedRequestDefinedUrl() {
     feignInterface.hello();
     verifyWithSpanDecorators(mockTracer);
   }

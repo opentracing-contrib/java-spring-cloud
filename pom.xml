@@ -76,7 +76,7 @@
     <version.io.opentracing.contrib-opentracing-spring-web>1.1.1</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.opentracing.contrib-opentracing-spring-jms>0.0.10</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-opentracing-spring-messaging>0.0.5</version.io.opentracing.contrib-opentracing-spring-messaging>
-    <version.io.opentracing.contrib-opentracing-spring-rabbitmq>0.1.1</version.io.opentracing.contrib-opentracing-spring-rabbitmq>
+    <version.io.opentracing.contrib-opentracing-spring-rabbitmq>1.0.1</version.io.opentracing.contrib-opentracing-spring-rabbitmq>
     <version.io.opentracing.contrib-java-jdbc>0.0.12</version.io.opentracing.contrib-java-jdbc>
     <version.io.opentracing.contrib-opentracing-spring-redis>0.0.10</version.io.opentracing.contrib-opentracing-spring-redis>
     <version.io.opentracing.contrib-java-concurrent>0.2.0</version.io.opentracing.contrib-java-concurrent>
@@ -87,8 +87,8 @@
     <version.io.github.openfeign.opentracing>0.1.0</version.io.github.openfeign.opentracing>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
         https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/spring-boot-starter-parent/pom.xml -->
-    <version.org.springframework.boot>2.0.3.RELEASE</version.org.springframework.boot>
-    <version.org.springframework.cloud-spring-cloud-dependencies>Finchley.RELEASE</version.org.springframework.cloud-spring-cloud-dependencies>
+    <version.org.springframework.boot>2.1.4.RELEASE</version.org.springframework.boot>
+    <version.org.springframework.cloud-spring-cloud-dependencies>Greenwich.SR1</version.org.springframework.cloud-spring-cloud-dependencies>
     <version.org.awaitility-awaitility>3.0.0</version.org.awaitility-awaitility>
     <version.de.flapdoodle-embed.mongo>2.0.3</version.de.flapdoodle-embed.mongo>
     <version.cz.jirutka.spring-embedmongo-spring>1.3.1</version.cz.jirutka.spring-embedmongo-spring>
