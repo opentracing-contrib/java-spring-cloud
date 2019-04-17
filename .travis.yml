@@ -30,8 +30,11 @@ install:
 jobs:
   include:
     - stage: test
-      env: [ NAME=finchley ]
+      env: [ NAME=greenwhich ]
       script: make default
+
+    - env: [ NAME=finchley ]
+      script: make finchley
 
     - env: [ NAME=classpath-no-dependencies ]
       script: PROFILES=nodeps make classpath
