@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -17,6 +17,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
 import io.opentracing.mock.MockSpan;
@@ -74,23 +75,25 @@ public class TracedExecutorTest {
   }
 
   @Test
-  public void testThreadPoolTracedExecutor() throws ExecutionException, InterruptedException {
+  public void testThreadPoolTracedExecutor() {
     testTracedExecutor(threadPoolExecutor);
   }
 
   @Test
-  public void testSimpleTracedExecutor() throws ExecutionException, InterruptedException {
+  public void testSimpleTracedExecutor() {
     testTracedExecutor(simpleAsyncExecutor);
   }
 
   private void testTracedExecutor(Executor executor) {
-    try (Scope scope = mockTracer.buildSpan("foo").startActive(true)) {
+    Span span = mockTracer.buildSpan("foo").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
       CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> {
         mockTracer.buildSpan("child").start().finish();
         return "ok";
       }, executor);
       completableFuture.join();
     }
+    span.finish();
     await().until(() -> mockTracer.finishedSpans().size() == 2);
 
     List<MockSpan> mockSpans = mockTracer.finishedSpans();

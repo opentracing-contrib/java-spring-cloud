@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -17,6 +17,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.mongo.TracingMongoClient;
+import io.opentracing.contrib.mongo.common.TracingCommandListener;
+import io.opentracing.contrib.mongo.common.TracingCommandListener.Builder;
+import io.opentracing.contrib.mongo.common.providers.PrefixSpanNameProvider;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,8 @@ public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
   @Override
   public MongoClient mongo() {
     MongoClient mongo = super.mongo();
-    return new TracingMongoClient(tracer, mongo.getAllAddress(), mongo.getCredentialsList(), mongo.getMongoClientOptions());
+    TracingCommandListener commandListener = new Builder(tracer)
+        .build();
+    return new TracingMongoClient(commandListener, mongo.getAllAddress(), mongo.getCredentialsList(), mongo.getMongoClientOptions());
   }
 }

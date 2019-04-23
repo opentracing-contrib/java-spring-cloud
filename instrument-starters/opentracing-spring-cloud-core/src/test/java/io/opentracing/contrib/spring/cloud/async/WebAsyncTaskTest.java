@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -52,7 +52,7 @@ public class WebAsyncTaskTest {
     @RequestMapping("/webAsyncTask")
     public WebAsyncTask<String> webAsyncTask() {
       return new WebAsyncTask<>(() -> {
-        mockTracer.buildSpan("foo").startManual().finish();
+        mockTracer.buildSpan("foo").start().finish();
         return "webAsyncTask";
       });
     }
@@ -60,7 +60,7 @@ public class WebAsyncTaskTest {
     @RequestMapping("/callable")
     public Callable<String> callable() {
       return () -> {
-        mockTracer.buildSpan("foo").startManual().finish();
+        mockTracer.buildSpan("foo").start().finish();
         return "callable";
       };
     }

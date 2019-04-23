@@ -42,8 +42,8 @@ public class FeignHystrixTest extends FeignTest {
   @Test
   public void testParentSpanRequest() {
     // create parent span to verify that Hystrix is instrumented and it propagates spans to callables
-    MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
-    try (Scope scope = mockTracer.scopeManager().activate(parentSpan, true)) {
+    MockSpan parentSpan = mockTracer.buildSpan("parent").start();
+    try (Scope scope = mockTracer.scopeManager().activate(parentSpan)) {
       feignInterface.hello();
       await().until(() -> mockTracer.finishedSpans().size() == 1);
       List<MockSpan> mockSpans = mockTracer.finishedSpans();

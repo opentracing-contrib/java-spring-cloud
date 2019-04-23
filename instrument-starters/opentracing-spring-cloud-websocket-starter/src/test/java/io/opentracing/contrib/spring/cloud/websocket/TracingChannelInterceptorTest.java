@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -38,7 +38,7 @@ public class TracingChannelInterceptorTest {
         .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
         .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
 
-    MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
+    MockSpan parentSpan = mockTracer.buildSpan("parent").start();
     mockTracer.inject(parentSpan.context(), Format.Builtin.TEXT_MAP,
         new TextMapInjectAdapter(messageBuilder));
 
@@ -65,15 +65,15 @@ public class TracingChannelInterceptorTest {
         .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
         .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION);
 
-    MockSpan parentSpan = mockTracer.buildSpan("parent").startManual();
-    Scope parentScope = mockTracer.scopeManager().activate(parentSpan, true);
+    MockSpan parentSpan = mockTracer.buildSpan("parent").start();
 
     TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer,
         Tags.SPAN_KIND_CLIENT);
 
+    Scope parentScope = mockTracer.scopeManager().activate(parentSpan);
     Message<?> processed = interceptor.preSend(messageBuilder.build(), null);
-
     parentScope.close();
+    parentSpan.finish();
 
     // Verify span cached with message is child of the active parentSpan
     assertTrue(processed.getHeaders().containsKey(TracingChannelInterceptor.OPENTRACING_SPAN));

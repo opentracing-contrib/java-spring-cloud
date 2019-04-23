@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@
 package io.opentracing.contrib.spring.cloud.scheduled;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import io.opentracing.contrib.spring.cloud.SpanUtils;
@@ -46,18 +47,20 @@ public class ScheduledAspect {
     }
 
     // operation name is method name
-    Scope scope = tracer.buildSpan(pjp.getSignature().getName())
+    Span span = tracer.buildSpan(pjp.getSignature().getName())
         .withTag(Tags.COMPONENT.getKey(), COMPONENT_NAME)
         .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
         .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
-        .startActive(true);
+        .start();
     try {
-      return pjp.proceed();
+      try (Scope scope = tracer.activateSpan(span)) {
+        return pjp.proceed();
+      }
     } catch (Exception ex) {
-      SpanUtils.captureException(scope.span(), ex);
+      SpanUtils.captureException(span, ex);
       throw ex;
     } finally {
-      scope.close();
+      span.finish();
     }
   }
 }
