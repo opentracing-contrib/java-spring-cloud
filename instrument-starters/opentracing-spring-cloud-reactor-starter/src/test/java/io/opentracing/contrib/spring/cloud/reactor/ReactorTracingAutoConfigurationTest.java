@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 @SpringBootTest(
@@ -60,6 +61,8 @@ public class ReactorTracingAutoConfigurationTest {
   @RestController
   public static class TestController {
 
+    private static final Scheduler EARLY_CACHED_SCHEDULER = Schedulers.parallel();
+
     @Autowired
     private MockTracer mockTracer;
 
@@ -67,14 +70,17 @@ public class ReactorTracingAutoConfigurationTest {
     public Mono<Integer> single() {
       return Flux.range(1, 10)
           .subscribeOn(Schedulers.elastic())
-          .publishOn(Schedulers.parallel())
-          .map(x -> {
+          .publishOn(EARLY_CACHED_SCHEDULER)
+          .flatMap(x -> Mono.fromSupplier(() -> {
             // without enabled Reactor instrumentation active span will be null
             assertNotNull(mockTracer.activeSpan());
             mockTracer.activeSpan().setTag("reactor", "reactor");
             return x * 2;
-          }).take(1).single();
+          }).subscribeOn(EARLY_CACHED_SCHEDULER))
+          .take(1)
+          .single();
     }
+
   }
 
   @Autowired
@@ -89,7 +95,7 @@ public class ReactorTracingAutoConfigurationTest {
   }
 
   @Test
-  public void testControllerTracing() throws Exception {
+  public void testControllerTracing() {
     ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/single", String.class);
 
     // span is created in spring-web
@@ -99,4 +105,5 @@ public class ReactorTracingAutoConfigurationTest {
     assertEquals(1, spans.size());
     assertEquals("reactor", spans.get(0).tags().get("reactor"));
   }
+
 }
