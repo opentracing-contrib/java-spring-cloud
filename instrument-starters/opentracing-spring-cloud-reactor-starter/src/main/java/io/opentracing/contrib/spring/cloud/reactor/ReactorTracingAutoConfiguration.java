@@ -15,6 +15,8 @@
  */
 package io.opentracing.contrib.spring.cloud.reactor;
 
+import static java.util.logging.Level.SEVERE;
+
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedScheduledExecutorService;
 import io.opentracing.contrib.reactor.TracedSubscriber;
@@ -80,7 +82,7 @@ public class ReactorTracingAutoConfiguration {
         try {
           return getHookFunction().apply(publisher);
         } catch (Exception e) {
-          log.severe("Encountered error while retrieving Tracer instance! Fallback to original publisher without hook function..");
+          log.log(SEVERE, "Encountered error while retrieving Tracer instance! Fallback to original publisher without hook function..", e);
           return publisher;
         }
       });
@@ -91,7 +93,7 @@ public class ReactorTracingAutoConfiguration {
             try {
               return new TracedScheduledExecutorService(scheduledExecutorService, tracerProvider.getIfAvailable());
             } catch (Exception e) {
-              log.severe("Encountered error while retrieving Tracer instance! Fallback to original executor without being decorated..");
+              log.log(SEVERE, "Encountered error while retrieving Tracer instance! Fallback to original executor without being decorated..", e);
               return scheduledExecutorService;
             }
           }
