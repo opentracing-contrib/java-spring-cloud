@@ -31,7 +31,6 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -48,8 +47,7 @@ import reactor.core.scheduler.Schedulers;
  * @author Csaba Kos
  */
 @Configuration
-@ConditionalOnBean(Tracer.class)
-@ConditionalOnClass(Hooks.class)
+@ConditionalOnClass({Tracer.class, Hooks.class})
 @ConditionalOnProperty(name = "opentracing.spring.cloud.reactor.enabled", havingValue = "true", matchIfMissing = true)
 public class ReactorTracingAutoConfiguration {
 
