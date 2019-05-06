@@ -72,7 +72,7 @@
     <main.basedir>${project.basedir}</main.basedir>
 
     <version.io.opentracing>0.32.0</version.io.opentracing>
-    <version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>0.1.0</version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>
+    <version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>0.2.0</version.io.opentracing.contrib-opentracing-spring-tracer-configuration-starter>
     <version.io.opentracing.contrib-opentracing-spring-web>2.1.0</version.io.opentracing.contrib-opentracing-spring-web>
     <version.io.opentracing.contrib-opentracing-spring-jms>0.1.0</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-opentracing-spring-messaging>0.1.2</version.io.opentracing.contrib-opentracing-spring-messaging>
