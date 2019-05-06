@@ -21,7 +21,16 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/messaging-channels-section.html)
 * RabbitMQ
 
-This library is compatible with [Spring Cloud](http://projects.spring.io/spring-cloud/) `Finchley` and `Greenwhich` (version `0.2.x`) and `Dalston` and `Edgware` (version `0.1.x` in branch [release-0.1](https://github.com/opentracing-contrib/java-spring-cloud/tree/release-0.1))
+## Compatibility table
+
+The following table shows versions with compatible [Spring Cloud](http://projects.spring.io/spring-cloud/) releases.
+
+opentracing-spring-cloud version | OpenTracing API | Spring Cloud version
+--- | --- | ---
+0.3.x | 0.32.0 | `Finchley`, `Greenwhich`
+0.2.x | 0.31.0 | `Finchley`, `Greenwhich`
+0.1.x | 0.31.0 | `Dalston`, `Edgware`
+
 
 ## Comparison to `spring-cloud-sleuth`
 This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth), 
