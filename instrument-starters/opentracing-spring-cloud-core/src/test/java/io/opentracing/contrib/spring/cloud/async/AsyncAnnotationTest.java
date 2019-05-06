@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.contrib.spring.cloud.ExtensionTags;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.TestUtils;
@@ -60,8 +61,11 @@ public class AsyncAnnotationTest {
 
     @Async
     public Future<String> fooAsync() {
-      try (Scope fooScope = tracer.buildSpan("fooInner").startActive(true)) {
+      MockSpan innerSpan = tracer.buildSpan("fooInner").start();
+      try (Scope fooScope = tracer.activateSpan(innerSpan)) {
         return new AsyncResult<>("whatever");
+      } finally {
+        innerSpan.finish();
       }
 
     }
@@ -85,11 +89,13 @@ public class AsyncAnnotationTest {
 
   @Test
   public void testAsyncTraceAndSpans() throws Exception {
-    try (Scope scope = mockTracer.buildSpan("outer")
-        .startActive(true)) {
+    Span span = mockTracer.buildSpan("outer").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
       Future<String> fut = asyncService.fooAsync();
       await().until(() -> fut.isDone());
       assertThat(fut.get()).isNotNull();
+    } finally {
+      span.finish();
     }
     await().until(() -> mockTracer.finishedSpans().size() == 3);
 

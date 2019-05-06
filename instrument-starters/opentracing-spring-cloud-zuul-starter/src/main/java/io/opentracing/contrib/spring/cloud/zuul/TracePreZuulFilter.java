@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,12 +13,14 @@
  */
 package io.opentracing.contrib.spring.cloud.zuul;
 
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
+
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import io.opentracing.propagation.TextMapInjectAdapter;
+import io.opentracing.propagation.TextMapAdapter;
 import io.opentracing.tag.Tags;
 
 class TracePreZuulFilter extends ZuulFilter {
@@ -34,8 +36,7 @@ class TracePreZuulFilter extends ZuulFilter {
 
   @Override
   public String filterType() {
-    // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE
-    return "pre";
+    return PRE_TYPE;
   }
 
   @Override
@@ -58,7 +59,7 @@ class TracePreZuulFilter extends ZuulFilter {
         .start();
 
     tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS,
-        new TextMapInjectAdapter(ctx.getZuulRequestHeaders()));
+        new TextMapAdapter(ctx.getZuulRequestHeaders()));
 
     ctx.set(CONTEXT_SPAN_KEY, span);
 

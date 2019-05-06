@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.websocket;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
@@ -59,6 +60,11 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
    * beforeHandle phase.
    */
   protected static final String OPENTRACING_SPAN = "opentracing.span";
+
+  /**
+   * Header name used to carry the current active scope.
+   */
+  protected static final String OPENTRACING_SCOPE = "opentracing.scope";
 
   private Tracer tracer;
   private String spanKind;
@@ -112,7 +118,9 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
         handler instanceof SubProtocolWebSocketHandler) &&
         SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-      tracer.scopeManager().active().close();
+      message.getHeaders().get(OPENTRACING_SCOPE, Scope.class).close();
+      message.getHeaders().get(OPENTRACING_SPAN, Span.class).finish();
+      message.getHeaders().remove(OPENTRACING_SCOPE);
     }
   }
 
@@ -122,7 +130,11 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
     if ((handler instanceof WebSocketAnnotationMethodMessageHandler ||
         handler instanceof SubProtocolWebSocketHandler) &&
         SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
-      tracer.scopeManager().activate(message.getHeaders().get(OPENTRACING_SPAN, Span.class), true);
+      Span span = message.getHeaders().get(OPENTRACING_SPAN, Span.class);
+      Scope scope = tracer.scopeManager().activate(span);
+      message = MessageBuilder.fromMessage(message)
+          .setHeader(OPENTRACING_SCOPE, scope)
+          .build();
     }
     return message;
   }

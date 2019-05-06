@@ -43,19 +43,21 @@ public abstract class TracedHystrixCommand<R> extends HystrixCommand<R> {
   @Override
   protected R run() throws Exception {
     String commandKeyName = getCommandKey().name();
-    Scope scope = this.tracer.buildSpan(commandKeyName)
+    Span span = this.tracer.buildSpan(commandKeyName)
         .withTag(Tags.COMPONENT.getKey(), TAG_HYSTRIX_COMPONENT)
         .withTag(TAG_COMMAND_KEY, commandKeyName)
         .withTag(TAG_COMMAND_GROUP, commandGroup.name())
         .withTag(TAG_THREAD_POOL_KEY, threadPoolKey.name())
-        .startActive(true);
+        .start();
     try {
-      return doRun();
+      try (Scope scope = tracer.activateSpan(span)) {
+        return doRun();
+      }
     } catch (Exception e) {
-      onError(e,scope.span());
+      onError(e, span);
       throw e;
     } finally {
-      scope.close();
+      span.finish();
     }
   }
 

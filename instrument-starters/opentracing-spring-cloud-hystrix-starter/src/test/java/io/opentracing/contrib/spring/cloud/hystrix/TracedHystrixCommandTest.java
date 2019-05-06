@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -99,11 +99,12 @@ public class TracedHystrixCommandTest {
 
   @Test
   public void testWithoutCircuitBreaker() throws Exception {
-
-    try (Scope scope = mockTracer.buildSpan("test_without_circuit_breaker")
-        .startActive(true)) {
+    MockSpan span = mockTracer.buildSpan("test_without_circuit_breaker").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
       String response = greetingService.sayHello();
       assertThat(response).isNotNull();
+    } finally {
+      span.finish();
     }
 
     /**
@@ -125,10 +126,12 @@ public class TracedHystrixCommandTest {
 
   @Test
   public void testWithCircuitBreaker() {
-    try (Scope scope = mockTracer.buildSpan("test_with_circuit_breaker")
-        .startActive(true)) {
+    MockSpan span = mockTracer.buildSpan("test_with_circuit_breaker").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
       String response = greetingService.alwaysFail();
       assertThat(response).isNotNull();
+    } finally {
+      span.finish();
     }
 
     /**
@@ -155,8 +158,8 @@ public class TracedHystrixCommandTest {
     String groupKey = "test_hystrix";
     String commandKey = "hystrix_trace_command";
 
-    try (Scope scope = mockTracer.buildSpan("test_with_circuit_breaker")
-        .startActive(true)) {
+    MockSpan span = mockTracer.buildSpan("test_with_circuit_breaker").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
       com.netflix.hystrix.HystrixCommand.Setter setter = com.netflix.hystrix.HystrixCommand.Setter
           .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
           .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
@@ -167,6 +170,8 @@ public class TracedHystrixCommandTest {
           return null;
         }
       }.execute();
+    } finally {
+      span.finish();
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -94,9 +94,12 @@ public class MongoTracingTest {
    */
   @Test
   public void spanJoinsActiveSpan() {
-    try (Scope ignored = tracer.buildSpan("parent").startActive(true)) {
+    MockSpan span = tracer.buildSpan("parent").start();
+    try (Scope ignored = tracer.activateSpan(span)) {
       assertEquals("Ok", this.mongoTemplate.executeCommand("{ buildInfo: 1 }").getDouble("ok"), 1.0, 0);
       assertEquals(1, tracer.finishedSpans().size());
+    } finally {
+      span.finish();
     }
 
     assertEquals(2, tracer.finishedSpans().size());
@@ -128,9 +131,13 @@ public class MongoTracingTest {
     ExecutorService service = Executors.newFixedThreadPool(10);
     IntStream.rangeClosed(1, 150).parallel().forEach(i -> service.submit(() -> {
       // each iteration is like a request
-      try (Scope parent = tracer.buildSpan("parent_" + i).startActive(true)) {
-        parent.span().setTag("iteration", i);
+      MockSpan parentSpan = tracer.buildSpan("parent_" + i)
+          .withTag("iteration", i)
+          .start();
+      try (Scope scope = tracer.activateSpan(parentSpan)) {
         this.mongoTemplate.executeCommand("{ buildInfo : " + i + " }");
+      } finally {
+        parentSpan.finish();
       }
     }));
 

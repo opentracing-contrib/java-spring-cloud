@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -52,7 +52,7 @@ public class TraceAsyncAspect {
         .withTag(ExtensionTags.CLASS_TAG.getKey(), pjp.getTarget().getClass().getSimpleName())
         .withTag(ExtensionTags.METHOD_TAG.getKey(), pjp.getSignature().getName())
         .start();
-    try (Scope scope = this.tracer.scopeManager().activate(span, false)) {
+    try (Scope scope = this.tracer.scopeManager().activate(span)) {
       return pjp.proceed();
     } catch (Exception ex) {
       SpanUtils.captureException(span, ex);

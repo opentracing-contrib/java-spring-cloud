@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -12,6 +12,8 @@
  * the License.
  */
 package io.opentracing.contrib.spring.cloud.zuul;
+
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -26,8 +28,7 @@ public class TracePostZuulFilter extends ZuulFilter {
 
   @Override
   public String filterType() {
-    // TODO: replace with org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.POST_TYPE
-    return "post";
+    return POST_TYPE;
   }
 
   @Override
