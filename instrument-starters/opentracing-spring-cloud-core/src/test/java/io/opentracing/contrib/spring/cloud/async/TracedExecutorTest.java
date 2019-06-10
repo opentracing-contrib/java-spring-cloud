@@ -15,6 +15,7 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import io.opentracing.Scope;
 import io.opentracing.Span;
@@ -24,8 +25,9 @@ import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +60,13 @@ public class TracedExecutorTest {
     public Executor simpleAsyncTaskExecutor() {
       return new SimpleAsyncTaskExecutor();
     }
+
+    @Bean
+    public Executor runtimeExceptionThrowingExecutor() {
+      return command -> {
+        throw new RejectedExecutionException("Some runtime exception thrown by executor.");
+      };
+    }
   }
 
   @Autowired
@@ -68,6 +77,9 @@ public class TracedExecutorTest {
   @Qualifier("simpleAsyncTaskExecutor")
   @Autowired
   private Executor simpleAsyncExecutor;
+  @Qualifier("runtimeExceptionThrowingExecutor")
+  @Autowired
+  private Executor runtimeExceptionThrowingExecutor;
 
   @Before
   public void before() {
@@ -99,5 +111,19 @@ public class TracedExecutorTest {
     List<MockSpan> mockSpans = mockTracer.finishedSpans();
     assertEquals(2, mockSpans.size());
     TestUtils.assertSameTraceId(mockSpans);
+  }
+
+  @Test
+  public void testExceptionThrownByExecutorShouldBeRethrownByTracedExecutor() {
+    try {
+      CompletableFuture.runAsync(
+          () -> { },
+          runtimeExceptionThrowingExecutor
+      );
+      fail();
+    } catch (Exception ex) {
+      assertEquals(RejectedExecutionException.class, ex.getClass());
+      assertEquals(ex.getMessage(), "Some runtime exception thrown by executor.");
+    }
   }
 }
