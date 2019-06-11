@@ -16,6 +16,8 @@ package io.opentracing.contrib.spring.cloud.async;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
@@ -95,7 +97,11 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     Executor tracedExecutor = tracedExecutor(tracer, delegate);
     Method methodOnTracedBean = getMethod(invocation, tracedExecutor);
     if (methodOnTracedBean != null) {
-      return methodOnTracedBean.invoke(tracedExecutor, invocation.getArguments());
+      try {
+        return methodOnTracedBean.invoke(tracedExecutor, invocation.getArguments());
+      } catch (InvocationTargetException ex) {
+        throw ex.getCause();
+      }
     }
     return invocation.proceed();
   }
