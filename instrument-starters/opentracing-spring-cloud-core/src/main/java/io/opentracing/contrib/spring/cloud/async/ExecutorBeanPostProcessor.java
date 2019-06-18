@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactoryBean;
@@ -60,7 +62,7 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
       Executor executor = (Executor) bean;
       ProxyFactoryBean factory = new ProxyFactoryBean();
       factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer));
+      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer, TracedExecutor::new));
       factory.setTarget(bean);
       return factory.getObject();
     } else if (bean instanceof ThreadPoolTaskExecutor) {
@@ -69,12 +71,9 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
       ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
       ProxyFactoryBean factory = new ProxyFactoryBean();
       factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, tracer) {
-        @Override
-        Executor tracedExecutor(Tracer tracer, ThreadPoolTaskExecutor executor) {
-          return new TracedThreadPoolTaskExecutor(tracer, executor);
-        }
-      });
+      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer,
+          (e, t) -> new TracedThreadPoolTaskExecutor(t, e))
+      );
       factory.setTarget(bean);
       return factory.getObject();
     }
@@ -86,15 +85,17 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
 
   private final T delegate;
   private final Tracer tracer;
+  private final BiFunction<T, Tracer, T> tracedExecutorProvider;
 
-  ExecutorMethodInterceptor(T delegate, Tracer tracer) {
+  ExecutorMethodInterceptor(T delegate, Tracer tracer, BiFunction<T, Tracer, T> tracedExecutorProvider) {
     this.delegate = delegate;
     this.tracer = tracer;
+    this.tracedExecutorProvider = tracedExecutorProvider;
   }
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    Executor tracedExecutor = tracedExecutor(tracer, delegate);
+    T tracedExecutor = tracedExecutorProvider.apply(delegate, tracer);
     Method methodOnTracedBean = getMethod(invocation, tracedExecutor);
     if (methodOnTracedBean != null) {
       try {
@@ -110,10 +111,6 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     Method method = invocation.getMethod();
     return ReflectionUtils
         .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
-  }
-
-  Executor tracedExecutor(Tracer tracer, T executor) {
-    return new TracedExecutor(executor, tracer);
   }
 }
 
