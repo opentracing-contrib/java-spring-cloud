@@ -15,6 +15,7 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
+import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -56,7 +58,14 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
     if (bean instanceof Executor) {
-      if (bean instanceof ThreadPoolTaskExecutor) {
+      if (bean instanceof ExecutorService) {
+        ExecutorService executorService = (ExecutorService) bean;
+        return proxify(
+            executorService,
+            TracedExecutorService::new,
+            shouldUseCGLibProxy(executorService, ExecutorService.class)
+        );
+      } else if (bean instanceof ThreadPoolTaskExecutor) {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) bean;
         boolean classNotFinal = !Modifier.isFinal(threadPoolTaskExecutor.getClass().getModifiers());
         if (classNotFinal) {
