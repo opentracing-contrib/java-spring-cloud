@@ -26,6 +26,7 @@
     <module>instrument-starters/opentracing-spring-cloud-jdbc-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-jms-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-feign-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-gateway-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-mongo-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-websocket-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-zuul-starter</module>
