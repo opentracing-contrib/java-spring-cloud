@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -19,6 +19,8 @@ import io.opentracing.contrib.concurrent.TracedRunnable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -85,5 +87,60 @@ public class TracedThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
   @Override
   public ThreadPoolExecutor getThreadPoolExecutor() throws IllegalStateException {
     return this.delegate.getThreadPoolExecutor();
+  }
+
+  @Override
+  public void setCorePoolSize(int corePoolSize) {
+    this.delegate.setCorePoolSize(corePoolSize);
+  }
+
+  @Override
+  public int getCorePoolSize() {
+    return this.delegate.getCorePoolSize();
+  }
+
+  @Override
+  public void setMaxPoolSize(int maxPoolSize) {
+    this.delegate.setMaxPoolSize(maxPoolSize);
+  }
+
+  @Override
+  public int getMaxPoolSize() {
+    return this.delegate.getMaxPoolSize();
+  }
+
+  @Override
+  public void setKeepAliveSeconds(int keepAliveSeconds) {
+    this.delegate.setKeepAliveSeconds(keepAliveSeconds);
+  }
+
+  @Override
+  public int getKeepAliveSeconds() {
+    return this.delegate.getKeepAliveSeconds();
+  }
+
+  @Override
+  public void setQueueCapacity(int queueCapacity) {
+    this.delegate.setQueueCapacity(queueCapacity);
+  }
+
+  @Override
+  public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+    this.delegate.setAllowCoreThreadTimeOut(allowCoreThreadTimeOut);
+  }
+
+  @Override
+  public void setTaskDecorator(TaskDecorator taskDecorator) {
+    this.delegate.setTaskDecorator(taskDecorator);
+  }
+
+  @Override
+  public int getPoolSize() {
+    return this.delegate.getPoolSize();
+  }
+
+  @Override
+  public int getActiveCount() {
+    return this.delegate.getActiveCount();
   }
 }
