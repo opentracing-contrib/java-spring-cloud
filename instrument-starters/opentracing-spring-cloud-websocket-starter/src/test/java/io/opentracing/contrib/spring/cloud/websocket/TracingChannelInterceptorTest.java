@@ -15,16 +15,21 @@ package io.opentracing.contrib.spring.cloud.websocket;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
 import org.junit.Test;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.web.socket.messaging.WebSocketAnnotationMethodMessageHandler;
 
 public class TracingChannelInterceptorTest {
 
@@ -92,6 +97,26 @@ public class TracingChannelInterceptorTest {
     assertEquals(Tags.SPAN_KIND_CLIENT, childSpan.tags().get(Tags.SPAN_KIND.getKey()));
     assertEquals(TracingChannelInterceptor.WEBSOCKET,
         childSpan.tags().get(Tags.COMPONENT.getKey()));
+  }
+
+  @Test
+  public void testAfterMessageHandled() {
+    Span span = mock(Span.class);
+    Scope scope = mock(Scope.class);
+    MessageHandler messageHandler = mock(WebSocketAnnotationMethodMessageHandler.class);
+    MessageBuilder<String> messageBuilder = MessageBuilder.withPayload("Hi")
+        .setHeader(TracingChannelInterceptor.SIMP_MESSAGE_TYPE, SimpMessageType.MESSAGE)
+        .setHeader(TracingChannelInterceptor.SIMP_DESTINATION, TEST_DESTINATION)
+        .setHeader(TracingChannelInterceptor.OPENTRACING_SCOPE, scope)
+        .setHeader(TracingChannelInterceptor.OPENTRACING_SPAN, span);
+
+    TracingChannelInterceptor interceptor = new TracingChannelInterceptor(mockTracer,
+        Tags.SPAN_KIND_CLIENT);
+    interceptor.afterMessageHandled(messageBuilder.build(), null, messageHandler, null);
+
+    // Verify span is finished and scope is closed
+    verify(span).finish();
+    verify(scope).close();
   }
 
 }

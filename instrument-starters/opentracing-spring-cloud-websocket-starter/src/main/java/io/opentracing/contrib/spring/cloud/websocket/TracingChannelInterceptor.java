@@ -120,7 +120,6 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
         SimpMessageType.MESSAGE.equals(message.getHeaders().get(SIMP_MESSAGE_TYPE))) {
       message.getHeaders().get(OPENTRACING_SCOPE, Scope.class).close();
       message.getHeaders().get(OPENTRACING_SPAN, Span.class).finish();
-      message.getHeaders().remove(OPENTRACING_SCOPE);
     }
   }
 
