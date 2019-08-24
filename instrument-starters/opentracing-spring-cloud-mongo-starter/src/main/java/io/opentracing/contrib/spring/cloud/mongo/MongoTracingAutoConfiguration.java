@@ -13,50 +13,21 @@
  */
 package io.opentracing.contrib.spring.cloud.mongo;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.mongo.TracingMongoClient;
-import io.opentracing.contrib.mongo.common.TracingCommandListener;
-import io.opentracing.contrib.mongo.common.TracingCommandListener.Builder;
-import io.opentracing.contrib.mongo.common.providers.PrefixSpanNameProvider;
-import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 /**
  * @author Vivien Maleze
  */
 @Configuration
-@AutoConfigureBefore(MongoAutoConfiguration.class)
-@ConditionalOnClass(MongoClient.class)
-@ConditionalOnBean(Tracer.class)
-@AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.mongo.enabled", havingValue = "true", matchIfMissing = true)
-public class MongoTracingAutoConfiguration extends MongoAutoConfiguration {
+public class MongoTracingAutoConfiguration {
 
-  private Tracer tracer;
+  private final Tracer tracer;
 
-  public MongoTracingAutoConfiguration(@Autowired(required = false) MongoProperties properties,
-      ObjectProvider<MongoClientOptions> options, Environment environment, Tracer tracer) {
-    super(properties, options, environment);
+  public MongoTracingAutoConfiguration(final Tracer tracer) {
     this.tracer = tracer;
   }
 
-  @Override
-  public MongoClient mongo() {
-    MongoClient mongo = super.mongo();
-    TracingCommandListener commandListener = new Builder(tracer)
-        .build();
-    return new TracingMongoClient(commandListener, mongo.getAllAddress(), mongo.getCredentialsList(), mongo.getMongoClientOptions());
-  }
 }
