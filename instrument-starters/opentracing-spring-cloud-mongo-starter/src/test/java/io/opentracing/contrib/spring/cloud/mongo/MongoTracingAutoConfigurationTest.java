@@ -21,6 +21,7 @@ import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguratio
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +38,7 @@ public class MongoTracingAutoConfigurationTest {
   public void createsTracingPostProcessor() {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withConfiguration(UserConfigurations.of(TracerConfig.class, MongoConfig.class))
-        .withConfiguration(AutoConfigurations.of(TracerAutoConfiguration.class, MongoTracingAutoConfiguration.class));
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
 
     contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));
   }
@@ -46,7 +47,7 @@ public class MongoTracingAutoConfigurationTest {
   public void doesNotCreateTracingPostProcessorWhenNoTracer() {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withConfiguration(UserConfigurations.of(MongoConfig.class))
-        .withConfiguration(AutoConfigurations.of(TracerAutoConfiguration.class, MongoTracingAutoConfiguration.class));
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
 
     contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
   }
@@ -55,7 +56,7 @@ public class MongoTracingAutoConfigurationTest {
   public void doesNotCreateTracingPostProcessorWhenNoMongoClient() {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withConfiguration(UserConfigurations.of(TracerConfig.class))
-        .withConfiguration(AutoConfigurations.of(TracerAutoConfiguration.class, MongoTracingAutoConfiguration.class));
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
 
     contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
   }
@@ -65,9 +66,21 @@ public class MongoTracingAutoConfigurationTest {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
         .withPropertyValues("opentracing.spring.cloud.mongo.enabled=false")
         .withConfiguration(UserConfigurations.of(TracerConfig.class, MongoConfig.class))
-        .withConfiguration(AutoConfigurations.of(TracerAutoConfiguration.class, MongoTracingAutoConfiguration.class));
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
 
     contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
+  }
+
+  @Test
+  public void createsTracingPostProcessorWhenAutoConfigured() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withConfiguration(AutoConfigurations.of(
+            MongoTracingAutoConfiguration.class,
+            TracerAutoConfiguration.class,
+            MongoAutoConfiguration.class
+        ));
+
+    contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));
   }
 
   @Configuration

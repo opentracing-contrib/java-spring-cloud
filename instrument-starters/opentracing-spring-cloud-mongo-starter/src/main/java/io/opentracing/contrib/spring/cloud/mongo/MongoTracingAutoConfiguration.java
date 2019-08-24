@@ -15,8 +15,11 @@ package io.opentracing.contrib.spring.cloud.mongo;
 
 import com.mongodb.MongoClient;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Vivien Maleze
  */
 @Configuration
+@AutoConfigureAfter({ TracerAutoConfiguration.class, MongoAutoConfiguration.class })
 @ConditionalOnBean({ Tracer.class, MongoClient.class })
 @ConditionalOnProperty(name = "opentracing.spring.cloud.mongo.enabled", havingValue = "true", matchIfMissing = true)
 public class MongoTracingAutoConfiguration {
