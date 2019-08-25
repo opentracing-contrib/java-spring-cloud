@@ -14,7 +14,6 @@
 package io.opentracing.contrib.spring.cloud.mongo;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
@@ -97,7 +96,7 @@ public class MongoTracingAutoConfigurationTest {
 
     @Bean
     public MongoClient client() {
-      return new MongoClient(new MongoClientURI("mongodb://localhost/test", MongoClientOptions.builder()));
+      return new MongoClient(new MongoClientURI("mongodb://localhost/test"));
     }
   }
 }
