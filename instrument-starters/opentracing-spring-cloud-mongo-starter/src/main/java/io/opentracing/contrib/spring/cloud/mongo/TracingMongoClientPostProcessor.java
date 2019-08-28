@@ -31,7 +31,7 @@ public class TracingMongoClientPostProcessor implements BeanPostProcessor {
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
-    if (bean instanceof MongoClient) {
+    if (bean instanceof MongoClient && !(bean instanceof TracingMongoClient)) {
       final MongoClient client = (MongoClient) bean;
 
       final TracingCommandListener commandListener = new TracingCommandListener.Builder(tracer)

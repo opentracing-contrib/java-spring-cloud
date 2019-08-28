@@ -14,6 +14,7 @@
 package io.opentracing.contrib.spring.cloud.mongo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -54,5 +55,15 @@ public class TracingMongoClientPostProcessorTest {
     final Object actual = processor.postProcessAfterInitialization(client, "any-bean-name");
 
     assertThat(actual).isInstanceOf(TracingMongoClient.class);
+  }
+
+  @Test
+  public void testTracingMongoClientBeanNotWrapped() {
+
+    final TracingMongoClient tracingClientMock = mock(TracingMongoClient.class);
+
+    final Object actual = processor.postProcessAfterInitialization(tracingClientMock, "any-bean-name");
+
+    assertThat(actual).isSameAs(tracingClientMock);
   }
 }
