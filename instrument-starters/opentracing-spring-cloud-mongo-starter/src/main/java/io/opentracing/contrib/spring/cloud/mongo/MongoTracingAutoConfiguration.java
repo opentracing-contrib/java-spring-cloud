@@ -39,7 +39,7 @@ public class MongoTracingAutoConfiguration {
   }
 
   @Bean
-  public TracingMongoClientPostProcessor tracingMongoClientPostProcessor() {
+  TracingMongoClientPostProcessor tracingMongoClientPostProcessor() {
     return new TracingMongoClientPostProcessor(tracer);
   }
 }

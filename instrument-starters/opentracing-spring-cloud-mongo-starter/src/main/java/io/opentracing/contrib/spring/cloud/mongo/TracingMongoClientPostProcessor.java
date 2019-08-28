@@ -20,7 +20,7 @@ import io.opentracing.contrib.mongo.common.TracingCommandListener;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-public class TracingMongoClientPostProcessor implements BeanPostProcessor {
+class TracingMongoClientPostProcessor implements BeanPostProcessor {
 
   private final Tracer tracer;
 
