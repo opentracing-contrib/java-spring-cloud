@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 package io.opentracing.contrib.spring.cloud.mongo;
 
+import static org.mockito.Mockito.mock;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import io.opentracing.Tracer;
@@ -25,8 +27,6 @@ import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * @author Vivien Maleze
