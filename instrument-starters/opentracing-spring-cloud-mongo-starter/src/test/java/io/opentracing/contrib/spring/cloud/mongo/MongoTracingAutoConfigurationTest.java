@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,16 +13,18 @@
  */
 package io.opentracing.contrib.spring.cloud.mongo;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.context.annotation.UserConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,22 +34,52 @@ import org.springframework.context.annotation.Configuration;
 public class MongoTracingAutoConfigurationTest {
 
   @Test
-  public void loadMongoTracingByDefault() {
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-    context.register(TracerConfig.class, MongoTracingAutoConfiguration.class);
-    context.refresh();
-    MongoClient mongoClient = context.getBean(MongoClient.class);
-    assertNotNull(mongoClient);
+  public void createsTracingPostProcessor() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withConfiguration(UserConfigurations.of(TracerConfig.class, MongoConfig.class))
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
+
+    contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));
   }
 
   @Test
-  public void disableMongoTracing() {
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-    context.register(TracerConfig.class, MongoTracingAutoConfiguration.class);
-    TestPropertyValues.of("opentracing.spring.cloud.mongo.enabled:false").applyTo(context);
-    context.refresh();
-    String[] tracingMongoClientBeans = context.getBeanNamesForType(MongoClient.class);
-    assertThat(tracingMongoClientBeans.length, is(0));
+  public void doesNotCreateTracingPostProcessorWhenNoTracer() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withConfiguration(UserConfigurations.of(MongoConfig.class))
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
+
+    contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
+  }
+
+  @Test
+  public void doesNotCreateTracingPostProcessorWhenNoMongoClient() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withConfiguration(UserConfigurations.of(TracerConfig.class))
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
+
+    contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
+  }
+
+  @Test
+  public void doesNotCreateTracingPostProcessorWhenDisabled() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withPropertyValues("opentracing.spring.cloud.mongo.enabled=false")
+        .withConfiguration(UserConfigurations.of(TracerConfig.class, MongoConfig.class))
+        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
+
+    contextRunner.run(context -> Assertions.assertThat(context).doesNotHaveBean(TracingMongoClientPostProcessor.class));
+  }
+
+  @Test
+  public void createsTracingPostProcessorWhenAutoConfigured() {
+    final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withConfiguration(AutoConfigurations.of(
+            MongoTracingAutoConfiguration.class,
+            TracerAutoConfiguration.class,
+            MongoAutoConfiguration.class
+        ));
+
+    contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));
   }
 
   @Configuration
@@ -56,6 +88,15 @@ public class MongoTracingAutoConfigurationTest {
     @Bean
     public Tracer tracer() {
       return mock(Tracer.class);
+    }
+  }
+
+  @Configuration
+  static class MongoConfig {
+
+    @Bean
+    public MongoClient client() {
+      return new MongoClient(new MongoClientURI("mongodb://localhost/test"));
     }
   }
 }
