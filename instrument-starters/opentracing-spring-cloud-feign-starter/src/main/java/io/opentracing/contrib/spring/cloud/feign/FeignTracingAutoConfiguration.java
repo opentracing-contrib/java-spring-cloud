@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -31,7 +31,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -39,12 +38,13 @@ import org.springframework.context.annotation.Lazy;
 /**
  * @author Pavol Loffay
  * @author Eddú Meléndez
+ * @author Gert Dubois
  */
 @Configuration
 @ConditionalOnClass(Client.class)
 @ConditionalOnBean(Tracer.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
-@AutoConfigureBefore(FeignAutoConfiguration.class)
+@AutoConfigureBefore(name = "org.springframework.cloud.openfeign.FeignAutoConfiguration")
 @ConditionalOnProperty(name = "opentracing.spring.cloud.feign.enabled", havingValue = "true", matchIfMissing = true)
 public class FeignTracingAutoConfiguration {
 
@@ -57,6 +57,7 @@ public class FeignTracingAutoConfiguration {
   private List<FeignSpanDecorator> spanDecorators;
 
   @Bean
+  @ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignContext")
   FeignContextBeanPostProcessor feignContextBeanPostProcessor(BeanFactory beanFactory) {
     return new FeignContextBeanPostProcessor(tracer, beanFactory, spanDecorators);
   }
