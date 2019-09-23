@@ -15,12 +15,18 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
+import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Optional;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactoryBean;
@@ -37,7 +43,6 @@ import org.springframework.util.ReflectionUtils;
  * @author Marcin Grzejszczak
  */
 class ExecutorBeanPostProcessor implements BeanPostProcessor {
-
   private final Tracer tracer;
 
   ExecutorBeanPostProcessor(Tracer tracer) {
@@ -52,33 +57,57 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    if (bean instanceof Executor && !(bean instanceof ThreadPoolTaskExecutor)) {
-      Method execute = ReflectionUtils.findMethod(bean.getClass(), "execute", Runnable.class);
-      boolean methodFinal = Modifier.isFinal(execute.getModifiers());
-      boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-      boolean cglibProxy = !methodFinal && !classFinal;
-      Executor executor = (Executor) bean;
-      ProxyFactoryBean factory = new ProxyFactoryBean();
-      factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracer));
-      factory.setTarget(bean);
-      return factory.getObject();
-    } else if (bean instanceof ThreadPoolTaskExecutor) {
-      boolean classFinal = Modifier.isFinal(bean.getClass().getModifiers());
-      boolean cglibProxy = !classFinal;
-      ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) bean;
-      ProxyFactoryBean factory = new ProxyFactoryBean();
-      factory.setProxyTargetClass(cglibProxy);
-      factory.addAdvice(new ExecutorMethodInterceptor<ThreadPoolTaskExecutor>(executor, tracer) {
-        @Override
-        Executor tracedExecutor(Tracer tracer, ThreadPoolTaskExecutor executor) {
-          return new TracedThreadPoolTaskExecutor(tracer, executor);
+    if (bean instanceof Executor) {
+      if (bean instanceof ExecutorService) {
+        ExecutorService executorService = (ExecutorService) bean;
+        return proxify(
+            executorService,
+            TracedExecutorService::new,
+            shouldUseCGLibProxy(executorService, ExecutorService.class)
+        );
+      } else if (bean instanceof ThreadPoolTaskExecutor) {
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) bean;
+        boolean classNotFinal = !Modifier.isFinal(threadPoolTaskExecutor.getClass().getModifiers());
+        if (classNotFinal) {
+          return proxify(
+              threadPoolTaskExecutor,
+              (e, t) -> new TracedThreadPoolTaskExecutor(t, e),
+              true
+          );
+        } else {
+          // Bean class is final, and extends ThreadPoolTaskExecutor
+          // Can't use cglib, nor jdk proxy.
+          return bean;
         }
-      });
-      factory.setTarget(bean);
-      return factory.getObject();
+      } else {
+        Executor executor = (Executor) bean;
+        return proxify(
+            executor,
+            TracedExecutor::new,
+            shouldUseCGLibProxy(executor, Executor.class)
+        );
+      }
     }
     return bean;
+  }
+
+  private <T extends Executor> Object proxify(T executor, BiFunction<T, Tracer, T> tracingExecutorProvider, boolean useCglib) {
+    ProxyFactoryBean factory = new ProxyFactoryBean();
+    factory.setProxyTargetClass(useCglib);
+    factory.addAdvice(new ExecutorMethodInterceptor<>(executor, tracingExecutorProvider, tracer));
+    factory.setTarget(executor);
+    return factory.getObject();
+  }
+
+  private boolean shouldUseCGLibProxy(Executor executor, Class<? extends Executor> iface) {
+    boolean anyMethodFinal = Stream.of(ReflectionUtils.getAllDeclaredMethods(iface))
+        .map(method -> ReflectionUtils.findMethod(executor.getClass(), method.getName(), method.getParameterTypes()))
+        .map(Optional::ofNullable)
+        .map(method -> method.orElseThrow(NoSuchMethodError::new))
+        .map(Method::getModifiers)
+        .anyMatch(Modifier::isFinal);
+    boolean classFinal = Modifier.isFinal(executor.getClass().getModifiers());
+    return !anyMethodFinal && !classFinal;
   }
 }
 
@@ -86,15 +115,17 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
 
   private final T delegate;
   private final Tracer tracer;
+  private final BiFunction<T, Tracer, T> tracedExecutorProvider;
 
-  ExecutorMethodInterceptor(T delegate, Tracer tracer) {
+  ExecutorMethodInterceptor(T delegate, BiFunction<T, Tracer, T> tracedExecutorProvider, Tracer tracer) {
     this.delegate = delegate;
+    this.tracedExecutorProvider = tracedExecutorProvider;
     this.tracer = tracer;
   }
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    Executor tracedExecutor = tracedExecutor(tracer, delegate);
+    T tracedExecutor = tracedExecutorProvider.apply(delegate, tracer);
     Method methodOnTracedBean = getMethod(invocation, tracedExecutor);
     if (methodOnTracedBean != null) {
       try {
@@ -110,10 +141,6 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
     Method method = invocation.getMethod();
     return ReflectionUtils
         .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
-  }
-
-  Executor tracedExecutor(Tracer tracer, T executor) {
-    return new TracedExecutor(executor, tracer);
   }
 }
 

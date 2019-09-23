@@ -26,6 +26,9 @@ import io.opentracing.mock.MockTracer;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.junit.Before;
@@ -67,6 +70,11 @@ public class TracedExecutorTest {
         throw new RejectedExecutionException("Some runtime exception thrown by executor.");
       };
     }
+
+    @Bean
+    public ExecutorService executorService() {
+      return Executors.newFixedThreadPool(1);
+    }
   }
 
   @Autowired
@@ -80,6 +88,11 @@ public class TracedExecutorTest {
   @Qualifier("runtimeExceptionThrowingExecutor")
   @Autowired
   private Executor runtimeExceptionThrowingExecutor;
+
+  @Qualifier("executorService")
+  @Autowired
+  private ExecutorService executorService;
+
 
   @Before
   public void before() {
@@ -125,5 +138,20 @@ public class TracedExecutorTest {
       assertEquals(RejectedExecutionException.class, ex.getClass());
       assertEquals(ex.getMessage(), "Some runtime exception thrown by executor.");
     }
+  }
+
+  @Test
+  public void testExecutorService() throws Exception {
+    Span span = mockTracer.buildSpan("foo").start();
+    try (Scope scope = mockTracer.activateSpan(span)) {
+      Future<?> child = executorService.submit(() -> mockTracer.buildSpan("child").start().finish());
+      child.get();
+    }
+    span.finish();
+    await().until(() -> mockTracer.finishedSpans().size() == 2);
+
+    List<MockSpan> mockSpans = mockTracer.finishedSpans();
+    assertEquals(2, mockSpans.size());
+    TestUtils.assertSameTraceId(mockSpans);
   }
 }
