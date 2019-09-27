@@ -1,14 +1,15 @@
 package io.opentracing.contrib.spring.cloud.gateway;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.web.client.HttpHeadersCarrier;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.headers.HttpHeadersFilter;
@@ -30,9 +31,9 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
   private final Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
 
-  private final String ROUTE_ID = "route.id";
+  private static final String ROUTE_ID = "route.id";
 
-  private final String COMPONENT = "java-spring-cloud-gateway";
+  private static final String COMPONENT = "java-spring-cloud-gateway";
 
   protected TraceRequestHttpHeadersFilter(Tracer tracer) {
     super(tracer);
@@ -117,11 +118,11 @@ final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
 abstract class AbstractHttpHeadersFilter implements HttpHeadersFilter {
 
-  protected final String SPAN_ATTRIBUTE = Span.class.getName();
+  protected static final String SPAN_ATTRIBUTE = Span.class.getName();
 
-  protected final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
+  protected static final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
 
-  final Tracer tracer;
+  protected final Tracer tracer;
 
   protected AbstractHttpHeadersFilter(Tracer tracer) {
     this.tracer = tracer;
