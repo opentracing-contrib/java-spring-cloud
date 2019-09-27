@@ -33,6 +33,7 @@
     <module>instrument-starters/opentracing-spring-cloud-reactor-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-rxjava-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-redis-starter</module>
+    <module>instrument-starters/opentracing-spring-cloud-gateway-stater</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -171,6 +172,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>opentracing-spring-cloud-zuul-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-gateway-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
 

@@ -86,6 +86,10 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>opentracing-spring-cloud-zuul-starter</artifactId>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-gateway-starter</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
