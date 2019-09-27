@@ -1,5 +1,9 @@
 package io.opentracing.contrib.spring.cloud.gateway;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.web.client.HttpHeadersCarrier;
@@ -14,9 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -27,11 +28,11 @@ import java.util.Objects;
  */
 final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
-  private final static Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
+  private final Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
 
-  private final static String ROUTE_ID = "route.id";
+  private final String ROUTE_ID = "route.id";
 
-  private final static String COMPONENT = "java-spring-cloud-gateway";
+  private final String COMPONENT = "java-spring-cloud-gateway";
 
   protected TraceRequestHttpHeadersFilter(Tracer tracer) {
     super(tracer);
@@ -87,7 +88,7 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
 final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
-  private final static Logger log = LoggerFactory.getLogger(TraceResponseHttpHeadersFilter.class);
+  private final Logger log = LoggerFactory.getLogger(TraceResponseHttpHeadersFilter.class);
 
   protected TraceResponseHttpHeadersFilter(Tracer tracer) {
     super(tracer);
@@ -116,9 +117,9 @@ final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
 abstract class AbstractHttpHeadersFilter implements HttpHeadersFilter {
 
-  protected static final String SPAN_ATTRIBUTE = Span.class.getName();
+  protected final String SPAN_ATTRIBUTE = Span.class.getName();
 
-  protected static final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
+  protected final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
 
   final Tracer tracer;
 
