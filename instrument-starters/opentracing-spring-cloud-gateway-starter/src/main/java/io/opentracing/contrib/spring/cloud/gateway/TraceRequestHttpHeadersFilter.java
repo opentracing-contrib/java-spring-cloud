@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+
 /**
  * TraceRequestHttpHeadersFilter
  *
@@ -26,7 +27,7 @@ import java.util.Objects;
  */
 final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
+  private final static Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
 
   private final static String ROUTE_ID = "route.id";
 
@@ -86,7 +87,7 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
 final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
-  private static final Logger log = LoggerFactory.getLogger(TraceRequestHttpHeadersFilter.class);
+  private final static Logger log = LoggerFactory.getLogger(TraceResponseHttpHeadersFilter.class);
 
   protected TraceResponseHttpHeadersFilter(Tracer tracer) {
     super(tracer);
@@ -115,9 +116,9 @@ final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
 
 abstract class AbstractHttpHeadersFilter implements HttpHeadersFilter {
 
-  static final String SPAN_ATTRIBUTE = Span.class.getName();
+  protected static final String SPAN_ATTRIBUTE = Span.class.getName();
 
-  static final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
+  protected static final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
 
   final Tracer tracer;
 
