@@ -1,5 +1,5 @@
-/*
- * Copyright 2019 The OpenTracing Authors
+/**
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -18,16 +18,12 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.web.client.HttpHeadersCarrier;
 import io.opentracing.propagation.Format;
 import io.opentracing.tag.Tags;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.gateway.filter.headers.HttpHeadersFilter;
 import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
@@ -97,51 +93,5 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
   @Override
   public boolean supports(Type type) {
     return type.equals(Type.REQUEST);
-  }
-}
-
-final class TraceResponseHttpHeadersFilter extends AbstractHttpHeadersFilter {
-
-  private final Logger log = LoggerFactory.getLogger(TraceResponseHttpHeadersFilter.class);
-
-  protected TraceResponseHttpHeadersFilter(Tracer tracer) {
-    super(tracer);
-  }
-
-  @Override
-  public HttpHeaders filter(HttpHeaders input, ServerWebExchange exchange) {
-    Object storedSpan = exchange.getAttribute(SPAN_ATTRIBUTE);
-    if (storedSpan == null) {
-      return input;
-    }
-    log.debug("Will instrument the response");
-    Span span = (Span) storedSpan;
-    if (Objects.nonNull(span)) {
-      span.finish();
-    }
-    log.debug("The response was handled for span " + storedSpan);
-    return input;
-  }
-
-  @Override
-  public boolean supports(Type type) {
-    return type.equals(Type.RESPONSE);
-  }
-}
-
-abstract class AbstractHttpHeadersFilter implements HttpHeadersFilter {
-
-  protected static final String SPAN_ATTRIBUTE = Span.class.getName();
-
-  protected static final String ROUTE_ATTRIBUTE = ServerWebExchangeUtils.class.getName() + ".gatewayRoute";
-
-  protected final Tracer tracer;
-
-  protected AbstractHttpHeadersFilter(Tracer tracer) {
-    this.tracer = tracer;
-  }
-
-  public String path(ServerHttpRequest.Builder request) {
-    return request.build().getPath().value();
   }
 }
