@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.PriorityOrdered;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
 /**
@@ -39,7 +40,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 @AutoConfigureBefore(DefaultAsyncAutoConfiguration.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
-public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor {
+public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor,PriorityOrdered {
 
   @Autowired
   private Tracer tracer;
@@ -52,10 +53,15 @@ public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-    if (bean instanceof AsyncConfigurer) {
+    if (bean instanceof AsyncConfigurer && !(bean instanceof TracedAsyncConfigurer)) {
       AsyncConfigurer configurer = (AsyncConfigurer) bean;
       return new TracedAsyncConfigurer(tracer, configurer);
     }
     return bean;
+  }
+
+  @Override
+  public int getOrder() {
+    return PriorityOrdered.LOWEST_PRECEDENCE;
   }
 }
