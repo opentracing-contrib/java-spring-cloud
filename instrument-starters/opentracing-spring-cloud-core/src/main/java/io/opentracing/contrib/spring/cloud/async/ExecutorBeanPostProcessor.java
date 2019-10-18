@@ -17,6 +17,7 @@ import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
+import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskScheduler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -65,6 +67,20 @@ class ExecutorBeanPostProcessor implements BeanPostProcessor {
             TracedExecutorService::new,
             shouldUseCGLibProxy(executorService, ExecutorService.class)
         );
+      } else if (bean instanceof ThreadPoolTaskScheduler) {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = (ThreadPoolTaskScheduler) bean;
+        boolean classNotFinal = !Modifier.isFinal(threadPoolTaskScheduler.getClass().getModifiers());
+        if (classNotFinal) {
+          return proxify(
+              threadPoolTaskScheduler,
+              (e, t) -> new TracedThreadPoolTaskScheduler(t, e),
+              true
+          );
+        } else {
+          // Bean class is final, and extends ThreadPoolTaskScheduler
+          // Can't use cglib, nor jdk proxy.
+          return bean;
+        }
       } else if (bean instanceof ThreadPoolTaskExecutor) {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) bean;
         boolean classNotFinal = !Modifier.isFinal(threadPoolTaskExecutor.getClass().getModifiers());
