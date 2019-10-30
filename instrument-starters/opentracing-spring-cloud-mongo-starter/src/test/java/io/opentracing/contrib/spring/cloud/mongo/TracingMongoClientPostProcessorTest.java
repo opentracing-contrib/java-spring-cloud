@@ -18,8 +18,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.runtime.Network;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.mongo.TracingMongoClient;
+import java.io.IOException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,9 +43,23 @@ public class TracingMongoClientPostProcessorTest {
 
   private TracingMongoClientPostProcessor processor;
 
+  private MongodProcess process;
+
   @Before
-  public void setup() {
+  public void setup() throws IOException {
     processor = new TracingMongoClientPostProcessor(tracer);
+
+    MongodStarter starter = MongodStarter.getDefaultInstance();
+    MongodExecutable executable = starter.prepare(new MongodConfigBuilder()
+        .version(Version.Main.PRODUCTION)
+        .net(new Net(27017, Network.localhostIsIPv6()))
+        .build());
+    process = executable.start();
+  }
+
+  @After
+  public void tearDown() {
+    process.stop();
   }
 
   @Test
