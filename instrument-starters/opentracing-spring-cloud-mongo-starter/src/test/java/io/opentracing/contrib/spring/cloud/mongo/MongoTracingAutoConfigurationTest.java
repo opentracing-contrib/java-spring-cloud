@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.context.annotation.UserConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
@@ -36,8 +37,12 @@ public class MongoTracingAutoConfigurationTest {
   @Test
   public void createsTracingPostProcessor() {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withPropertyValues("spring.data.mongodb.port=27017") // Otherwise a random embedded mongo port is used
         .withConfiguration(UserConfigurations.of(TracerConfig.class, MongoConfig.class))
-        .withConfiguration(AutoConfigurations.of(MongoTracingAutoConfiguration.class));
+        .withConfiguration(AutoConfigurations.of(
+            MongoTracingAutoConfiguration.class,
+            EmbeddedMongoAutoConfiguration.class
+        ));
 
     contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));
   }
@@ -73,10 +78,12 @@ public class MongoTracingAutoConfigurationTest {
   @Test
   public void createsTracingPostProcessorWhenAutoConfigured() {
     final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+        .withPropertyValues("spring.data.mongodb.port=27017") // Otherwise a random embedded mongo port is used
         .withConfiguration(AutoConfigurations.of(
             MongoTracingAutoConfiguration.class,
             TracerAutoConfiguration.class,
-            MongoAutoConfiguration.class
+            MongoAutoConfiguration.class,
+            EmbeddedMongoAutoConfiguration.class
         ));
 
     contextRunner.run(context -> Assertions.assertThat(context).hasSingleBean(TracingMongoClientPostProcessor.class));

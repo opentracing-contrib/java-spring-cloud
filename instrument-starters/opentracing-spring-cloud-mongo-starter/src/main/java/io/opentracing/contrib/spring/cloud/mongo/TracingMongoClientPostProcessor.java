@@ -37,7 +37,7 @@ class TracingMongoClientPostProcessor implements BeanPostProcessor {
       final TracingCommandListener commandListener = new TracingCommandListener.Builder(tracer)
           .build();
 
-      return new TracingMongoClient(commandListener, client.getAllAddress(), client.getCredentialsList(), client.getMongoClientOptions());
+      return new TracingMongoClient(commandListener, client.getServerAddressList(), client.getCredentialsList(), client.getMongoClientOptions());
     }
 
     return bean;
