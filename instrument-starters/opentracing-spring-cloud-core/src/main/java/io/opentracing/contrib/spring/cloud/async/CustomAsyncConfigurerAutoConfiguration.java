@@ -25,7 +25,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.PriorityOrdered;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
 /**
@@ -40,7 +39,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 @AutoConfigureBefore(DefaultAsyncAutoConfiguration.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
-public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor,PriorityOrdered {
+public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor {
 
   @Autowired
   private Tracer tracer;
@@ -60,8 +59,4 @@ public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor
     return bean;
   }
 
-  @Override
-  public int getOrder() {
-    return PriorityOrdered.LOWEST_PRECEDENCE;
-  }
 }
