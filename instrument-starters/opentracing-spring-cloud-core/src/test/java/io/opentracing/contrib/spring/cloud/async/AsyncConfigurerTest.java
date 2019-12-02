@@ -13,6 +13,10 @@
  */
 package io.opentracing.contrib.spring.cloud.async;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.spring.cloud.MockTracingConfiguration;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
 import java.util.concurrent.Executor;
@@ -27,12 +31,11 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-
-
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * @Author wuyupeng
+ * @author wuyupeng
+ * @author Tadaya Tsuyukubo
  **/
 @SpringBootTest(classes = {AsyncConfigurerTest.AsyncConfigurerConfig.class, MockTracingConfiguration.class, CustomAsyncConfigurerAutoConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,5 +62,11 @@ public class AsyncConfigurerTest {
   @Test
   public void testIsTracedAsyncConfigurer() {
     BDDAssertions.then(asyncConfigurer).isInstanceOf(TracedAsyncConfigurer.class);
+
+    assertThat(this.asyncConfigurer.getAsyncExecutor()).isInstanceOfSatisfying(TracedExecutor.class, tracedExecutor -> {
+      Tracer tracer = (Tracer) ReflectionTestUtils.getField(tracedExecutor, "tracer");
+      assertThat(tracer).isNotNull();
+    });
+
   }
 }

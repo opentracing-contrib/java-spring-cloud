@@ -18,7 +18,8 @@ import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigure
 
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -33,6 +34,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
  * TracedAsyncConfigurer}
  *
  * @author Pavol Loffay
+ * @author Tadaya Tsuyukubo
  */
 @Configuration
 @ConditionalOnBean(AsyncConfigurer.class)
@@ -40,10 +42,9 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 @AutoConfigureBefore(DefaultAsyncAutoConfiguration.class)
 @AutoConfigureAfter(TracerAutoConfiguration.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.async.enabled", havingValue = "true", matchIfMissing = true)
-public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor,PriorityOrdered {
+public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor, PriorityOrdered, BeanFactoryAware {
 
-  @Autowired
-  private Tracer tracer;
+  private BeanFactory beanFactory;
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -55,6 +56,7 @@ public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
     if (bean instanceof AsyncConfigurer && !(bean instanceof TracedAsyncConfigurer)) {
       AsyncConfigurer configurer = (AsyncConfigurer) bean;
+      Tracer tracer = this.beanFactory.getBean(Tracer.class);
       return new TracedAsyncConfigurer(tracer, configurer);
     }
     return bean;
@@ -64,4 +66,10 @@ public class CustomAsyncConfigurerAutoConfiguration implements BeanPostProcessor
   public int getOrder() {
     return PriorityOrdered.LOWEST_PRECEDENCE;
   }
+
+  @Override
+  public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    this.beanFactory = beanFactory;
+  }
+
 }
