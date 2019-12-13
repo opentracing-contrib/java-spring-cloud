@@ -16,25 +16,18 @@ package io.opentracing.contrib.spring.cloud.feign;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.util.GlobalTracerTestUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.AsyncRestTemplate;
-import org.springframework.web.client.RestTemplate;
 
 /**
- * @author Pavol Loffay
  * @author Matthieu Ghilain
  */
 @Configuration
-@EnableAutoConfiguration
-public class MockTracingConfiguration {
-
+@EnableAutoConfiguration(excludeName = "org.springframework.cloud.openfeign.ribbon.FeignRibbonClientAutoConfiguration")
+public class MockTracingWithoutFeignClientConfiguration {
   @Bean
   public MockTracer mockTracer() {
     GlobalTracerTestUtil.resetGlobalTracer();
     return new MockTracer();
   }
-
 }
