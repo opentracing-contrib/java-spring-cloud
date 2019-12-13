@@ -14,7 +14,6 @@
 package io.opentracing.contrib.spring.cloud.feign;
 
 import feign.Client;
-import feign.Feign;
 import feign.opentracing.FeignSpanDecorator;
 import feign.opentracing.TracingClient;
 import io.opentracing.Tracer;
@@ -50,10 +49,6 @@ class TracedFeignBeanFactory {
             beanFactory.getBean(SpringClientFactory.class));
       }
       return buildTracingClient((Client) bean, tracer);
-    }
-
-    if (bean instanceof Feign.Builder) {
-      return new TracingFeignBuilder((Feign.Builder) bean, this);
     }
 
     return bean;

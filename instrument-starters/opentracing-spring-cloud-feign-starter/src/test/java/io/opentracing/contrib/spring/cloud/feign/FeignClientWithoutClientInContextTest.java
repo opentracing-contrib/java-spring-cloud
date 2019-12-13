@@ -62,7 +62,7 @@ public class FeignClientWithoutClientInContextTest {
   }
 
   @Test
-  public void testTracedRequestDefinedUrl() {
+  public void testTracedRequestWithoutFeignClientInContext() {
     feignInterface.hello();
     verify(mockTracer);
   }

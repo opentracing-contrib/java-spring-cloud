@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
+import feign.Client;
 import feign.opentracing.FeignSpanDecorator;
 import io.opentracing.Tracer;
 import java.util.HashMap;
@@ -35,9 +36,13 @@ class TraceFeignContext extends FeignContext {
     this.tracedFeignBeanFactory = new TracedFeignBeanFactory(tracer, beanFactory, spanDecorators);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T getInstance(String name, Class<T> type) {
     T object = this.delegate.getInstance(name, type);
+    if (object == null && type.isAssignableFrom(Client.class)) {
+      object = (T) new Client.Default(null, null);
+    }
     return (T) this.addTracingClient(object);
   }
 
