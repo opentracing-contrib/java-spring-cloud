@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -17,7 +17,9 @@ import feign.Client;
 import feign.opentracing.FeignSpanDecorator;
 import feign.opentracing.TracingClient;
 import io.opentracing.Tracer;
+
 import java.util.List;
+
 /**
  * @author Emerson Oliveira
  */
@@ -32,7 +34,7 @@ class TracingClientBuilder {
     this.tracer = tracer;
   }
 
-  TracingClientBuilder withFeignSpanDecorators(List<FeignSpanDecorator> decorators) {
+  io.opentracing.contrib.spring.cloud.feign.TracingClientBuilder withFeignSpanDecorators(List<FeignSpanDecorator> decorators) {
     this.decorators = decorators;
     return this;
   }

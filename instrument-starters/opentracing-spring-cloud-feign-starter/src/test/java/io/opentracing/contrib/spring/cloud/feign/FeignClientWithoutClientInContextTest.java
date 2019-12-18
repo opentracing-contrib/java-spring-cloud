@@ -15,8 +15,8 @@ package io.opentracing.contrib.spring.cloud.feign;
 
 import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 
-import io.opentracing.contrib.spring.cloud.feign.FeignDefinedUrlTest.FeignWithoutRibbonConfiguration;
 import io.opentracing.mock.MockTracer;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,31 +31,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * @author Pavol Loffay
- * @author Gilles Robert
+ * @author Matthieu Ghilain
  */
 @SpringBootTest(
-    webEnvironment = WebEnvironment.DEFINED_PORT,
-    classes = {MockTracingConfiguration.class, TestController.class,
-        FeignWithoutRibbonConfiguration.class})
+    classes = {MockTracingWithoutFeignClientConfiguration.class, TestController.class, FeignClientWithoutClientInContextTest.FeignClientWithoutClientInContextTestConfiguration.class},
+    webEnvironment = WebEnvironment.DEFINED_PORT)
 @TestPropertySource(properties = {
     "opentracing.spring.web.skipPattern=/notTraced",
-    "server.port=13598"})
+    "server.port=13599"})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FeignDefinedUrlTest {
-
-  @Configuration
-  @EnableFeignClients(clients = FeignInterface.class)
-  static class FeignWithoutRibbonConfiguration {
-
-  }
-
-  @FeignClient(value = "FeignDefinedUrlTestClient", url = "localhost:13598")
-  interface FeignInterface {
-
-    @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
-    String hello();
-  }
+public class FeignClientWithoutClientInContextTest {
 
   @Autowired
   MockTracer mockTracer;
@@ -63,9 +48,24 @@ public class FeignDefinedUrlTest {
   @Autowired
   protected FeignInterface feignInterface;
 
+  @Configuration
+  @EnableFeignClients
+  static class FeignClientWithoutClientInContextTestConfiguration {
+
+  }
+
+  @FeignClient(value = "FeignClientWithoutClientInContextTestFeignClient", url = "localhost:13599")
+  interface FeignInterface {
+
+    @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
+    String hello();
+  }
+
   @Test
-  public void testTracedRequestDefinedUrl() throws InterruptedException {
+  public void testTracedRequestWithoutFeignClientInContext() {
     feignInterface.hello();
     verify(mockTracer);
   }
+
+
 }
