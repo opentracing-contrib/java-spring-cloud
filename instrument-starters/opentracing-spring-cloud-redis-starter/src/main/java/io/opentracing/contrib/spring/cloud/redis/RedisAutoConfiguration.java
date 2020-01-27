@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.redis;
 
+import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.tracer.configuration.TracerRegisterAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -33,8 +34,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 public class RedisAutoConfiguration {
 
   @Bean
-  public RedisAspect openTracingRedisAspect() {
-    return new RedisAspect();
+  public RedisAspect openTracingRedisAspect(Tracer tracer) {
+    return new RedisAspect(tracer);
   }
 
 }
