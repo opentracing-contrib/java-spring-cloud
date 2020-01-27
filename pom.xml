@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2017-2019 The OpenTracing Authors
+    Copyright 2017-2020 The OpenTracing Authors
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
     in compliance with the License. You may obtain a copy of the License at
@@ -94,7 +94,6 @@
     <version.de.flapdoodle-embed.mongo>2.2.0</version.de.flapdoodle-embed.mongo>
     <version.cz.jirutka.spring-embedmongo-spring>1.3.1</version.cz.jirutka.spring-embedmongo-spring>
     <version.org.slf4j-log4j-over-slf4j>1.7.25</version.org.slf4j-log4j-over-slf4j>
-    <version.reactor-core>3.2.8.RELEASE</version.reactor-core>
 
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
