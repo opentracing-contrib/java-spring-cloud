@@ -30,7 +30,7 @@ install:
 jobs:
   include:
     - stage: test
-      env: [ NAME=greenwhich ]
+      env: [ NAME=hoxton ]
       script: make default
 
     - env: [ NAME=classpath-no-dependencies ]

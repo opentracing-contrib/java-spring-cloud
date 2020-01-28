@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -153,8 +153,8 @@ public class MongoTracingTest {
               .filter(c -> c.parentId() == parent.context().spanId())
               .collect(Collectors.toList());
           assertEquals(1, child.size());
-          assertEquals("{ \"buildInfo\" : " + parent.tags().get("iteration") + " }",
-              child.get(0).tags().get("db.statement"));
+          assertEquals(("{ \"buildInfo\" : " + parent.tags().get("iteration") + " }").replaceAll(" ", ""),
+              child.get(0).tags().get("db.statement").toString().replace(" ", ""));
         });
   }
 }

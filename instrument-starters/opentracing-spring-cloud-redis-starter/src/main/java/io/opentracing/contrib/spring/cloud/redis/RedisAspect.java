@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,12 +13,16 @@
  */
 package io.opentracing.contrib.spring.cloud.redis;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.redis.common.TracingConfiguration;
 import io.opentracing.contrib.redis.spring.data2.connection.TracingRedisClusterConnection;
 import io.opentracing.contrib.redis.spring.data2.connection.TracingRedisConnection;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.weaver.tools.Trace;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -32,6 +36,12 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @Aspect
 public class RedisAspect {
 
+  private final Tracer tracer;
+
+  RedisAspect(Tracer tracer) {
+    this.tracer = tracer;
+  }
+
   @Pointcut("target(org.springframework.data.redis.connection.RedisConnectionFactory)")
   public void connectionFactory() {}
 
@@ -40,6 +50,7 @@ public class RedisAspect {
 
   @Pointcut("execution(org.springframework.data.redis.connection.RedisClusterConnection *.getClusterConnection(..))")
   public void getClusterConnection() {}
+
 
 
   /**
@@ -52,7 +63,7 @@ public class RedisAspect {
   @Around("getConnection() && connectionFactory()")
   public Object aroundGetConnection(final ProceedingJoinPoint pjp) throws Throwable {
     RedisConnection connection = (RedisConnection) pjp.proceed();
-    return new TracingRedisConnection(connection, false, null);
+    return new TracingRedisConnection(connection, new TracingConfiguration.Builder(tracer).build());
   }
 
   /**
@@ -65,7 +76,7 @@ public class RedisAspect {
   @Around("getClusterConnection() && connectionFactory()")
   public Object aroundGetClusterConnection(final ProceedingJoinPoint pjp) throws Throwable {
     RedisClusterConnection clusterConnection = (RedisClusterConnection) pjp.proceed();
-    return new TracingRedisClusterConnection(clusterConnection, false, null);
+    return new TracingRedisClusterConnection(clusterConnection,  new TracingConfiguration.Builder(tracer).build());
   }
 
 }

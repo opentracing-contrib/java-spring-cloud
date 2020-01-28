@@ -27,14 +27,15 @@ The following table shows versions with compatible [Spring Cloud](http://project
 
 opentracing-spring-cloud version | OpenTracing API | Spring Cloud version
 --- | --- | ---
+0.4.x | 0.32.0 | `Hoxton`
 0.3.x | 0.32.0 | `Greenwhich`
 0.2.x | 0.31.0 | `Finchley`, `Greenwhich`
 0.1.x | 0.31.0 | `Dalston`, `Edgware`
 
 
 ## Comparison to `spring-cloud-sleuth`
-This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth), 
-both provide out of the box tracing solution for Spring Boot/Cloud. Some of the instrumentations in this 
+This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth),
+both provide out of the box tracing solution for Spring Boot/Cloud. Some of the instrumentations in this
 package are based on original `sleuth` work.
 
 However there are a couple of differences:
@@ -44,15 +45,15 @@ However there are a couple of differences:
 
 ## Note on dependencies
 
-It's worth noting that the although OpenTracing Spring Cloud contains code for instrumenting a wealth of Spring projects, 
+It's worth noting that the although OpenTracing Spring Cloud contains code for instrumenting a wealth of Spring projects,
 it however does not pull those dependencies automatically, marking them as optional dependencies instead.
 
 That means that for example a simple Spring Boot REST API application can include OpenTracing Spring Cloud without the fear
-of polluting the classpath with Spring Cloud dependencies that are otherwise unneeded   
+of polluting the classpath with Spring Cloud dependencies that are otherwise unneeded
 
 ## Configuration
 
-The preferred way to use this library is via vendored starters. These starters use 
+The preferred way to use this library is via vendored starters. These starters use
 instrumentations from this library and expose specific tracer configuration in Spring
 native way:
 
