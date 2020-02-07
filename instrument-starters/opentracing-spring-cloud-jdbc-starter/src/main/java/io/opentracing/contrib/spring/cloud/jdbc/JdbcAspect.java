@@ -52,8 +52,7 @@ public class JdbcAspect {
   @Around("execution(java.sql.Connection *.getConnection(..)) && target(javax.sql.DataSource)")
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
-    if (conn instanceof TracingConnection ||
-        conn.isWrapperFor(TracingConnection.class)) {
+    if (conn instanceof TracingConnection) {
       return conn;
     }
     String url = conn.getMetaData().getURL();
