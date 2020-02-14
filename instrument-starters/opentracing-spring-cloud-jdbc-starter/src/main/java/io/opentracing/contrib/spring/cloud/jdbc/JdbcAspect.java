@@ -17,6 +17,7 @@ import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.contrib.jdbc.parser.URLParser;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Set;
 import javax.sql.DataSource;
 
@@ -52,10 +53,19 @@ public class JdbcAspect {
   @Around("execution(java.sql.Connection *.getConnection(..)) && target(javax.sql.DataSource)")
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
-    if (conn instanceof TracingConnection ||
-        conn.isWrapperFor(TracingConnection.class)) {
-      return conn;
+    try {
+      if (conn instanceof TracingConnection ||
+          conn.isWrapperFor(TracingConnection.class)) {
+        return conn;
+      }
+    } catch (SQLException ignored) {
+      /**
+       * Oracle JDBC driver throws this SQL exception: "Object does not wrap anything with requested interface".
+       *
+       * See {@link java.sql.Wrapper#isWrapperFor(Class)} for an explanation why this should not be.
+       */
     }
+
     String url = conn.getMetaData().getURL();
     ConnectionInfo connectionInfo = URLParser.parser(url);
     return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements);
