@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -16,6 +16,7 @@ package io.opentracing.contrib.spring.cloud.jdbc;
 import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.contrib.jdbc.parser.URLParser;
+import io.opentracing.util.GlobalTracer;
 import java.sql.Connection;
 import java.util.Set;
 import javax.sql.DataSource;
@@ -58,6 +59,7 @@ public class JdbcAspect {
     }
     String url = conn.getMetaData().getURL();
     ConnectionInfo connectionInfo = URLParser.parser(url);
-    return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements);
+    return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements,
+        GlobalTracer.get());
   }
 }
