@@ -13,6 +13,7 @@
  */
 package io.opentracing.contrib.spring.cloud.jdbc;
 
+import io.opentracing.contrib.common.WrapperProxy;
 import io.opentracing.contrib.jdbc.ConnectionInfo;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.contrib.jdbc.parser.URLParser;
@@ -44,22 +45,21 @@ public class JdbcAspect {
 
   /**
    * Intercepts calls to {@link DataSource#getConnection()} (and related), wrapping the outcome in a
-   * {@link TracingConnection}
+   * {@link TracingConnection} proxy
    *
    * @param pjp the intercepted join point
-   * @return a new {@link TracingConnection} wrapping the result of the joint point
+   * @return a new {@link TracingConnection} proxy wrapping the result of the joint point
    * @throws Throwable in case of wrong JDBC URL
    */
   @Around("execution(java.sql.Connection *.getConnection(..)) && target(javax.sql.DataSource)")
   public Object getConnection(final ProceedingJoinPoint pjp) throws Throwable {
     Connection conn = (Connection) pjp.proceed();
-    if (conn instanceof TracingConnection ||
-        conn.isWrapperFor(TracingConnection.class)) {
+    if (WrapperProxy.isWrapper(conn, TracingConnection.class)) {
       return conn;
     }
     String url = conn.getMetaData().getURL();
     ConnectionInfo connectionInfo = URLParser.parser(url);
-    return new TracingConnection(conn, connectionInfo, withActiveSpanOnly, ignoredStatements,
-        GlobalTracer.get());
+    return WrapperProxy.wrap(conn, new TracingConnection(conn, connectionInfo,
+        withActiveSpanOnly, ignoredStatements, GlobalTracer.get()));
   }
 }

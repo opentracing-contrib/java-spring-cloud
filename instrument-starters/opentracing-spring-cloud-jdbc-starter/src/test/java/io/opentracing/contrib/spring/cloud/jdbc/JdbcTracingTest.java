@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import io.opentracing.Scope;
+import io.opentracing.contrib.common.WrapperProxy;
 import io.opentracing.contrib.jdbc.TracingConnection;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
@@ -61,13 +62,13 @@ public class JdbcTracingTest {
   }
 
   /**
-   * Make sure we get a data source that returns a tracing connection. Without our Aspect, this
+   * Make sure we get a data source that returns a tracing connection proxy. Without our Aspect, this
    * would return a regular pooled connection for an embedded database (as we don't configure a
    * database anywhere).
    */
   @Test
   public void dataSourceIsInstrumented() throws SQLException {
-    assertTrue(dataSource.getConnection() instanceof TracingConnection);
+    assertTrue(WrapperProxy.isWrapper(dataSource.getConnection(), TracingConnection.class));
   }
 
   /**
