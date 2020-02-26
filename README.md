@@ -27,6 +27,7 @@ The following table shows versions with compatible [Spring Cloud](http://project
 
 opentracing-spring-cloud version | OpenTracing API | Spring Cloud version
 --- | --- | ---
+0.5.x | 0.33.0 | `Hoxton`
 0.4.x | 0.32.0 | `Hoxton`
 0.3.x | 0.32.0 | `Greenwhich`
 0.2.x | 0.31.0 | `Finchley`, `Greenwhich`
