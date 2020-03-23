@@ -42,6 +42,22 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-kafka-spring</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-kafka-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
