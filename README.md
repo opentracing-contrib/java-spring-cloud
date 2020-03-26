@@ -12,6 +12,7 @@ It contains auto-configurations which instruments and trace following Spring Boo
 * Hystrix
 * JMS
 * JDBC
+* Kafka
 * Mongo
 * Zuul
 * Reactor

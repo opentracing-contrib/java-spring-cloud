@@ -56,6 +56,10 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>opentracing-spring-cloud-kafka-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>opentracing-spring-cloud-feign-starter</artifactId>
     </dependency>
     <dependency>
