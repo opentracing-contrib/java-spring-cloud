@@ -44,7 +44,7 @@ public class TracedListenableFutureCallback<T> implements ListenableFutureCallba
     this(successDelegate, failureDelegate, tracer, tracer.activeSpan());
   }
 
-  public TracedListenableFutureCallback(@Nullable SuccessCallback<T> successDelegate, @Nullable FailureCallback failureDelegate, Tracer tracer, Span span) {
+  public TracedListenableFutureCallback(SuccessCallback<T> successDelegate, FailureCallback failureDelegate, Tracer tracer, Span span) {
     Assert.notNull(successDelegate, "'successDelegate' must not be null");
     Assert.notNull(failureDelegate, "'failureDelegate' must not be null");
     this.successDelegate = successDelegate;
