@@ -35,18 +35,14 @@ public class TracedListenableFuture<T> implements ListenableFuture<T> {
   private final Span span;
 
   public TracedListenableFuture(ListenableFuture<T> delegate, Tracer tracer) {
-    this(delegate, tracer, tracer.activeSpan());
-  }
-
-  public TracedListenableFuture(ListenableFuture<T> delegate, Tracer tracer, Span span) {
     this.delegate = delegate;
     this.tracer = tracer;
-    this.span = span;
+    this.span = tracer.activeSpan();
   }
 
   @Override
   public void addCallback(ListenableFutureCallback<? super T> callback) {
-    delegate.addCallback(new TracedListenableFutureCallback<>(callback, tracer, span));
+    delegate.addCallback(new TracedListenableFutureCallback<>(callback, tracer));
   }
 
   @Override
