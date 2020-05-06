@@ -54,7 +54,7 @@ public class TracedListenableFutureTest {
     TRACER.close();
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void executor_submitListenable_runnable_onSuccess() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_runnable_onSuccess").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -73,7 +73,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void executor_submitListenable_callable_onSuccess() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_callable_onSuccess").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -93,7 +93,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void executor_submitListenable_runnable_onFailure() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_runnable_onFailure").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -124,7 +124,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void executor_submitListenable_callable_onFailure() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_callable_onFailure").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -155,7 +155,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void scheduler_submitListenable_runnable_onSuccess() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_runnable_onSuccess").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -174,7 +174,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void scheduler_submitListenable_callable_onSuccess() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_callable_onSuccess").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -194,7 +194,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void scheduler_submitListenable_runnable_onFailure() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_runnable_onFailure").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
@@ -225,7 +225,7 @@ public class TracedListenableFutureTest {
     }
   }
 
-  @Test(timeout = 1000)
+  @Test
   public void scheduler_submitListenable_callable_onFailure() throws Exception {
     final Span span = TRACER.buildSpan("executor_submitListenable_callable_onFailure").start();
     try (Scope ignored = TRACER.activateSpan(span)) {
