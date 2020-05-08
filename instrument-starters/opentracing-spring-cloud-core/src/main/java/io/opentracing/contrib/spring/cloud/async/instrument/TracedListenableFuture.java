@@ -42,7 +42,7 @@ public class TracedListenableFuture<T> implements ListenableFuture<T> {
 
   @Override
   public void addCallback(ListenableFutureCallback<? super T> callback) {
-    delegate.addCallback(new TracedListenableFutureCallback<>(callback, tracer));
+    delegate.addCallback(new TracedListenableFutureCallback<>(callback, tracer, span));
   }
 
   @Override
