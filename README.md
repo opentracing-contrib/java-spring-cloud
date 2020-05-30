@@ -79,6 +79,26 @@ public io.opentracing.Tracer tracer() {
 }
 ```
 
+### Properties
+
+Property| Default| Description
+------------- | ------------- | -------------
+opentracing.spring.cloud.reactor.enabled|true|Enable Reactor tracing.
+opentracing.spring.cloud.async.enabled|true|Enable tracing for @Async, Executor and WebAsyncTask/Callable.
+opentracing.spring.cloud.log.enabled|true|Add standard logging output to tracing system.
+opentracing.spring.cloud.scheduled.enabled|true|Enable @Scheduled tracing.
+opentracing.spring.cloud.feign.enabled|true|Enable Feign tracing.
+opentracing.spring.cloud.gateway.enabled|true|Enable Gateway tracing.
+opentracing.spring.cloud.hystrix.strategy.enabled|true|Enable Propagation of spans across threads using in Hystrix command tracing.
+opentracing.spring.cloud.jdbc.enabled|true|Enable JDBC tracing.
+opentracing.spring.cloud.jms.enabled|true|Enable JMS tracing.
+opentracing.spring.cloud.kafka.enabled|true|Enable Kafka tracing.
+opentracing.spring.cloud.mongo.enabled|true|Enable MongoDB tracing.
+opentracing.spring.cloud.reactor.enabled|true|Enable Reactor tracing.
+opentracing.spring.cloud.rxjava.enabled|true|Enable RxJava tracing.
+opentracing.spring.cloud.websocket.enabled|true|Enable Websocket tracing.
+opentracing.spring.cloud.zuul.enabled|true|Enable Zuul tracing.
+
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)
 
