@@ -18,6 +18,7 @@ import io.opentracing.contrib.spring.tracer.configuration.TracerRegisterAutoConf
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -26,16 +27,18 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * Loads the integration with OpenTracing Redis if it's included in the classpath.
  *
  * @author Daniel del Castillo
+ * @author Luram Archanjo
  */
 @Configuration
 @AutoConfigureAfter({TracerRegisterAutoConfiguration.class, org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class})
 @ConditionalOnBean(RedisConnectionFactory.class)
 @ConditionalOnProperty(name = "opentracing.spring.cloud.redis.enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(RedisTracingProperties.class)
 public class RedisAutoConfiguration {
 
   @Bean
-  public RedisAspect openTracingRedisAspect(Tracer tracer) {
-    return new RedisAspect(tracer);
+  public RedisAspect openTracingRedisAspect(Tracer tracer, RedisTracingProperties properties) {
+    return new RedisAspect(tracer, properties);
   }
 
 }
