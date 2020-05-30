@@ -43,12 +43,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * @author Luram Archanjo
  */
-@SpringBootTest(classes = {IntegrationTestWithOperationPrefix.IntegrationTestConfiguration.class})
+@SpringBootTest(classes = {IntegrationTestWithPrefixOperationName.IntegrationTestConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
     "opentracing.spring.cloud.redis.prefixOperationName=REDIS."
 })
-public class IntegrationTestWithOperationPrefix {
+public class IntegrationTestWithPrefixOperationName {
 
   @Configuration
   @EnableAutoConfiguration
