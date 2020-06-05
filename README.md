@@ -98,6 +98,9 @@ opentracing.spring.cloud.reactor.enabled|true|Enable Reactor tracing.
 opentracing.spring.cloud.rxjava.enabled|true|Enable RxJava tracing.
 opentracing.spring.cloud.websocket.enabled|true|Enable Websocket tracing.
 opentracing.spring.cloud.zuul.enabled|true|Enable Zuul tracing.
+opentracing.spring.cloud.redis.enabled|true|Enable Redis tracing.
+opentracing.spring.cloud.jdbc.withActiveSpanOnly|false|Only trace JDBC calls if they are part of an active Span.
+opentracing.spring.cloud.jdbc.ignoreStatements|null|Set of JDBC statements to not trace.
 
 ## Development
 Maven checkstyle plugin is used to maintain consistent code style based on [Google Style Guides](https://github.com/google/styleguide)
