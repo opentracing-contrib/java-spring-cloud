@@ -5,6 +5,12 @@
       "type": "java.lang.Boolean",
       "description": "Enable Redis tracing.",
       "defaultValue": true
+    },
+    {
+      "name": "opentracing.spring.cloud.redis.prefixOperationName",
+      "type": "java.lang.String",
+      "description": "Set a prefix for each Redis operation, e.g: MyPrefix.SET.",
+      "defaultValue": ""
     }
   ]
 }
