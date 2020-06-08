@@ -14,6 +14,7 @@
 package io.opentracing.contrib.spring.cloud.redis;
 
 import io.opentracing.Tracer;
+import io.opentracing.contrib.redis.common.RedisSpanNameProvider;
 import io.opentracing.contrib.redis.common.TracingConfiguration;
 import io.opentracing.contrib.redis.spring.data2.connection.TracingRedisClusterConnection;
 import io.opentracing.contrib.redis.spring.data2.connection.TracingRedisConnection;
@@ -21,8 +22,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.weaver.tools.Trace;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -32,14 +31,18 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  * OpenTracing Java Redis framework integration.
  *
  * @author Daniel del Castillo
+ * @author Luram Archanjo
  */
 @Aspect
 public class RedisAspect {
 
   private final Tracer tracer;
 
-  RedisAspect(Tracer tracer) {
+  private final RedisTracingProperties properties;
+
+  RedisAspect(Tracer tracer, RedisTracingProperties properties) {
     this.tracer = tracer;
+    this.properties = properties;
   }
 
   @Pointcut("target(org.springframework.data.redis.connection.RedisConnectionFactory)")
@@ -51,8 +54,6 @@ public class RedisAspect {
   @Pointcut("execution(org.springframework.data.redis.connection.RedisClusterConnection *.getClusterConnection(..))")
   public void getClusterConnection() {}
 
-
-
   /**
    * Intercepts calls to {@link RedisConnectionFactory#getConnection()} (and related), wrapping the
    * outcome in a {@link TracingRedisConnection}
@@ -62,8 +63,14 @@ public class RedisAspect {
    */
   @Around("getConnection() && connectionFactory()")
   public Object aroundGetConnection(final ProceedingJoinPoint pjp) throws Throwable {
-    RedisConnection connection = (RedisConnection) pjp.proceed();
-    return new TracingRedisConnection(connection, new TracingConfiguration.Builder(tracer).build());
+    final RedisConnection connection = (RedisConnection) pjp.proceed();
+
+    final String prefixOperationName = this.properties.getPrefixOperationName();
+    final TracingConfiguration tracingConfiguration = new TracingConfiguration.Builder(tracer)
+        .withSpanNameProvider(RedisSpanNameProvider.PREFIX_OPERATION_NAME(prefixOperationName))
+        .build();
+
+    return new TracingRedisConnection(connection, tracingConfiguration);
   }
 
   /**
@@ -75,8 +82,14 @@ public class RedisAspect {
    */
   @Around("getClusterConnection() && connectionFactory()")
   public Object aroundGetClusterConnection(final ProceedingJoinPoint pjp) throws Throwable {
-    RedisClusterConnection clusterConnection = (RedisClusterConnection) pjp.proceed();
-    return new TracingRedisClusterConnection(clusterConnection,  new TracingConfiguration.Builder(tracer).build());
+    final RedisClusterConnection clusterConnection = (RedisClusterConnection) pjp.proceed();
+
+    final String prefixOperationName = this.properties.getPrefixOperationName();
+    final TracingConfiguration tracingConfiguration = new TracingConfiguration.Builder(tracer)
+        .withSpanNameProvider(RedisSpanNameProvider.PREFIX_OPERATION_NAME(prefixOperationName))
+        .build();
+
+    return new TracingRedisClusterConnection(clusterConnection, tracingConfiguration);
   }
 
 }

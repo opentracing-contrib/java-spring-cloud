@@ -37,14 +37,18 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * @author Daniel del Castillo
+ * @author Luram Archanjo
  */
-@SpringBootTest(classes = {IntegrationTest.IntegrationTestConfiguration.class})
+@SpringBootTest(classes = {IntegrationTestWithPrefixOperationName.IntegrationTestConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class IntegrationTest {
+@TestPropertySource(properties = {
+    "opentracing.spring.cloud.redis.prefixOperationName=REDIS."
+})
+public class IntegrationTestWithPrefixOperationName {
 
   @Configuration
   @EnableAutoConfiguration
@@ -92,7 +96,7 @@ public class IntegrationTest {
   public void commandCreatesNewSpan() {
     redisTemplate.opsForValue().set(100L, "Some value here");
     assertEquals(1, tracer.finishedSpans().size());
-    assertEquals("SET", tracer.finishedSpans().get(0).operationName());
+    assertEquals("REDIS.SET", tracer.finishedSpans().get(0).operationName());
   }
 
   @Test
@@ -101,7 +105,7 @@ public class IntegrationTest {
     try (Scope ignored = tracer.activateSpan(span)) {
       redisTemplate.opsForList().leftPushAll("test-list", 1, 2, 3);
       assertEquals(1, tracer.finishedSpans().size());
-      assertEquals("LPUSH", tracer.finishedSpans().get(0).operationName());
+      assertEquals("REDIS.LPUSH", tracer.finishedSpans().get(0).operationName());
     } finally {
       span.finish();
     }
