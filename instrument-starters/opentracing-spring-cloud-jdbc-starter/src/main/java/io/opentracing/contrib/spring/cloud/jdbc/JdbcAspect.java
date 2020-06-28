@@ -58,7 +58,7 @@ public class JdbcAspect {
       return conn;
     }
     String url = conn.getMetaData().getURL();
-    ConnectionInfo connectionInfo = URLParser.parser(url);
+    ConnectionInfo connectionInfo = URLParser.parse(url);
     return WrapperProxy.wrap(conn, new TracingConnection(conn, connectionInfo,
         withActiveSpanOnly, ignoredStatements, GlobalTracer.get()));
   }

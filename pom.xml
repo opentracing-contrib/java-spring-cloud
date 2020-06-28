@@ -79,7 +79,7 @@
     <version.io.opentracing.contrib-opentracing-spring-jms>0.1.7</version.io.opentracing.contrib-opentracing-spring-jms>
     <version.io.opentracing.contrib-opentracing-spring-messaging>1.0.0</version.io.opentracing.contrib-opentracing-spring-messaging>
     <version.io.opentracing.contrib-opentracing-spring-rabbitmq>3.0.0</version.io.opentracing.contrib-opentracing-spring-rabbitmq>
-    <version.io.opentracing.contrib-java-jdbc>0.2.8</version.io.opentracing.contrib-java-jdbc>
+    <version.io.opentracing.contrib-java-jdbc>0.2.11</version.io.opentracing.contrib-java-jdbc>
     <version.io.opentracing.contrib-common>0.1.4</version.io.opentracing.contrib-common>
     <version.io.opentracing.contrib-opentracing-spring-redis>0.1.14</version.io.opentracing.contrib-opentracing-spring-redis>
     <version.io.opentracing.contrib-java-concurrent>0.4.0</version.io.opentracing.contrib-java-concurrent>
