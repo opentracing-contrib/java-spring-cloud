@@ -83,7 +83,7 @@
     <version.io.opentracing.contrib-common>0.1.4</version.io.opentracing.contrib-common>
     <version.io.opentracing.contrib-opentracing-spring-redis>0.1.14</version.io.opentracing.contrib-opentracing-spring-redis>
     <version.io.opentracing.contrib-java-concurrent>0.4.0</version.io.opentracing.contrib-java-concurrent>
-    <version.io.opentracing.contrib-opentracing-reactor>0.1.2</version.io.opentracing.contrib-opentracing-reactor>
+    <version.io.opentracing.contrib-opentracing-reactor>0.2.0</version.io.opentracing.contrib-opentracing-reactor>
     <version.io.opentracing.contrib-opentracing-rxjava-1>0.1.3</version.io.opentracing.contrib-opentracing-rxjava-1>
     <version.io.opentracing.contrib-opentracing-spring-mongo>0.1.5</version.io.opentracing.contrib-opentracing-spring-mongo>
     <version.io.github.openfeign-feign-okhttp>10.2.0</version.io.github.openfeign-feign-okhttp>
