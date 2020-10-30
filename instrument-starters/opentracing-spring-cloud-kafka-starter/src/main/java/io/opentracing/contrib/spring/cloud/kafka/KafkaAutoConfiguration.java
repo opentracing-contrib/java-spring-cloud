@@ -15,8 +15,10 @@ package io.opentracing.contrib.spring.cloud.kafka;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.kafka.spring.TracingConsumerFactory;
+import io.opentracing.contrib.kafka.spring.TracingKafkaAspect;
 import io.opentracing.contrib.kafka.spring.TracingProducerFactory;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -69,5 +71,11 @@ class KafkaAutoConfiguration {
         return bean;
       }
     };
+  }
+
+  @Bean
+  @ConditionalOnClass(ProxyFactoryBean.class)
+  public TracingKafkaAspect tracingKafkaAspect(Tracer tracer) {
+    return new TracingKafkaAspect(tracer);
   }
 }

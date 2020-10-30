@@ -88,7 +88,7 @@
     <version.io.opentracing.contrib-opentracing-spring-mongo>0.1.5</version.io.opentracing.contrib-opentracing-spring-mongo>
     <version.io.github.openfeign-feign-okhttp>10.2.0</version.io.github.openfeign-feign-okhttp>
     <version.io.github.openfeign.opentracing>0.4.0</version.io.github.openfeign.opentracing>
-    <version.io.opentracing.contrib-opentracing-kafka-spring>0.1.12</version.io.opentracing.contrib-opentracing-kafka-spring>
+    <version.io.opentracing.contrib-opentracing-kafka-spring>0.1.15</version.io.opentracing.contrib-opentracing-kafka-spring>
     <!-- spring-boot-starter-parent is a module of spring-boot-dependencies
         https://github.com/spring-projects/spring-boot/blob/master/spring-boot-starters/spring-boot-starter-parent/pom.xml -->
     <version.org.springframework.boot>2.2.0.RELEASE</version.org.springframework.boot>
