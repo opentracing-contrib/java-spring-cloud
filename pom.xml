@@ -22,7 +22,8 @@
   <version>0.5.10-SNAPSHOT</version>
   <modules>
     <module>opentracing-spring-cloud-starter</module>
-    <module>/instrument-starters/opentracing-spring-cloud-core</module>
+    <module>instrument-starters/opentracing-spring-cloud-core</module>
+    <module>instrument-starters/opentracing-spring-cloud-aop</module>
     <module>instrument-starters/opentracing-spring-cloud-jdbc-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-jms-starter</module>
     <module>instrument-starters/opentracing-spring-cloud-kafka-starter</module>
@@ -97,7 +98,7 @@
     <version.de.flapdoodle-embed.mongo>2.2.0</version.de.flapdoodle-embed.mongo>
     <version.cz.jirutka.spring-embedmongo-spring>1.3.1</version.cz.jirutka.spring-embedmongo-spring>
     <version.org.slf4j-log4j-over-slf4j>1.7.25</version.org.slf4j-log4j-over-slf4j>
-
+    <version.assertj>3.9.0</version.assertj>
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
     <!-- plugins -->
@@ -116,6 +117,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>opentracing-spring-cloud-aop</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>opentracing-spring-cloud-core</artifactId>
@@ -287,6 +293,11 @@
         <version>${version.org.springframework.boot}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.assertj}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
