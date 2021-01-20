@@ -22,7 +22,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.simp.SimpMessageType;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.ExecutorChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.socket.messaging.SubProtocolWebSocketHandler;
@@ -32,8 +32,7 @@ import org.springframework.web.socket.messaging.WebSocketAnnotationMethodMessage
  * This class implements a {@link ExecutorChannelInterceptor} to instrument the websocket
  * communications using an OpenTracing Tracer.
  */
-public class TracingChannelInterceptor extends ChannelInterceptorAdapter implements
-    ExecutorChannelInterceptor {
+public class TracingChannelInterceptor implements ChannelInterceptor, ExecutorChannelInterceptor {
 
   /**
    * The span component tag value.
@@ -66,8 +65,8 @@ public class TracingChannelInterceptor extends ChannelInterceptorAdapter impleme
    */
   protected static final String OPENTRACING_SCOPE = "opentracing.scope";
 
-  private Tracer tracer;
-  private String spanKind;
+  private final Tracer tracer;
+  private final String spanKind;
 
   public TracingChannelInterceptor(Tracer tracer, String spanKind) {
     this.tracer = tracer;
