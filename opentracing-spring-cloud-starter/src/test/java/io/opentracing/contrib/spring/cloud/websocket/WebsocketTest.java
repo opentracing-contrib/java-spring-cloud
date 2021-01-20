@@ -27,9 +27,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -40,7 +40,7 @@ public class WebsocketTest {
   @Configuration
   @EnableWebSocketMessageBroker
   @EnableAutoConfiguration
-  public static class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+  public static class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Bean
     public Tracer tracer() {
