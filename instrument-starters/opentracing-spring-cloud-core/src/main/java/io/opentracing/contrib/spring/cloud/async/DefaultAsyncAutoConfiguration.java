@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -47,7 +48,7 @@ public class DefaultAsyncAutoConfiguration {
   private Tracer tracer;
 
   @Configuration
-  @ConditionalOnMissingBean(AsyncConfigurer.class)
+  @ConditionalOnMissingBean({AsyncConfigurer.class, TaskExecutor.class, Executor.class})
   static class DefaultTracedAsyncConfigurerSupport extends AsyncConfigurerSupport {
 
     @Autowired
