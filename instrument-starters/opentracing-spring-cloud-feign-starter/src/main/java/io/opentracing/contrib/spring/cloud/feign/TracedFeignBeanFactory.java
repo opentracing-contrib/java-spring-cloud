@@ -18,36 +18,24 @@ import feign.opentracing.FeignSpanDecorator;
 import feign.opentracing.TracingClient;
 import io.opentracing.Tracer;
 import java.util.List;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
-import org.springframework.cloud.openfeign.ribbon.CachingSpringLoadBalancerFactory;
-import org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient;
 import org.springframework.context.annotation.Lazy;
 
 class TracedFeignBeanFactory {
 
   private final Tracer tracer;
-  private final BeanFactory beanFactory;
   private final List<FeignSpanDecorator> spanDecorators;
 
-  public TracedFeignBeanFactory(Tracer tracer, BeanFactory beanFactory, @Lazy List<FeignSpanDecorator> spanDecorators) {
+  public TracedFeignBeanFactory(Tracer tracer, @Lazy List<FeignSpanDecorator> spanDecorators) {
     this.tracer = tracer;
-    this.beanFactory = beanFactory;
     this.spanDecorators = spanDecorators;
   }
 
   public Object from(Object bean) {
-    if (bean instanceof TracingClient || bean instanceof LoadBalancedTracedFeign) {
+    if (bean instanceof TracingClient) {
       return bean;
     }
 
     if (bean instanceof Client) {
-      if (bean instanceof LoadBalancerFeignClient) {
-        return new LoadBalancedTracedFeign(
-            buildTracingClient(((LoadBalancerFeignClient) bean).getDelegate(), tracer),
-            beanFactory.getBean(CachingSpringLoadBalancerFactory.class),
-            beanFactory.getBean(SpringClientFactory.class));
-      }
       return buildTracingClient((Client) bean, tracer);
     }
 
@@ -60,17 +48,4 @@ class TracedFeignBeanFactory {
         .withFeignSpanDecorators(spanDecorators)
         .build();
   }
-
-  /**
-   * Needed for cast in {@link org.springframework.cloud.openfeign.FeignClientFactoryBean}
-   */
-  static class LoadBalancedTracedFeign extends LoadBalancerFeignClient {
-
-    public LoadBalancedTracedFeign(Client delegate,
-                                   CachingSpringLoadBalancerFactory lbClientFactory,
-                                   SpringClientFactory clientFactory) {
-      super(delegate, lbClientFactory, clientFactory);
-    }
-  }
-
 }
