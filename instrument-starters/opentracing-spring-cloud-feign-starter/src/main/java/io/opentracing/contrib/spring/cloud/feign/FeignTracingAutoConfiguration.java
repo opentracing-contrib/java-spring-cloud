@@ -58,8 +58,8 @@ public class FeignTracingAutoConfiguration {
 
   @Bean
   @ConditionalOnClass(name = "org.springframework.cloud.openfeign.FeignContext")
-  FeignContextBeanPostProcessor feignContextBeanPostProcessor(BeanFactory beanFactory) {
-    return new FeignContextBeanPostProcessor(tracer, beanFactory, spanDecorators);
+  FeignContextBeanPostProcessor feignContextBeanPostProcessor() {
+    return new FeignContextBeanPostProcessor(tracer, spanDecorators);
   }
 
   @Configuration
