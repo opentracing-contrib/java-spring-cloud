@@ -5,7 +5,7 @@ group: deprecated-2017Q4
 git:
   # otherwise license plugin fails due to grafted commits
   # see https://github.com/travis-ci/travis-ci/issues/7254#issuecomment-387689631
-  depth: false
+  depth: 3
 
 language: java
 jdk:
