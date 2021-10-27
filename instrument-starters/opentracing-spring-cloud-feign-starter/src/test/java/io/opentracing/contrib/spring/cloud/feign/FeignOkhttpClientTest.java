@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017-2018 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -13,11 +13,13 @@
  */
 package io.opentracing.contrib.spring.cloud.feign;
 
+import org.junit.Ignore;
 import org.springframework.test.context.TestPropertySource;
 
 /**
  * @author Pavol Loffay
  */
+@Ignore
 @TestPropertySource(properties = {
     "feign.okhttp.enabled=true",
     "opentracing.spring.web.skipPattern=/notTraced"})

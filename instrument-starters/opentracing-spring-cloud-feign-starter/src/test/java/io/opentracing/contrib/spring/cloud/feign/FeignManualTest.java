@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -21,6 +21,7 @@ import feign.RequestLine;
 import io.opentracing.contrib.spring.cloud.feign.FeignManualTest.ManualFeignConfiguration;
 import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.mock.MockTracer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Pavol Loffay
  * @author Gilles Robert
  */
+@Ignore
 @SpringBootTest(
     webEnvironment = WebEnvironment.RANDOM_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,

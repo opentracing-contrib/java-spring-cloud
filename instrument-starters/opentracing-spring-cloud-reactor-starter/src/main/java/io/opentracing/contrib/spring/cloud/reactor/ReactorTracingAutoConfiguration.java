@@ -24,9 +24,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Logger;
-import javax.annotation.PreDestroy;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -63,7 +63,7 @@ public class ReactorTracingAutoConfiguration {
 
   // Use a BeanDefinitionRegistryPostProcessor here to decorate Reactor as soon as possible before potential early initialization of Reactor schedulers
   // For more detailed description, please refer to https://github.com/opentracing-contrib/java-spring-cloud/issues/214
-  private static class HookRegisteringPostProcessor implements BeanDefinitionRegistryPostProcessor {
+  private static class HookRegisteringPostProcessor implements BeanDefinitionRegistryPostProcessor, DisposableBean {
 
     private static final String ERROR_MSG = "Encountered error while retrieving Tracer instance! This reactive operation chain will not be instrumented.";
 
@@ -113,12 +113,11 @@ public class ReactorTracingAutoConfiguration {
       };
     }
 
-    @PreDestroy
-    public void cleanupHooks() {
+    @Override
+    public void destroy() throws Exception {
       Hooks.resetOnEachOperator(HOOK_KEY);
       Schedulers.removeExecutorServiceDecorator(EXECUTOR_SERVICE_DECORATOR_KEY);
     }
-
   }
 
 }

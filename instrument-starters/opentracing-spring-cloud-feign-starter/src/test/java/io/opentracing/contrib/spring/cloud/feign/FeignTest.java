@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -16,9 +16,6 @@ package io.opentracing.contrib.spring.cloud.feign;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
-import com.netflix.loadbalancer.BaseLoadBalancer;
-import com.netflix.loadbalancer.ILoadBalancer;
-import com.netflix.loadbalancer.Server;
 import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
@@ -46,16 +43,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Gilles Robert
  */
 @SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
         FeignRibbonLocalConfiguration.class},
-    properties = {"opentracing.spring.web.skipPattern=/notTraced"})
+    properties = {"opentracing.spring.web.skipPattern=/notTraced","server.port=1234"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {
 
   @Configuration
   @EnableFeignClients
-  @RibbonClients(@RibbonClient(name = "localService", configuration = RibbonConfiguration.class))
+  //@RibbonClients(@RibbonClient(name = "localService", configuration = RibbonConfiguration.class))
   static class FeignRibbonLocalConfiguration {
 
   }
@@ -63,18 +60,9 @@ public class FeignTest {
   @Configuration
   static class RibbonConfiguration {
 
-    @LocalServerPort
-    int port;
-
-    @Bean
-    public ILoadBalancer loadBalancer() {
-      BaseLoadBalancer loadBalancer = new BaseLoadBalancer();
-      loadBalancer.setServersList(Collections.singletonList(new Server("localhost", port)));
-      return loadBalancer;
-    }
   }
 
-  @FeignClient(value = "localService")
+  @FeignClient(name = "localTest", url = "http://localhost:1234")
   interface FeignInterface {
 
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017-2019 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -50,7 +50,7 @@ public class FeignDefinedUrlTest {
 
   }
 
-  @FeignClient(value = "FeignDefinedUrlTestClient", url = "localhost:13598")
+  @FeignClient(value = "FeignDefinedUrlTestClient", url = "http://localhost:13598")
   interface FeignInterface {
 
     @RequestMapping(method = RequestMethod.GET, value = "/notTraced")
