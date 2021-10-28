@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2017-2020 The OpenTracing Authors
+    Copyright 2017-2021 The OpenTracing Authors
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
     in compliance with the License. You may obtain a copy of the License at
@@ -104,7 +104,7 @@
     <!-- plugins -->
     <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
-    <version.maven-license-plugin>3.0</version.maven-license-plugin>
+    <version.maven-license-plugin>4.1</version.maven-license-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
     <version.maven-source-plugin>3.0.1</version.maven-source-plugin>
     <version.maven-surefire-plugin>2.20</version.maven-surefire-plugin>

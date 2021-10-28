@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2013-2017 the original author or authors. Copyright 2017 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except

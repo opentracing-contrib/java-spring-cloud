@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2021 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -20,19 +20,14 @@ import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfi
 import io.opentracing.mock.MockSpan;
 import io.opentracing.mock.MockTracer;
 import io.opentracing.tag.Tags;
-import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.cloud.netflix.ribbon.RibbonClient;
-import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
     webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
     classes = {MockTracingConfiguration.class, TestController.class,
         FeignRibbonLocalConfiguration.class},
-    properties = {"opentracing.spring.web.skipPattern=/notTraced","server.port=1234"})
+    properties = {"opentracing.spring.web.skipPattern=/notTraced", "server.port=1234"})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeignTest {
 
