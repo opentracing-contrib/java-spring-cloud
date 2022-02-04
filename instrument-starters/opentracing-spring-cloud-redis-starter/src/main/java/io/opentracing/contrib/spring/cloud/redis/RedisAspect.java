@@ -56,10 +56,10 @@ public class RedisAspect {
 
   /**
    * Intercepts calls to {@link RedisConnectionFactory#getConnection()} (and related), wrapping the
-   * outcome in a {@link TracingRedisConnection}
+   * outcome in a {@link TracingRedisConnection} or a {@link TracingRedisClusterConnection}
    *
    * @param pjp the intercepted join point
-   * @return a new {@link TracingRedisConnection} wrapping the result of the joint point
+   * @return a new {@link TracingRedisConnection} or {@link TracingRedisClusterConnection} wrapping the result of the joint point
    */
   @Around("getConnection() && connectionFactory()")
   public Object aroundGetConnection(final ProceedingJoinPoint pjp) throws Throwable {
@@ -70,6 +70,9 @@ public class RedisAspect {
         .withSpanNameProvider(RedisSpanNameProvider.PREFIX_OPERATION_NAME(prefixOperationName))
         .build();
 
+    if(connection instanceof RedisClusterConnection) {
+      return new TracingRedisClusterConnection((RedisClusterConnection) connection, tracingConfiguration);
+    }
     return new TracingRedisConnection(connection, tracingConfiguration);
   }
 
