@@ -66,7 +66,9 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
     } catch (Exception ignore) {
       log.error("TraceRequestHttpHeadersFilter error", ignore);
     }
-    headersWithInput.addAll(input);
+    for (Map.Entry<String, List<String>> entry : input.entrySet()) {
+      headersWithInput.addIfAbsent(entry.getKey(), entry.getValue().get(0));
+    }
     addHeadersWithInput(builder, headersWithInput);
     return headersWithInput;
   }
@@ -86,7 +88,7 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
         .entrySet()) {
       String key = entry.getKey();
       List<String> value = entry.getValue();
-      headersWithInput.put(key, value);
+      headersWithInput.putIfAbsent(key, value);
     }
   }
 
