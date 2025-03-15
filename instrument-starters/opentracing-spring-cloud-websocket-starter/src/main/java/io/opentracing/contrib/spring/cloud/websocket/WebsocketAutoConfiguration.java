@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.support.AbstractMessageChannel;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurationSupport;
 
@@ -37,22 +38,22 @@ public class WebsocketAutoConfiguration {
   private Tracer tracer;
 
   @Bean
-  @ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
+  @ConditionalOnBean(value = AbstractMessageChannel.class, name = "clientInboundChannel")
   public TracingChannelInterceptor tracingInboundChannelInterceptor(
-      WebSocketMessageBrokerConfigurationSupport config) {
+      AbstractMessageChannel clientInboundChannel) {
     TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer,
         Tags.SPAN_KIND_SERVER);
-    config.clientInboundChannel().addInterceptor(interceptor);
+    clientInboundChannel.addInterceptor(interceptor);
     return interceptor;
   }
 
   @Bean
-  @ConditionalOnBean(WebSocketMessageBrokerConfigurationSupport.class)
+  @ConditionalOnBean(value = AbstractMessageChannel.class, name = "clientOutboundChannel")
   public TracingChannelInterceptor tracingOutboundChannelInterceptor(
-      WebSocketMessageBrokerConfigurationSupport config) {
+      AbstractMessageChannel clientOutboundChannel) {
     TracingChannelInterceptor interceptor = new TracingChannelInterceptor(tracer,
         Tags.SPAN_KIND_CLIENT);
-    config.clientOutboundChannel().addInterceptor(interceptor);
+    clientOutboundChannel.addInterceptor(interceptor);
     return interceptor;
   }
 }
