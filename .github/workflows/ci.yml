@@ -10,12 +10,13 @@ on:
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   test:
     name: Test
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -36,6 +37,7 @@ jobs:
 
       - name: Submit dependency graph
         uses: advanced-security/maven-dependency-submission-action@v5
+        if: github.event_name == 'push'
 
   classpath:
     name: Classpath (${{ matrix.profile }})
