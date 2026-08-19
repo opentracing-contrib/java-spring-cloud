@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # needed by license-maven-plugin, which inspects git history
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Build and test
+        run: ./mvnw clean install
+
+      - name: Submit dependency graph
+        uses: advanced-security/maven-dependency-submission-action@v5
+
+  classpath:
+    name: Classpath (${{ matrix.profile }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [nodeps, alldeps]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          # needed by license-maven-plugin, which inspects git history
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Install dependencies
+        run: ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+      - name: Run classpath tests
+        run: PROFILES=${{ matrix.profile }} make classpath
