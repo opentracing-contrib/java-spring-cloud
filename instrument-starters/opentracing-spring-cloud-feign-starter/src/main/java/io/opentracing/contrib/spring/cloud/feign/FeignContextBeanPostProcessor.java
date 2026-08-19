@@ -27,20 +27,17 @@ import org.springframework.cloud.openfeign.FeignContext;
 public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
   private Tracer tracer;
-  private BeanFactory beanFactory;
   private List<FeignSpanDecorator> spanDecorators;
 
-  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory,
-      List<FeignSpanDecorator> spanDecorators) {
+  FeignContextBeanPostProcessor(Tracer tracer, List<FeignSpanDecorator> spanDecorators) {
     this.tracer = tracer;
-    this.beanFactory = beanFactory;
     this.spanDecorators = spanDecorators;
   }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
     if (bean instanceof FeignContext && !(bean instanceof TraceFeignContext)) {
-      return new TraceFeignContext(tracer, (FeignContext) bean, beanFactory, spanDecorators);
+      return new TraceFeignContext(tracer, (FeignContext) bean, spanDecorators);
     }
     return bean;
   }

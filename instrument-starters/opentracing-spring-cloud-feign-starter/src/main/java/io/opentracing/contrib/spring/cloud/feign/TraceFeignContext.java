@@ -19,7 +19,6 @@ import io.opentracing.Tracer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.openfeign.FeignContext;
 
 /**
@@ -30,10 +29,9 @@ class TraceFeignContext extends FeignContext {
   private final FeignContext delegate;
   private final TracedFeignBeanFactory tracedFeignBeanFactory;
 
-  TraceFeignContext(Tracer tracer, FeignContext delegate, BeanFactory beanFactory,
-                    List<FeignSpanDecorator> spanDecorators) {
+  TraceFeignContext(Tracer tracer, FeignContext delegate, List<FeignSpanDecorator> spanDecorators) {
     this.delegate = delegate;
-    this.tracedFeignBeanFactory = new TracedFeignBeanFactory(tracer, beanFactory, spanDecorators);
+    this.tracedFeignBeanFactory = new TracedFeignBeanFactory(tracer, spanDecorators);
   }
 
   @SuppressWarnings("unchecked")
