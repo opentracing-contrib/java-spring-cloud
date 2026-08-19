@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2021 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -178,7 +178,8 @@ public class LoggingAutoConfigurationTest {
       assertEquals(contextData.getThrowable().getMessage(), ((Throwable)logEntry.fields().get("error.object")).getMessage());
     }
     if (contextData.isError()) {
-      assertEquals(Tags.ERROR, logEntry.fields().get("event"));
+      assertEquals(Boolean.TRUE, mockSpan.tags().get(Tags.ERROR.getKey()));
+      assertEquals(Tags.ERROR.getKey(), logEntry.fields().get("event"));
     }
     // now >= timestamp +Nms > now
     assertTrue(contextData.getTimestamp() >= logEntry.timestampMicros()  && logEntry.timestampMicros() + 100 * 1000 > contextData.getTimestamp());
