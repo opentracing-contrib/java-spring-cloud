@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2019 The OpenTracing Authors
+ * Copyright 2017-2020 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -26,6 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
+
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -113,12 +114,12 @@ public class TracedThreadPoolTaskScheduler
 
   @Override
   public ListenableFuture<?> submitListenable(Runnable task) {
-    return delegate.submitListenable(new TracedRunnable(task, tracer));
+    return new TracedListenableFuture<>(delegate.submitListenable(new TracedRunnable(task, tracer)), tracer);
   }
 
   @Override
   public <T> ListenableFuture<T> submitListenable(Callable<T> task) {
-    return delegate.submitListenable(new TracedCallable<>(task, tracer));
+    return new TracedListenableFuture<>(delegate.submitListenable(new TracedCallable<>(task, tracer)), tracer);
   }
 
   @Override
