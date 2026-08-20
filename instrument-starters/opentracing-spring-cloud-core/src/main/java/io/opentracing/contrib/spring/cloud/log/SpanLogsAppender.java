@@ -55,6 +55,9 @@ public class SpanLogsAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
         Tags.ERROR.set(span, Boolean.TRUE);
         logs.put("event", Tags.ERROR.getKey());
       }
+      if (event.getMarker() != null) {
+        logs.put("marker", event.getMarker().getName());
+      }
 
       IThrowableProxy throwableProxy = event.getThrowableProxy();
       if (throwableProxy instanceof ThrowableProxy) {
