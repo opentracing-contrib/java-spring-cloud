@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2018 The OpenTracing Authors
+ * Copyright 2017-2026 The OpenTracing Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -27,20 +27,17 @@ import org.springframework.cloud.openfeign.FeignContext;
 public class FeignContextBeanPostProcessor implements BeanPostProcessor {
 
   private Tracer tracer;
-  private BeanFactory beanFactory;
   private List<FeignSpanDecorator> spanDecorators;
 
-  FeignContextBeanPostProcessor(Tracer tracer, BeanFactory beanFactory,
-      List<FeignSpanDecorator> spanDecorators) {
+  FeignContextBeanPostProcessor(Tracer tracer, List<FeignSpanDecorator> spanDecorators) {
     this.tracer = tracer;
-    this.beanFactory = beanFactory;
     this.spanDecorators = spanDecorators;
   }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
     if (bean instanceof FeignContext && !(bean instanceof TraceFeignContext)) {
-      return new TraceFeignContext(tracer, (FeignContext) bean, beanFactory, spanDecorators);
+      return new TraceFeignContext(tracer, (FeignContext) bean, spanDecorators);
     }
     return bean;
   }
