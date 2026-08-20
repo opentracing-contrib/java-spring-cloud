@@ -102,7 +102,7 @@
     <version.javax.jms>1.1-rev-1</version.javax.jms>
 
     <!-- plugins -->
-    <version.maven-compiler-plugin>3.6.2</version.maven-compiler-plugin>
+    <version.maven-compiler-plugin>3.15.0</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
     <version.maven-license-plugin>3.0</version.maven-license-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
