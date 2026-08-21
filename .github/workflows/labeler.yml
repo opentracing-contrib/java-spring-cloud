@@ -1,0 +1,27 @@
+name: Pull Request Labeler
+on:
+  - pull_request_target
+
+permissions:
+  contents: read
+
+jobs:
+  triage:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            labeler.yml
+          sparse-checkout-cone-mode: false
+          repository: opentracing-contrib/common
+
+      - uses: actions/labeler@v7
+        continue-on-error: true
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          sync-labels: true
+          configuration-path: labeler.yml

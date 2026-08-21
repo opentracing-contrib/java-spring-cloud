@@ -25,7 +25,27 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.ref_name }}-ci
+  cancel-in-progress: true
+
 jobs:
+  release-notes:
+    name: Create/Update release notes
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Create/Update Draft
+        uses: lucacome/draft-release@v2.2.1
+        with:
+          minor-label: "enhancement"
+          major-label: "change"
+          publish: ${{ github.ref_type == 'tag' }}
+          collapse-after: 50
+        if: github.event_name != 'pull_request'
+
   test:
     name: Test
     runs-on: ubuntu-24.04
