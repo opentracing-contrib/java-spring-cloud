@@ -84,9 +84,11 @@ if ($env:MAVEN_USER_HOME) {
   $MAVEN_M2_PATH = "$env:MAVEN_USER_HOME"
 }
 
+# BEGIN LOCAL PATCH - create .m2 directory if it doesn't exist
 if (-not (Test-Path -Path $MAVEN_M2_PATH)) {
     New-Item -Path $MAVEN_M2_PATH -ItemType Directory | Out-Null
 }
+# END LOCAL PATCH
 
 $MAVEN_WRAPPER_DISTS = $null
 if ((Get-Item $MAVEN_M2_PATH).Target[0] -eq $null) {
@@ -149,27 +151,10 @@ if ($distributionSha256Sum) {
 # unzip and move
 Expand-Archive "$TMP_DOWNLOAD_DIR/$distributionUrlName" -DestinationPath "$TMP_DOWNLOAD_DIR" | Out-Null
 
-# Find the actual extracted directory name (handles snapshots where filename != directory name)
-$actualDistributionDir = ""
+# Use expected directory name directly (release distributions only)
+$actualDistributionDir = $distributionUrlNameMain
 
-# First try the expected directory name (for regular distributions)
-$expectedPath = Join-Path "$TMP_DOWNLOAD_DIR" "$distributionUrlNameMain"
-$expectedMvnPath = Join-Path "$expectedPath" "bin/$MVN_CMD"
-if ((Test-Path -Path $expectedPath -PathType Container) -and (Test-Path -Path $expectedMvnPath -PathType Leaf)) {
-  $actualDistributionDir = $distributionUrlNameMain
-}
-
-# If not found, search for any directory with the Maven executable (for snapshots)
-if (!$actualDistributionDir) {
-  Get-ChildItem -Path "$TMP_DOWNLOAD_DIR" -Directory | ForEach-Object {
-    $testPath = Join-Path $_.FullName "bin/$MVN_CMD"
-    if (Test-Path -Path $testPath -PathType Leaf) {
-      $actualDistributionDir = $_.Name
-    }
-  }
-}
-
-if (!$actualDistributionDir) {
+if (!(Test-Path -Path "$TMP_DOWNLOAD_DIR/$actualDistributionDir" -PathType Container)) {
   Write-Error "Could not find Maven distribution directory in extracted archive"
 }
 

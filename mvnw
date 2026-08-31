@@ -256,32 +256,10 @@ else
   tar xzf${__MVNW_QUIET_TAR:+"$__MVNW_QUIET_TAR"} "$TMP_DOWNLOAD_DIR/$distributionUrlName" -C "$TMP_DOWNLOAD_DIR" || die "failed to untar"
 fi
 
-# Find the actual extracted directory name (handles snapshots where filename != directory name)
-actualDistributionDir=""
+# Use expected directory name directly (release distributions only)
+actualDistributionDir="$distributionUrlNameMain"
 
-# First try the expected directory name (for regular distributions)
-if [ -d "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain" ]; then
-  if [ -f "$TMP_DOWNLOAD_DIR/$distributionUrlNameMain/bin/$MVN_CMD" ]; then
-    actualDistributionDir="$distributionUrlNameMain"
-  fi
-fi
-
-# If not found, search for any directory with the Maven executable (for snapshots)
-if [ -z "$actualDistributionDir" ]; then
-  # enable globbing to iterate over items
-  set +f
-  for dir in "$TMP_DOWNLOAD_DIR"/*; do
-    if [ -d "$dir" ]; then
-      if [ -f "$dir/bin/$MVN_CMD" ]; then
-        actualDistributionDir="$(basename "$dir")"
-        break
-      fi
-    fi
-  done
-  set -f
-fi
-
-if [ -z "$actualDistributionDir" ]; then
+if [ ! -d "$TMP_DOWNLOAD_DIR/$actualDistributionDir" ]; then
   verbose "Contents of $TMP_DOWNLOAD_DIR:"
   verbose "$(ls -la "$TMP_DOWNLOAD_DIR")"
   die "Could not find Maven distribution directory in extracted archive"
