@@ -414,7 +414,7 @@
         <configuration>
           <header>${main.basedir}/header.txt</header>
           <failIfMissing>true</failIfMissing>
-          <failIfUnknown>false</failIfUnknown>
+          <failIfUnknown>true</failIfUnknown>
           <excludes>
             <exclude>LICENSE</exclude>
             <exclude>Makefile</exclude>
@@ -425,9 +425,9 @@
             <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
             <exclude>**/*.factories</exclude>
             <exclude>**/*.json</exclude>
-            <exclude>**/*.yml</exclude>
             <exclude>**/ExecutorBeanPostProcessor.java</exclude>
             <exclude>**/TraceEnvironmentPostProcessor.java</exclude>
+            <exclude>**/test/resources/application.yml</exclude>
             <exclude>**/ReactorTracingAutoConfiguration.java</exclude>
           </excludes>
         </configuration>
