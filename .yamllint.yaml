@@ -1,4 +1,3 @@
----
 #
 # Copyright 2017-2026 The OpenTracing Authors
 #
@@ -13,32 +12,20 @@
 # the License.
 #
 
-changelog:
-  exclude:
-    labels:
-      - skip changelog
-  categories:
-    - title: 💣 Breaking Changes
-      labels:
-        - change
-    - title: 🚀 Features
-      labels:
-        - enhancement
-    - title: 🐛 Bug Fixes
-      labels:
-        - bug
-    - title: 🧪 Tests
-      labels:
-        - tests
-    - title: 🔨 Maintenance
-      labels:
-        - chore
-    - title: 📝 Documentation
-      labels:
-        - documentation
-    - title: ⬆️ Dependencies
-      labels:
-        - dependencies
-    - title: Other Changes
-      labels:
-        - "*"
+---
+ignore-from-file: .gitignore
+
+extends: default
+
+rules:
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: enable
+  document-start: disable
+  empty-values: enable
+  line-length:
+    max: 120
+    ignore: |
+      .github/
+  truthy:
+    check-keys: false

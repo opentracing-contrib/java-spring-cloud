@@ -1,0 +1,82 @@
+#
+# Copyright 2017-2026 The OpenTracing Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License. You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under the License
+# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing permissions and limitations under
+# the License.
+#
+
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref_name }}-lint
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Mise
+        uses: jdx/mise-action@v4
+        with:
+          version: v2026.8.3 # renovate: datasource=github-releases depName=mise packageName=jdx/mise
+
+      - name: Run lint
+        run: |
+          mise run lint --no-progress
+
+  actionlint:
+    name: Actionlint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Lint Actions
+        uses: reviewdog/action-actionlint@v1
+        with:
+          actionlint_flags: -shellcheck ""
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v24
+        with:
+          config: .markdownlint-cli2.yaml
+          globs: "**/*.md"
+          fix: false
+
+  yaml-lint:
+    name: YAML lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Lint YAML
+        uses: reviewdog/action-yamllint@v1

@@ -1,3 +1,4 @@
+---
 #
 # Copyright 2017-2026 The OpenTracing Authors
 #
@@ -16,9 +17,11 @@ name: "CodeQL Advanced"
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
   schedule:
     - cron: '42 1 * * 5'
 
@@ -42,7 +45,7 @@ jobs:
       matrix:
         include:
         - language: java-kotlin
-          build-mode: none # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
+          build-mode: none  # This mode only analyzes Java. Set this to 'autobuild' or 'manual' to analyze Kotlin too.
         - language: actions
           build-mode: none
 

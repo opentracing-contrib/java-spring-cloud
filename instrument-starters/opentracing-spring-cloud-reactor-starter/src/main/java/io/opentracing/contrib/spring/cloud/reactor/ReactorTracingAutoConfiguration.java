@@ -98,8 +98,8 @@ public class ReactorTracingAutoConfiguration {
 
     private Function<? super Publisher<Object>, ? extends Publisher<Object>> getHookFunction() {
       return hookFunction == null ?
-             hookFunction = TracedSubscriber.asOperator(tracerProvider.getObject()) :
-             hookFunction;
+            hookFunction = TracedSubscriber.asOperator(tracerProvider.getObject()) :
+            hookFunction;
     }
 
     private BiFunction<Scheduler, ScheduledExecutorService, ScheduledExecutorService> decoratorWithFallback() {

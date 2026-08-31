@@ -1,0 +1,42 @@
+amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
+
+exclude = List(".travis.yml", "LICENSE")
+
+local linters = new Mapping<String, Step> {
+  // ["google-java-format"] = Builtins.google_java_format
+  ["check-license"] = {
+    check = "./mvnw license:check"
+    fix = "./mvnw license:format"
+  }
+  ["actionlint"] = Builtins.actionlint
+  ["trailing-whitespace"] = Builtins.trailing_whitespace
+  ["end-of-file-fixer"] = Builtins.newlines
+  ["fix-smart-quotes"] = Builtins.fix_smart_quotes
+  ["mixed-line-ending"] = Builtins.mixed_line_ending
+  ["check-json"] = Builtins.jq
+  ["yaml-ryl"] = Builtins.ryl
+  ["editorconfig-checker"] = Builtins.editorconfig_checker
+  ["check-case-conflict"] = Builtins.check_case_conflict
+  ["xmllint"] = Builtins.xmllint
+  ["markdownlint"] {
+    glob = List("**/*.md")
+    check = "markdownlint-cli2 {{files}}"
+    fix = "markdownlint-cli2 --fix {{files}}"
+  }
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = true
+        stash = "git"
+        steps = linters
+    }
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+    ["check"] {
+        steps = linters
+    }
+}
