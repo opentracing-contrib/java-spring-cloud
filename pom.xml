@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright 2017-2026 The OpenTracing Authors
+    Copyright © 2017-2026 The OpenTracing Authors
 
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
-    in compliance with the License. You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software distributed under the License
-    is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-    or implied. See the License for the specific language governing permissions and limitations under
-    the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -69,8 +71,7 @@
   </developers>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>8</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <main.basedir>${project.basedir}</main.basedir>
 
@@ -104,7 +105,7 @@
     <!-- plugins -->
     <version.maven-compiler-plugin>3.15.0</version.maven-compiler-plugin>
     <version.maven-deploy-plugin>2.8.2</version.maven-deploy-plugin>
-    <version.maven-license-plugin>3.0</version.maven-license-plugin>
+    <version.maven-license-plugin>5.1.2</version.maven-license-plugin>
     <version.maven-release-plugin>2.5.3</version.maven-release-plugin>
     <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
     <version.maven-surefire-plugin>2.22.2</version.maven-surefire-plugin>
@@ -412,25 +413,26 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>${version.maven-license-plugin}</version>
         <configuration>
-          <header>${main.basedir}/header.txt</header>
+          <licenseSets>
+            <licenseSet>
+              <header>com/mycila/maven/plugin/license/templates/APACHE-2-noemail.txt</header>
+              <properties>
+                <owner>The OpenTracing Authors</owner>
+                <year>${project.inceptionYear}-2026</year>
+              </properties>
+              <excludes>
+                <exclude>**/*.factories</exclude>
+                <exclude>**/test/resources/application.yml</exclude>
+                <exclude>**/ReactorTracingAutoConfiguration.java</exclude>
+                <exclude>**/**.yaml</exclude>
+                <exclude>Makefile</exclude>
+                <exclude>**/*.toml</exclude>
+                <exclude>**/*.pkl</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
           <failIfMissing>true</failIfMissing>
           <failIfUnknown>true</failIfUnknown>
-          <excludes>
-            <exclude>LICENSE</exclude>
-            <exclude>Makefile</exclude>
-            <exclude>mvnw</exclude>
-            <exclude>mvnw.cmd</exclude>
-            <exclude>.editorconfig</exclude>
-            <exclude>travis/publish.sh</exclude>
-            <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
-            <exclude>**/*.factories</exclude>
-            <exclude>**/*.json</exclude>
-            <exclude>**/*.toml</exclude>
-            <exclude>**/ExecutorBeanPostProcessor.java</exclude>
-            <exclude>**/TraceEnvironmentPostProcessor.java</exclude>
-            <exclude>**/test/resources/application.yml</exclude>
-            <exclude>**/ReactorTracingAutoConfiguration.java</exclude>
-          </excludes>
         </configuration>
         <dependencies>
           <dependency>
