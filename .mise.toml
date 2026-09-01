@@ -6,3 +6,17 @@ java = "temurin-11"
 maven = "3.9.16"
 markdownlint-cli2 = "0.23.2"
 actionlint = "1.7.12"
+
+[tasks.lint]
+alias = "l"
+description = "Lint the codebase"
+run = "hk check --all"
+
+[tasks.format]
+alias = "fmt"
+description = "Format the codebase"
+run = "hk fix --all"
+
+[tasks.postlint]
+description = "Run post-lint checks"
+run = "git diff --exit-code"

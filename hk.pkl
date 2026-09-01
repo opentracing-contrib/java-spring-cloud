@@ -16,8 +16,6 @@ local linters = new Mapping<String, Step> {
   ["mixed-line-ending"] = Builtins.mixed_line_ending
   ["check-json"] = Builtins.jq
   ["yaml-ryl"] = Builtins.ryl
-  ["editorconfig-checker"] = Builtins.editorconfig_checker
-  ["check-case-conflict"] = Builtins.check_case_conflict
   ["xmllint"] = Builtins.xmllint
   ["markdownlint"] {
     glob = List("**/*.md")
@@ -26,11 +24,37 @@ local linters = new Mapping<String, Step> {
   }
 }
 
+local precommit = new Mapping<String, Step> {
+  ["detect-private-key"] = Builtins.detect_private_key
+  ["check-added-large-files"] = Builtins.check_added_large_files
+  ["check-merge-conflict"] = Builtins.check_merge_conflict
+  ["no-commit-to-branch"] = Builtins.no_commit_to_branch
+}
+
+local checkers = new Mapping<String, Step> {
+  ["check-case-conflict"] = Builtins.check_case_conflict
+  ["editorconfig-checker"] = Builtins.editorconfig_checker
+}
+
 hooks {
     ["pre-commit"] {
         fix = true
         stash = "git"
-        steps = linters
+        steps {
+          ["linters"] = new Group {
+            steps = linters
+          }
+          ["checkers"] = new Group {
+            steps = checkers
+          }
+          ["postlint"] {
+            check = "mise run postlint"
+            exclusive = true
+          }
+          ["precommit"] = new Group {
+            steps = precommit
+          }
+        }
     }
     ["fix"] {
         fix = true
