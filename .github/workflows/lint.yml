@@ -17,10 +17,10 @@ name: Lint
 on:
   pull_request:
     branches:
-      - main
+      - master
   push:
     branches:
-      - main
+      - master
 
 concurrency:
   group: ${{ github.ref_name }}-lint
