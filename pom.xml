@@ -424,6 +424,8 @@
             <exclude>travis/publish.sh</exclude>
             <exclude>.mvn/wrapper/maven-wrapper.properties</exclude>
             <exclude>**/*.factories</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.toml</exclude>
             <exclude>**/ExecutorBeanPostProcessor.java</exclude>
             <exclude>**/TraceEnvironmentPostProcessor.java</exclude>
             <exclude>**/test/resources/application.yml</exclude>
