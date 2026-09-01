@@ -7,6 +7,9 @@ maven = "3.9.16"
 markdownlint-cli2 = "0.23.2"
 actionlint = "1.7.12"
 
+[bootstrap.packages]
+"apt:xmllint" = "latest"
+
 [tasks.lint]
 alias = "l"
 description = "Lint the codebase"
