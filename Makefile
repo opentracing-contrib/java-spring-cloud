@@ -8,6 +8,12 @@ default:
 greenwich:
 	@./mvnw clean test -Dversion.org.springframework.boot=2.1.5.RELEASE -Dversion.org.springframework.cloud-spring-cloud-dependencies=Greenwich.SR1
 
+license-check:
+	@./mvnw license:check
+
+license-format:
+	@./mvnw license:format
+
 classpath:
 	@for profile in $(PROFILES) ; do \
 		echo "---> Executing profile $$profile"; \

@@ -49,10 +49,31 @@ jobs:
           major-label: "change"
           publish: ${{ github.ref_type == 'tag' }}
           collapse-after: 50
+          
+  license:
+    name: License header check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+
+      - name: Check license headers
+        run: make license-check
 
   test:
     name: Test
     runs-on: ubuntu-24.04
+    needs: license
     permissions:
       contents: write
     steps:
@@ -80,6 +101,7 @@ jobs:
   classpath:
     name: Classpath (${{ matrix.profile }})
     runs-on: ubuntu-24.04
+    needs: license
     strategy:
       fail-fast: false
       matrix:
