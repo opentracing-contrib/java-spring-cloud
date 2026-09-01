@@ -5,7 +5,7 @@
 This repository provides OpenTracing instrumentation for Spring Boot and its various extensions. It can be used with any OpenTracing
 compatible implementation.
 
-It contains auto-configurations which instruments and trace following Spring Boot projects:
+It contains auto-configurations that instrument and trace the following Spring Boot projects:
 
 - Spring Web (RestControllers, RestTemplates, WebAsyncTask, WebClient, WebFlux)
 - @Async, @Scheduled, Executors
@@ -39,7 +39,7 @@ opentracing-spring-cloud version | OpenTracing API | Spring Cloud version
 ## Comparison to `spring-cloud-sleuth`
 
 This project is similar to [spring-cloud-sleuth](https://github.com/spring-cloud/spring-cloud-sleuth),
-both provide out of the box tracing solution for Spring Boot/Cloud. Some of the instrumentations in this
+both provide out-of-the-box tracing solution for Spring Boot/Cloud. Some of the instrumentations in this
 package are based on original `sleuth` work.
 
 However there are a couple of differences:
@@ -65,7 +65,7 @@ native way:
 - [Jaeger](https://github.com/opentracing-contrib/java-spring-jaeger)
 - [Zipkin](https://github.com/opentracing-contrib/java-spring-zipkin)
 
-### Explicitly tracer configuration
+### Explicit tracer configuration
 
 Just add the following dependency in your pom.xml:
 
