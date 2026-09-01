@@ -41,6 +41,10 @@ jobs:
         with:
           version: v2026.8.3 # renovate: datasource=github-releases depName=mise packageName=jdx/mise
 
+      - name: Install dependencies
+        run: |
+          mise bootstrap packages apply
+
       - name: Run lint
         run: |
           mise run lint --no-progress
