@@ -49,7 +49,7 @@ jobs:
           major-label: "change"
           publish: ${{ github.ref_type == 'tag' }}
           collapse-after: 50
-          
+
   license:
     name: License header check
     runs-on: ubuntu-24.04
@@ -64,7 +64,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '11'
           cache: maven
 
       - name: Check license headers
@@ -88,7 +88,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '11'
           cache: maven
 
       - name: Build and test
@@ -118,7 +118,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '11'
           cache: maven
 
       - name: Install dependencies
