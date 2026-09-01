@@ -16,7 +16,6 @@
 package io.opentracing.contrib.spring.cloud.scheduled;
 
 import io.opentracing.Tracer;
-
 import io.opentracing.contrib.spring.cloud.aop.MethodInterceptorSpanDecorator;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import java.util.ArrayList;

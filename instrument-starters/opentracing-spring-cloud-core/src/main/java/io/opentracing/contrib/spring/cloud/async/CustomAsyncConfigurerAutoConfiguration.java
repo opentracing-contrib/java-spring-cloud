@@ -17,7 +17,6 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedAsyncConfigurer;
-
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;

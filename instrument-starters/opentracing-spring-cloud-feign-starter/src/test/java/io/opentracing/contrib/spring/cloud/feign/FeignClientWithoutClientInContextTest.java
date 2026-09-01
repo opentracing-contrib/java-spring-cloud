@@ -18,7 +18,6 @@ package io.opentracing.contrib.spring.cloud.feign;
 import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 
 import io.opentracing.mock.MockTracer;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

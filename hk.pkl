@@ -5,10 +5,12 @@ import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtin
 exclude = List(".travis.yml", "LICENSE")
 
 local linters = new Mapping<String, Step> {
-  // ["google-java-format"] = Builtins.google_java_format
   ["check-license"] {
     check = "./mvnw license:check"
     fix = "./mvnw license:format"
+  }
+  ["checkstyle"] {
+    check = "./mvnw checkstyle:check -Dcheckstyle.config.location=config/checkstyle/checkstyle.xml"
   }
   ["actionlint"] = Builtins.actionlint
   ["trailing-whitespace"] = Builtins.trailing_whitespace

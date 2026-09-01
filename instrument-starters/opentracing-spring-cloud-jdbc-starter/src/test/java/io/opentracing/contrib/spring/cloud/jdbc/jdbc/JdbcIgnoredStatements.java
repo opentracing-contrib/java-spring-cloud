@@ -39,7 +39,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = {MockTracingConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
-        "opentracing.spring.cloud.jdbc.ignoreStatements=SELECT 1"
+    "opentracing.spring.cloud.jdbc.ignoreStatements=SELECT 1"
 })
 public class JdbcIgnoredStatements {
 

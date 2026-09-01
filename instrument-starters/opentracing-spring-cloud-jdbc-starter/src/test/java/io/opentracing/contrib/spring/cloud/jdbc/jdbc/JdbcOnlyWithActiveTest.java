@@ -43,7 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = {MockTracingConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
-        "opentracing.spring.cloud.jdbc.withActiveSpanOnly=true"
+    "opentracing.spring.cloud.jdbc.withActiveSpanOnly=true"
 })
 public class JdbcOnlyWithActiveTest {
 
