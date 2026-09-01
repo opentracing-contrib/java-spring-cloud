@@ -1,0 +1,17 @@
+---
+ignore-from-file: .gitignore
+
+extends: default
+
+rules:
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: enable
+  document-start: disable
+  empty-values: enable
+  line-length:
+    max: 120
+    ignore: |
+      .github/
+  truthy:
+    check-keys: false

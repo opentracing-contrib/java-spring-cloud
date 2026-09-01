@@ -83,7 +83,7 @@ final class TraceRequestHttpHeadersFilter extends AbstractHttpHeadersFilter {
   }
 
   private void addHeadersWithInput(ServerHttpRequest.Builder builder,
-                                   HttpHeaders headersWithInput) {
+                                  HttpHeaders headersWithInput) {
     for (Map.Entry<String, List<String>> entry : builder.build().getHeaders()
         .entrySet()) {
       String key = entry.getKey();

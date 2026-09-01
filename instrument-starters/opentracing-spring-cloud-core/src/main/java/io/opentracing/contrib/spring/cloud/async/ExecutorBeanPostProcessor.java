@@ -161,4 +161,3 @@ class ExecutorMethodInterceptor<T extends Executor> implements MethodInterceptor
         .findMethod(object.getClass(), method.getName(), method.getParameterTypes());
   }
 }
-

@@ -100,8 +100,8 @@
         <configuration>
           <excludes>
             <!-- TEMPORARY:
-                 These tests fail on Spring Cloud Hoxton because commit 8a865d5 removed the
-                 LoadBalancerFeignClient wrapper that keeps a single tracing span per request. -->
+                These tests fail on Spring Cloud Hoxton because commit 8a865d5 removed the
+                LoadBalancerFeignClient wrapper that keeps a single tracing span per request. -->
             <exclude>**/FeignDefinedUrlTest.java</exclude>
             <exclude>**/FeignTest.java</exclude>
             <exclude>**/FeignOkhttpClientTest.java</exclude>

@@ -1,0 +1,80 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.ref_name }}-lint
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Mise
+        uses: jdx/mise-action@v4
+        with:
+          version: v2026.8.3 # renovate: datasource=github-releases depName=mise packageName=jdx/mise
+
+      - name: Install dependencies
+        run: |
+          mise bootstrap packages apply
+
+      - name: Run lint
+        run: |
+          mise run lint --no-progress
+
+  actionlint:
+    name: Actionlint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Lint Actions
+        uses: reviewdog/action-actionlint@v1
+        with:
+          actionlint_flags: -shellcheck ""
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v24
+        with:
+          config: .markdownlint-cli2.yaml
+          globs: "**/*.md"
+          fix: false
+
+  yaml-lint:
+    name: YAML lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Lint YAML
+        uses: reviewdog/action-yamllint@v1

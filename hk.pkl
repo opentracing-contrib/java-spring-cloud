@@ -1,0 +1,68 @@
+amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+
+import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
+
+exclude = List(".travis.yml", "LICENSE")
+
+local linters = new Mapping<String, Step> {
+  // ["google-java-format"] = Builtins.google_java_format
+  ["check-license"] {
+    check = "./mvnw license:check"
+    fix = "./mvnw license:format"
+  }
+  ["actionlint"] = Builtins.actionlint
+  ["trailing-whitespace"] = Builtins.trailing_whitespace
+  ["end-of-file-fixer"] = Builtins.newlines
+  ["fix-smart-quotes"] = Builtins.fix_smart_quotes
+  ["mixed-line-ending"] = Builtins.mixed_line_ending
+  ["check-json"] = Builtins.jq
+  ["yaml-ryl"] = Builtins.ryl
+  ["xmllint"] = Builtins.xmllint
+  ["pkl-lint"] = Builtins.pkl_format
+  ["markdownlint"] {
+    glob = List("**/*.md")
+    check = "markdownlint-cli2 {{files}}"
+    fix = "markdownlint-cli2 --fix {{files}}"
+  }
+}
+
+local precommit = new Mapping<String, Step> {
+  ["detect-private-key"] = Builtins.detect_private_key
+  ["check-added-large-files"] = Builtins.check_added_large_files
+  ["check-merge-conflict"] = Builtins.check_merge_conflict
+  ["no-commit-to-branch"] = Builtins.no_commit_to_branch
+}
+
+local checkers = new Mapping<String, Step> {
+  ["check-case-conflict"] = Builtins.check_case_conflict
+  ["editorconfig-checker"] = Builtins.editorconfig_checker
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ["linters"] = new Group {
+        steps = linters
+      }
+      ["checkers"] = new Group {
+        steps = checkers
+      }
+      ["postlint"] {
+        check = "mise run postlint"
+        exclusive = true
+      }
+      ["precommit"] = new Group {
+        steps = precommit
+      }
+    }
+  }
+  ["fix"] {
+    fix = true
+    steps = linters
+  }
+  ["check"] {
+    steps = linters
+  }
+}
