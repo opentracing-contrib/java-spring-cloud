@@ -6,6 +6,7 @@ java = "temurin-11"
 maven = "3.9.16"
 markdownlint-cli2 = "0.23.2"
 actionlint = "1.7.12"
+pkl = "0.32.1"
 
 [bootstrap.packages]
 "apt:libxml2-utils" = "latest"

@@ -1,11 +1,12 @@
 amends "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Config.pkl"
+
 import "package://github.com/jdx/hk/releases/download/v1.56.0/hk@1.56.0#/Builtins.pkl"
 
 exclude = List(".travis.yml", "LICENSE")
 
 local linters = new Mapping<String, Step> {
   // ["google-java-format"] = Builtins.google_java_format
-  ["check-license"] = {
+  ["check-license"] {
     check = "./mvnw license:check"
     fix = "./mvnw license:format"
   }
@@ -17,6 +18,7 @@ local linters = new Mapping<String, Step> {
   ["check-json"] = Builtins.jq
   ["yaml-ryl"] = Builtins.ryl
   ["xmllint"] = Builtins.xmllint
+  ["pkl-lint"] = Builtins.pkl_format
   ["markdownlint"] {
     glob = List("**/*.md")
     check = "markdownlint-cli2 {{files}}"
@@ -37,30 +39,30 @@ local checkers = new Mapping<String, Step> {
 }
 
 hooks {
-    ["pre-commit"] {
-        fix = true
-        stash = "git"
-        steps {
-          ["linters"] = new Group {
-            steps = linters
-          }
-          ["checkers"] = new Group {
-            steps = checkers
-          }
-          ["postlint"] {
-            check = "mise run postlint"
-            exclusive = true
-          }
-          ["precommit"] = new Group {
-            steps = precommit
-          }
-        }
-    }
-    ["fix"] {
-        fix = true
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ["linters"] = new Group {
         steps = linters
+      }
+      ["checkers"] = new Group {
+        steps = checkers
+      }
+      ["postlint"] {
+        check = "mise run postlint"
+        exclusive = true
+      }
+      ["precommit"] = new Group {
+        steps = precommit
+      }
     }
-    ["check"] {
-        steps = linters
-    }
+  }
+  ["fix"] {
+    fix = true
+    steps = linters
+  }
+  ["check"] {
+    steps = linters
+  }
 }

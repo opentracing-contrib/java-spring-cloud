@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Mise
         uses: jdx/mise-action@v4
@@ -41,6 +43,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Lint Actions
         uses: reviewdog/action-actionlint@v1
@@ -53,6 +57,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Lint Markdown
         uses: DavidAnson/markdownlint-cli2-action@v24
@@ -67,6 +73,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Lint YAML
         uses: reviewdog/action-yamllint@v1
