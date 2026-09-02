@@ -32,7 +32,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

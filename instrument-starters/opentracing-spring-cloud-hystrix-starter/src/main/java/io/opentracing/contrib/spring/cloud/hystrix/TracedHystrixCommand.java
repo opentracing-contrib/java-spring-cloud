@@ -20,7 +20,6 @@ import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.tag.Tags;
-
 import java.util.HashMap;
 import java.util.Map;
 

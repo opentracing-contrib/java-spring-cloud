@@ -28,8 +28,7 @@ public interface MethodInterceptorSpanDecorator {
    * {@link ProceedingJoinPoint#proceed()}
    * is called
    *
-   * @param ProceedingJoinPoint pjp
-   * @param Object result
+   * @param pjp the proceeding join point
    * @param span span
    */
   void onPreProceed(ProceedingJoinPoint pjp, Span span);
@@ -39,8 +38,8 @@ public interface MethodInterceptorSpanDecorator {
    * {@link ProceedingJoinPoint#proceed()}
    * is called
    *
-   * @param ProceedingJoinPoint pjp
-   * @param Object result
+   * @param pjp the proceeding join point
+   * @param result the result of the invocation
    * @param span span
    */
   void onPostProceed(ProceedingJoinPoint pjp, Object result, Span span);
@@ -50,7 +49,7 @@ public interface MethodInterceptorSpanDecorator {
    * {@link ProceedingJoinPoint#proceed()}
    * is processing.
    *
-   * @param ProceedingJoinPoint pjp
+   * @param pjp the proceeding join point
    * @param ex exception
    * @param span span
    */

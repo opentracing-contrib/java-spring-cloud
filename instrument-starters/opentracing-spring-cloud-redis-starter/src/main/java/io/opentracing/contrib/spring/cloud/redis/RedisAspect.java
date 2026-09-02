@@ -48,13 +48,16 @@ public class RedisAspect {
   }
 
   @Pointcut("target(org.springframework.data.redis.connection.RedisConnectionFactory)")
-  public void connectionFactory() {}
+  public void connectionFactory() {
+  }
 
   @Pointcut("execution(org.springframework.data.redis.connection.RedisConnection *.getConnection(..))")
-  public void getConnection() {}
+  public void getConnection() {
+  }
 
   @Pointcut("execution(org.springframework.data.redis.connection.RedisClusterConnection *.getClusterConnection(..))")
-  public void getClusterConnection() {}
+  public void getClusterConnection() {
+  }
 
   /**
    * Intercepts calls to {@link RedisConnectionFactory#getConnection()} (and related), wrapping the

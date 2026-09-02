@@ -19,7 +19,6 @@ import feign.Client;
 import feign.opentracing.FeignSpanDecorator;
 import feign.opentracing.TracingClient;
 import io.opentracing.Tracer;
-
 import java.util.List;
 
 /**

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertFalse;
 
 import io.opentracing.Tracer;
 import io.opentracing.mock.MockTracer;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

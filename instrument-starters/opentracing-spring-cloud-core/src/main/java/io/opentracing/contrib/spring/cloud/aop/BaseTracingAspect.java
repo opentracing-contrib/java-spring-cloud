@@ -48,6 +48,10 @@ public abstract class BaseTracingAspect {
   /**
    * This method should be overridden to add the proper annotation and call {@link
    * BaseTracingAspect#internalTrace(ProceedingJoinPoint)}
+   *
+   * @param pjp the proceeding join point
+   * @return the result of the intercepted method
+   * @throws Throwable if the intercepted method throws
    */
   public abstract Object trace(ProceedingJoinPoint pjp) throws Throwable;
 

@@ -23,7 +23,6 @@ import io.opentracing.util.GlobalTracer;
 import java.sql.Connection;
 import java.util.Set;
 import javax.sql.DataSource;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

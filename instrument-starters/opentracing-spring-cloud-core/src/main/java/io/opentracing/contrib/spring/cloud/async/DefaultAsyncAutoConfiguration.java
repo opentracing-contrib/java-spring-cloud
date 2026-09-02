@@ -17,7 +17,6 @@ package io.opentracing.contrib.spring.cloud.async;
 
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
-
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import java.util.concurrent.Executor;
 import org.springframework.beans.factory.annotation.Autowired;

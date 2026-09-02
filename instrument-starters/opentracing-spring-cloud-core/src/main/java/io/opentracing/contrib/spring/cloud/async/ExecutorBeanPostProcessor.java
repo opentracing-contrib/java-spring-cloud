@@ -20,7 +20,6 @@ import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskExecutor;
 import io.opentracing.contrib.spring.cloud.async.instrument.TracedThreadPoolTaskScheduler;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,7 +28,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactoryBean;

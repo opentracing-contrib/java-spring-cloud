@@ -16,7 +16,6 @@
 package io.opentracing.contrib.spring.cloud;
 
 import io.opentracing.Tracer;
-
 import org.mockito.Mockito;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
