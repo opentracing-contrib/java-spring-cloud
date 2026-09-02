@@ -332,7 +332,7 @@
   <distributionManagement>
     <repository>
       <id>bintray</id>
-      <url>https://api.bintray.com/maven/opentracing/maven/opentracing-spring-cloud/;publish=1</url>
+      <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
     </repository>
     <snapshotRepository>
       <id>jfrog-snapshots</id>
