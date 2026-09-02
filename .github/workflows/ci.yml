@@ -137,22 +137,11 @@ jobs:
           distribution: temurin
           java-version: '11'
           cache: maven
-          server-id: central
-          server-username: CENTRAL_USERNAME
-          server-password: CENTRAL_TOKEN
+          mvn-server-credentials: |
+            central:CENTRAL_USERNAME:CENTRAL_TOKEN
+            github:GITHUB_ACTOR:GITHUB_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
-
-      - name: Set up Java (GitHub)
-        uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: '11'
-          cache: maven
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-          overwrite-settings: false
+          gpg-passphrase-env-var: GPG_PASSPHRASE
 
       - name: Verify tag matches pom version
         run: |
@@ -203,20 +192,9 @@ jobs:
           distribution: temurin
           java-version: '11'
           cache: maven
-          server-id: github
-          server-username: GITHUB_ACTOR
-          server-password: GITHUB_TOKEN
-
-      - name: Set up Java (Central)
-        uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: '11'
-          cache: maven
-          server-id: central
-          server-username: CENTRAL_USERNAME
-          server-password: CENTRAL_TOKEN
-          overwrite-settings: false
+          mvn-server-credentials: |
+            central:CENTRAL_USERNAME:CENTRAL_TOKEN
+            github:GITHUB_ACTOR:GITHUB_TOKEN
 
       - name: Publish snapshot to GitHub Packages
         env:
