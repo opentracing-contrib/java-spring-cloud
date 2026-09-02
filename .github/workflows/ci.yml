@@ -5,7 +5,7 @@ on:
     branches:
       - master
     tags:
-      - "*"
+      - "v*"
   pull_request:
     branches:
       - master
@@ -112,3 +112,92 @@ jobs:
 
       - name: Run classpath tests
         run: make PROFILES=${{ matrix.profile }} classpath
+
+  publish:
+    name: Publish to Maven Central
+    needs: [test, classpath]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Verify tag matches pom version
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          POM_VERSION=$(./mvnw help:evaluate -N -Dexpression=project.version -q -DforceStdout | grep -v '\[')
+          echo "Tag version: $TAG_VERSION"
+          echo "POM version: $POM_VERSION"
+          if [[ "$POM_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::Tag $TAG_VERSION does not match pom $POM_VERSION"
+            echo "::warning::Tag $TAG_VERSION does not match pom $POM_VERSION (expected if release:prepare not used with v prefix))"
+            exit 1
+          fi
+
+      - name: Publish to GitHub Packages
+        run: ./mvnw --batch-mode -Pgithub -DskipTests deploy
+
+      - name: Publish release to Maven Central
+        if: ${{ env.CENTRAL_USERNAME != '' }}
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: ./mvnw --batch-mode -Prelease -DskipTests deploy
+
+  snapshot:
+    name: Publish snapshot
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    needs: [test, classpath]
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Publish snapshot to GitHub Packages
+        run: ./mvnw --batch-mode -Pgithub -DskipTests deploy
+
+      - name: Publish snapshot to Maven Central
+        if: ${{ env.CENTRAL_USERNAME != '' }}
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
+        run: ./mvnw --batch-mode -DskipTests deploy
