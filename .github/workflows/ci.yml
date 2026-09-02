@@ -123,6 +123,7 @@ jobs:
       packages: write
     env:
       CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -142,6 +143,17 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Set up Java (GitHub)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          overwrite-settings: false
+
       - name: Verify tag matches pom version
         run: |
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
@@ -155,6 +167,8 @@ jobs:
           fi
 
       - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./mvnw --batch-mode -Pgithub -DskipTests deploy
 
       - name: Publish release to Maven Central
@@ -175,6 +189,7 @@ jobs:
       packages: write
     env:
       CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -192,7 +207,20 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
 
+      - name: Set up Java (Central)
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '11'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_TOKEN
+          overwrite-settings: false
+
       - name: Publish snapshot to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./mvnw --batch-mode -Pgithub -DskipTests deploy
 
       - name: Publish snapshot to Maven Central

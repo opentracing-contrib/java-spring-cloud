@@ -114,6 +114,7 @@
     <version.checkstyle>10.26.1</version.checkstyle>
     <version.io.takari-maven>0.7.7</version.io.takari-maven>
     <version.io.zikin.centralsync-maven-plugin>0.1.1</version.io.zikin.centralsync-maven-plugin>
+    <version.org.sonatype.central-publishing-maven-plugin>0.7.0</version.org.sonatype.central-publishing-maven-plugin>
     <version.maven-gpg-plugin>3.2.7</version.maven-gpg-plugin>
   </properties>
 
@@ -331,10 +332,6 @@
   </dependencies>
 
   <distributionManagement>
-    <repository>
-      <id>central</id>
-      <url>https://central.sonatype.com/repository/maven-releases/</url>
-    </repository>
     <snapshotRepository>
       <id>central</id>
       <url>https://central.sonatype.com/repository/maven-snapshots/</url>
@@ -504,7 +501,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.2.7</version>
+            <version>${version.maven-gpg-plugin}</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -520,6 +517,18 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <!-- Central Publisher Portal - autoPublish via staging API -->
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${version.org.sonatype.central-publishing-maven-plugin}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>true</autoPublish>
+              <waitUntil>published</waitUntil>
+            </configuration>
           </plugin>
         </plugins>
       </build>
