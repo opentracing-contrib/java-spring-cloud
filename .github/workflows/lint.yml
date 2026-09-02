@@ -27,7 +27,7 @@ jobs:
       - name: Mise
         uses: jdx/mise-action@v4
         with:
-          version: v2026.8.3 # renovate: datasource=github-releases depName=mise packageName=jdx/mise
+          version: v2026.9.0 # renovate: datasource=github-releases depName=mise packageName=jdx/mise
 
       - name: Install dependencies
         run: |
