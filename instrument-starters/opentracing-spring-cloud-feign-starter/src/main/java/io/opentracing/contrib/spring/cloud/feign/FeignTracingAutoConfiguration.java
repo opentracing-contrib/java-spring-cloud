@@ -16,17 +16,11 @@
 package io.opentracing.contrib.spring.cloud.feign;
 
 import feign.Client;
-import feign.Request;
 import feign.opentracing.FeignSpanDecorator;
-import feign.opentracing.TracingClient;
 import feign.opentracing.hystrix.TracingConcurrencyStrategy;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.spring.tracer.configuration.TracerAutoConfiguration;
 import java.util.List;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -72,31 +66,6 @@ public class FeignTracingAutoConfiguration {
     @Autowired
     public HystrixFeign(Tracer tracer) {
       TracingConcurrencyStrategy.register(tracer);
-    }
-  }
-
-  @Bean
-  public TracingAspect tracingAspect() {
-    return new TracingAspect();
-  }
-
-  /**
-   * Trace feign clients created manually
-   */
-  @Aspect
-  class TracingAspect {
-
-    @Around("execution (* feign.Client.*(..)) && !within(is(FinalType))")
-    public Object feignClientWasCalled(final ProceedingJoinPoint pjp) throws Throwable {
-      Object bean = pjp.getTarget();
-      if (!(bean instanceof TracingClient)) {
-        Object[] args = pjp.getArgs();
-        return new TracingClientBuilder((Client) bean, tracer)
-            .withFeignSpanDecorators(spanDecorators)
-            .build()
-            .execute((Request) args[0], (Request.Options) args[1]);
-      }
-      return pjp.proceed();
     }
   }
 }
