@@ -20,7 +20,7 @@ It contains auto-configurations that instrument and trace the following Spring B
 - Reactor
 - RxJava
 - Redis
-- Standard logging - logs are added to active span
+- Standard logging - Logback and Log4j2 logs are added to the active span
 - Spring Messaging - trace messages being sent through [Messaging Channels](https://docs.spring.io/spring-integration/reference/html/#messaging-channels-section)
 - RabbitMQ
 
