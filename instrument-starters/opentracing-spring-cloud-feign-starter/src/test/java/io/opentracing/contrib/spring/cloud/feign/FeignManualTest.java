@@ -20,6 +20,7 @@ import static io.opentracing.contrib.spring.cloud.feign.FeignTest.verify;
 import feign.Client;
 import feign.Feign;
 import feign.RequestLine;
+import feign.opentracing.TracingClient;
 import io.opentracing.contrib.spring.cloud.feign.FeignManualTest.ManualFeignConfiguration;
 import io.opentracing.contrib.spring.cloud.feign.FeignTest.FeignRibbonLocalConfiguration;
 import io.opentracing.mock.MockTracer;
@@ -51,6 +52,7 @@ public class FeignManualTest {
 
     @Autowired
     public ManualFeignConfiguration(Client client) {
+      manualClient = client;
       feignInterface = Feign.builder().client(client)
           .target(FeignInterface.class, "http://localService");
     }
@@ -66,12 +68,14 @@ public class FeignManualTest {
   }
 
   protected static FeignInterface feignInterface;
+  protected static Client manualClient;
 
   @Autowired
   protected MockTracer mockTracer;
 
   @Test
   public void testTracedRequestDefinedUrl() throws InterruptedException {
+    org.junit.Assert.assertTrue(manualClient instanceof TracingClient);
     feignInterface.hello();
     verify(mockTracer);
   }
