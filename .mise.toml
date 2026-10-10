@@ -4,7 +4,7 @@ editorconfig-checker = "3.11.2"
 hk = "1.57.0"
 java = "temurin-11.0.32+101"
 maven = "3.9.16"
-markdownlint-cli2 = "0.23.2"
+markdownlint-cli2 = "0.23.3"
 actionlint = "1.7.12"
 pkl = "0.32.1"
 
